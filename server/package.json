@@ -1,0 +1,19 @@
+{
+  "name": "fehlzeiten-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "dev": "nodemon dist/index.js",
+    "start": "node dist/index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^16.9.1",
+    "nodemon": "^2.0.12",
+    "typescript": "^4.4.3"
+  }
+}
