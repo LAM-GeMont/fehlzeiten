@@ -4,6 +4,7 @@ import { buildSchema } from 'type-graphql'
 import 'reflect-metadata'
 import { createConnection } from 'typeorm'
 import { PingResolver } from './resolvers/ping'
+import cors from 'cors'
 
 (async () => {
   const connection = await createConnection()
@@ -20,9 +21,11 @@ import { PingResolver } from './resolvers/ping'
 
   await apollo.start()
 
-  apollo.applyMiddleware({ app })
+  app.use(cors())
 
-  app.listen(3000, () => {
-    console.log('server started on localhost:3000')
+  apollo.applyMiddleware({ app, cors: false })
+
+  app.listen(4000, () => {
+    console.log('server started on localhost:4000')
   })
 })()
