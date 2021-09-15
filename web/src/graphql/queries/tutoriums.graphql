@@ -1,0 +1,8 @@
+query Tutoriums {
+  tutoriums {
+    id
+    createdAt
+    updatedAt
+    name
+  }
+}
