@@ -1,9 +1,12 @@
 import { Heading } from '@chakra-ui/react'
+import { PageScaffold } from '../components/PageScaffold'
 
 const Index = () => {
 
   return (
-    null
+    <PageScaffold>
+
+    </PageScaffold>
   )
 }
 
