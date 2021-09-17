@@ -1,0 +1,14 @@
+mutation CreateTutorium($name: String!) {
+  createTutorium(name: $name) {
+    tutorium {
+      name
+      id
+      createdAt
+      updatedAt
+    }
+    errors {
+      message
+      code
+    }
+  }
+}

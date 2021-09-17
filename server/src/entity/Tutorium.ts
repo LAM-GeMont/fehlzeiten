@@ -1,4 +1,4 @@
-import { ID, ObjectType, Field, Int } from 'type-graphql'
+import { ID, ObjectType, Field } from 'type-graphql'
 import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
 
 @Entity()
@@ -16,7 +16,7 @@ export class Tutorium extends BaseEntity {
     @Field()
     updatedAt: number
 
-    @Column()
+    @Column({ unique: true })
     @Field()
     name: string
 }

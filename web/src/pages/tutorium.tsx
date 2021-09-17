@@ -1,10 +1,12 @@
-import { Center, Flex, Heading, SimpleGrid } from "@chakra-ui/layout";
-import { Table, Thead, Tr, Th, Tbody, Td, Spinner, chakra } from "@chakra-ui/react";
+import { Center, Divider, Flex, Heading, SimpleGrid } from "@chakra-ui/layout";
+import { Table, Thead, Th, Tbody, Td, Spinner, chakra, Button, IconButton, Modal, ModalContent, ModalOverlay, useDisclosure, ModalHeader, ModalBody, ModalCloseButton, ModalFooter, shouldForwardProp } from "@chakra-ui/react";
 import React, { FunctionComponent, useMemo } from "react";
 import { PageScaffold } from "../components/PageScaffold"
 import { useTutoriumsQuery } from "../generated/graphql";
 import { useSortBy, useTable } from 'react-table'
-import { TriangleDownIcon, TriangleUpIcon } from "@chakra-ui/icons";
+import { AddIcon, RepeatIcon, TriangleDownIcon, TriangleUpIcon } from "@chakra-ui/icons";
+import { CreateTutoriumModal } from "../components/CreateTutoriumModal";
+import { AnimatePresence, motion } from "framer-motion";
 
 interface TableRow {
   name: string,
@@ -12,7 +14,16 @@ interface TableRow {
   createdAt: string
 }
 
+const Tr = chakra(motion.tr,
+  {
+    shouldForwardProp: (prop) => {
+      return true || shouldForwardProp(prop)
+    }
+  })
+
 const TutoriumPage = () => {
+
+  const tutoriumCreateModal = useDisclosure()
 
   const res = useTutoriumsQuery()
 
@@ -58,7 +69,11 @@ const TutoriumPage = () => {
   return (
     <PageScaffold>
       <SimpleGrid>
-        <Center minW="300px" minH="600px" margin={5}>
+        <Flex direction="column" alignItems="center" minW="300px" minH="600px" margin={5}>
+          <Flex w="full" padding={5}>
+            <Button marginLeft="auto" leftIcon={<AddIcon />} onClick={tutoriumCreateModal.onOpen}>Tutorium hinzufügen</Button>
+            <IconButton ml={4} variant="outline" aria-label="Daten neu laden" icon={<RepeatIcon />} onClick={() => {res.refetch()}}>Tutorium hinzufügen</IconButton>
+          </Flex>
           {res.loading && (<Spinner />)}
           {res.error != null && (<Heading>Error!</Heading>)}
           {res.error == null && !res.loading && (
@@ -86,23 +101,38 @@ const TutoriumPage = () => {
                 ))}
               </Thead>
               <Tbody {...getTableBodyProps()}>
-                {rows.map((row) => {
-                  prepareRow(row)
-                  return (
-                    <Tr {...row.getRowProps()}>
-                      {row.cells.map((cell) => (
-                        <Td {...cell.getCellProps()}>
-                          {cell.render("Cell")}
-                        </Td>
-                      ))}
-                    </Tr>
-                  )
-                })}
+                <AnimatePresence initial={false}>
+                  {rows.map((row, i) => {
+                    prepareRow(row)
+                    return (
+                      <Tr key={i} as={motion.tr} {...row.getRowProps()}
+                        initial={{
+                          opacity: 0,
+                          y: 100
+                        }}
+                        animate={{
+                          opacity: 1,
+                          y: 0
+                        }}
+                        transition={{
+                          ease: "easeOut"
+                        }}
+                      >
+                        {row.cells.map((cell) => (
+                          <Td {...cell.getCellProps()}>
+                            {cell.render("Cell")}
+                          </Td>
+                        ))}
+                      </Tr>
+                    )
+                  })}
+                </AnimatePresence>
               </Tbody>
             </Table>
           )}
-        </Center>
+        </Flex>
       </SimpleGrid>
+      <CreateTutoriumModal isOpen={tutoriumCreateModal.isOpen} onClose={tutoriumCreateModal.onClose} onCreate={res.refetch} />
     </PageScaffold>
   )
 }

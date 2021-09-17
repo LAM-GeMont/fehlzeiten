@@ -12,6 +12,7 @@ import { Tutorium } from './entity/Tutorium.js'
     type: 'better-sqlite3',
     database: './db.db',
     synchronize: true,
+    dropSchema: true,
     logging: true,
     entities: [Tutorium]
   })
