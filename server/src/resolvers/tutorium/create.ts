@@ -1,4 +1,4 @@
-import { Tutorium } from 'src/entity/Tutorium'
+import { Tutorium } from '../../entity/Tutorium'
 import { Field, InputType, ObjectType, registerEnumType } from 'type-graphql'
 
 export enum TutoriumCreateErrorCode {

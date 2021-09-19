@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-import { Tutorium } from 'src/entity/Tutorium'
+import { Tutorium } from '../../entity/Tutorium'
 import { registerEnumType, ObjectType, Field, InputType, ID } from 'type-graphql'
 
 export enum TutoriumDeleteErrorCode {
