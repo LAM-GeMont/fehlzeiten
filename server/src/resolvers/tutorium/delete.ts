@@ -22,9 +22,6 @@ export class TutoriumDeleteError {
 
 @ObjectType()
 export class TutoriumDeleteResponse {
-  @Field(() => Tutorium, { nullable: true })
-  tutorium?: Tutorium
-
   @Field(() => [TutoriumDeleteError], { nullable: true })
   errors?: TutoriumDeleteError[]
 }
@@ -37,7 +34,6 @@ export class TutoriumDeleteInput {
 
 export async function deleteTutorium (data: TutoriumDeleteInput): Promise<TutoriumDeleteResponse> {
   try {
-    console.log('TEST')
     const tutorium = await Tutorium.findOne(data.id)
     if (tutorium == null) {
       return {
@@ -49,13 +45,9 @@ export async function deleteTutorium (data: TutoriumDeleteInput): Promise<Tutori
       }
     }
 
-    console.log('TEST')
-    console.log(tutorium)
     await tutorium.remove()
-    console.log(tutorium)
 
     return {
-      tutorium
     }
   } catch (error) {
     return {

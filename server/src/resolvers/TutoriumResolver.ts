@@ -21,7 +21,6 @@ export class TutoriumResolver {
   async deleteTutorium (
     @Arg('data') data: TutoriumDeleteInput
   ): Promise<TutoriumDeleteResponse> {
-    console.log('TEST')
     return deleteTutorium(data)
   }
 }
