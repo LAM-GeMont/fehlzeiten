@@ -6,7 +6,6 @@ import { Tutorium, TutoriumCreateErrorCode, useCreateTutoriumMutation } from "..
 interface Props {
   isOpen: boolean,
   onClose: () => void,
-  onCreate: (Tutorium) => void
 }
 
 const validateName = (value: string) => {
@@ -32,7 +31,8 @@ export const CreateTutoriumModal: React.FC<Props> = ({ isOpen, onClose, onCreate
           }}
           onSubmit={ async (values, actions) => {
             const res = await create({
-              variables: values,
+              variables: { createTutoriumData: values },
+              refetchQueries: "active"
             })
             const errors = res.data?.createTutorium.errors
             if (errors) {
@@ -49,7 +49,7 @@ export const CreateTutoriumModal: React.FC<Props> = ({ isOpen, onClose, onCreate
                 }
               })
             } else if (res.data.createTutorium.tutorium) {
-              onCreate(res.data.createTutorium.tutorium)
+              onClose()
             }
           }}
         >

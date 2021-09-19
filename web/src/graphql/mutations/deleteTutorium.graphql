@@ -1,0 +1,9 @@
+mutation DeleteTutorium($deleteTutoriumData: TutoriumDeleteInput!) {
+  deleteTutorium(data: $deleteTutoriumData) {
+    errors {
+      message
+      code
+    }
+  }
+}
+
