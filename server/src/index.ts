@@ -34,7 +34,10 @@ import { Tutorium } from './entity/Tutorium.js'
 
   await apollo.start()
 
-  app.use(cors())
+  app.use(cors({
+    credentials: true,
+    origin: ['https://studio.apollographql.com', 'http://localhost:3000']
+  }))
 
   apollo.applyMiddleware({ app, cors: false })
 
