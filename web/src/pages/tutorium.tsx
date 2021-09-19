@@ -2,9 +2,9 @@ import { Center, Divider, Flex, Heading, SimpleGrid } from "@chakra-ui/layout";
 import { Table, Thead, Th, Tbody, Td, Spinner, chakra, Button, IconButton, Modal, ModalContent, ModalOverlay, useDisclosure, ModalHeader, ModalBody, ModalCloseButton, ModalFooter, shouldForwardProp } from "@chakra-ui/react";
 import React, { FunctionComponent, useMemo } from "react";
 import { PageScaffold } from "../components/PageScaffold"
-import { useTutoriumsQuery } from "../generated/graphql";
+import { useDeleteTutoriumMutation, useTutoriumsQuery } from "../generated/graphql";
 import { useSortBy, useTable } from 'react-table'
-import { AddIcon, RepeatIcon, TriangleDownIcon, TriangleUpIcon } from "@chakra-ui/icons";
+import { AddIcon, DeleteIcon, RepeatIcon, TriangleDownIcon, TriangleUpIcon } from "@chakra-ui/icons";
 import { CreateTutoriumModal } from "../components/CreateTutoriumModal";
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -12,6 +12,7 @@ interface TableRow {
   name: string,
   id: string,
   createdAt: string
+  actions: string
 }
 
 const Tr = chakra(motion.tr,
@@ -24,6 +25,7 @@ const Tr = chakra(motion.tr,
 const TutoriumPage = () => {
 
   const tutoriumCreateModal = useDisclosure()
+  const [ remove ] = useDeleteTutoriumMutation()
 
   const res = useTutoriumsQuery()
 
@@ -33,13 +35,15 @@ const TutoriumPage = () => {
       return res.data.tutoriums.map(tutorium => {
         return {
           ...tutorium,
-          createdAt: new Date(tutorium.createdAt).toLocaleDateString()
+          createdAt: new Date(tutorium.createdAt).toLocaleDateString(),
+          actions: tutorium.id
         }
       })
     } else {
       return []
     }
   }, [res.data])
+
 
   const columns = useMemo(() => [
     {
@@ -53,10 +57,26 @@ const TutoriumPage = () => {
     {
       Header: "Erstellt am",
       accessor: "createdAt" as keyof TableRow
+    },
+    {
+      Header: "Aktionen",
+      accessor: "actions" as keyof TableRow,
+      Cell: ({ value }) => (
+        <Flex justifyContent="center">
+          <IconButton variant="outline" aria-label="Löschen" icon={<DeleteIcon />} onClick={
+            () => {
+              remove({
+                variables: { deleteTutoriumData: { id: value }},
+                refetchQueries: "all"
+              })
+            }
+          }/>
+        </Flex>
+      )
     }
   ], [])
 
-  const table = useTable({ columns, data}, useSortBy)
+  const table = useTable({ columns, data, autoResetSortBy: false}, useSortBy)
 
   const {
     getTableProps,
@@ -76,7 +96,7 @@ const TutoriumPage = () => {
           </Flex>
           {res.loading && (<Spinner />)}
           {res.error != null && (<Heading>Error!</Heading>)}
-          {res.error == null && !res.loading && (
+          {res.data != null && (
             <Table {...getTableProps()}>
               <Thead>
                 {headerGroups.map((headerGroup) => (
@@ -102,10 +122,10 @@ const TutoriumPage = () => {
               </Thead>
               <Tbody {...getTableBodyProps()}>
                 <AnimatePresence initial={false}>
-                  {rows.map((row, i) => {
+                  {rows.map((row) => {
                     prepareRow(row)
                     return (
-                      <Tr key={i} as={motion.tr} {...row.getRowProps()}
+                      <Tr {...row.getRowProps()}
                         initial={{
                           opacity: 0,
                           y: 100
@@ -132,7 +152,7 @@ const TutoriumPage = () => {
           )}
         </Flex>
       </SimpleGrid>
-      <CreateTutoriumModal isOpen={tutoriumCreateModal.isOpen} onClose={tutoriumCreateModal.onClose} onCreate={res.refetch} />
+      <CreateTutoriumModal isOpen={tutoriumCreateModal.isOpen} onClose={tutoriumCreateModal.onClose} />
     </PageScaffold>
   )
 }

@@ -1,33 +1,7 @@
 import { Tutorium } from '../entity/Tutorium'
-import { Arg, Field, Mutation, ObjectType, Query, registerEnumType, Resolver } from 'type-graphql'
-
-enum TutoriumCreateErrorCode {
-  UNKNOWN_ERROR,
-  NAME_TOO_SHORT,
-  DUPLICATE_NAME
-}
-
-registerEnumType(TutoriumCreateErrorCode, {
-  name: 'TutoriumCreateErrorCode'
-})
-
-@ObjectType()
-class Error {
-  @Field(() => TutoriumCreateErrorCode)
-  code: TutoriumCreateErrorCode
-
-  @Field({ nullable: true })
-  message?: string
-}
-
-@ObjectType()
-class TutoriumCreateResponse {
-  @Field(() => Tutorium, { nullable: true })
-  tutorium?: Tutorium
-
-  @Field(() => [Error], { nullable: true })
-  errors?: Error[]
-}
+import { Arg, Mutation, Query, Resolver } from 'type-graphql'
+import { createTutorium, TutoriumCreateInput, TutoriumCreateResponse } from './tutorium/create'
+import { TutoriumDeleteInput, TutoriumDeleteResponse, deleteTutorium } from './tutorium/delete'
 
 @Resolver(Tutorium)
 export class TutoriumResolver {
@@ -38,46 +12,15 @@ export class TutoriumResolver {
 
   @Mutation(() => TutoriumCreateResponse)
   async createTutorium (
-    @Arg('name') name: string
-  ) {
-    try {
-      if (name.length < 1) {
-        return {
-          errors: [
-            {
-              code: TutoriumCreateErrorCode.NAME_TOO_SHORT,
-              message: 'Must be altleast 1'
-            }
-          ]
-        }
-      }
+    @Arg('data') data: TutoriumCreateInput
+  ) : Promise<TutoriumCreateResponse> {
+    return createTutorium(data)
+  }
 
-      const tutorium = new Tutorium()
-      tutorium.name = name
-      await tutorium.save()
-
-      return {
-        tutorium
-      }
-    } catch (error) {
-      if (error.message.includes('UNIQUE')) {
-        return {
-          errors: [
-            {
-              code: TutoriumCreateErrorCode.DUPLICATE_NAME,
-              message: error.message
-            }
-          ]
-        }
-      }
-      return {
-        errors: [
-          {
-            code: TutoriumCreateErrorCode.UNKNOWN_ERROR,
-            message: error.message
-          }
-        ]
-      }
-    }
+  @Mutation(() => TutoriumDeleteResponse)
+  async deleteTutorium (
+    @Arg('data') data: TutoriumDeleteInput
+  ): Promise<TutoriumDeleteResponse> {
+    return deleteTutorium(data)
   }
 }

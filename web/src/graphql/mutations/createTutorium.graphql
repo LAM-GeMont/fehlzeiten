@@ -1,5 +1,5 @@
-mutation CreateTutorium($name: String!) {
-  createTutorium(name: $name) {
+mutation CreateTutorium($createTutoriumData: TutoriumCreateInput!) {
+  createTutorium(data: $createTutoriumData) {
     tutorium {
       name
       id
