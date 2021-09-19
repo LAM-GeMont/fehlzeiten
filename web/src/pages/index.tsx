@@ -1,15 +1,12 @@
 import { Heading } from '@chakra-ui/react'
-import { usePingQuery } from '../generated/graphql'
+import { PageScaffold } from '../components/PageScaffold'
 
 const Index = () => {
 
-  const res = usePingQuery()
-  console.log(res)
-
   return (
-    <Heading p={10}>
-      Lifesign: { res?.data?.ping }
-    </Heading>
+    <PageScaffold>
+
+    </PageScaffold>
   )
 }
 

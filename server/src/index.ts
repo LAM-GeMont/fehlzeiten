@@ -3,18 +3,31 @@ import express from 'express'
 import { buildSchema } from 'type-graphql'
 import 'reflect-metadata'
 import { createConnection } from 'typeorm'
-import { PingResolver } from './resolvers/ping'
 import cors from 'cors'
+import { TutoriumResolver } from './resolvers/TutoriumResolver.js'
+import { Tutorium } from './entity/Tutorium.js'
 
 (async () => {
-  const connection = await createConnection()
-  console.log(connection)
+  await createConnection({
+    type: 'better-sqlite3',
+    database: './db.db',
+    synchronize: true,
+    dropSchema: true,
+    logging: true,
+    entities: [Tutorium]
+  })
+
+  for (let i = 1; i < 7; i++) {
+    const tut = new Tutorium()
+    tut.name = `12/${i}`
+    tut.save()
+  }
 
   const app = express()
 
   const apollo = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [PingResolver],
+      resolvers: [TutoriumResolver],
       validate: false
     })
   })
