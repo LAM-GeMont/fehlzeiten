@@ -4,7 +4,6 @@ import { Tutorium } from './Tutorium'
 
 export enum Role {
     TEACHER,
-    TUTOR,
     COORDINATOR
 }
 
