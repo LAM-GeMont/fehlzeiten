@@ -2,6 +2,7 @@ import { Button, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, 
 import {Field, Form, Formik} from 'formik'
 import {FormControl, FormLabel, Input, FormErrorMessage} from '@chakra-ui/react'
 import { Tutorium, TutoriumCreateErrorCode, useCreateTutoriumMutation } from "../generated/graphql"
+import { toastApolloError } from "../util"
 
 interface Props {
   isOpen: boolean,
@@ -16,10 +17,12 @@ const validateName = (value: string) => {
   return error
 }
 
-export const CreateTutoriumModal: React.FC<Props> = ({ isOpen, onClose, onCreate }) => {
+export const CreateTutoriumModal: React.FC<Props> = ({ isOpen, onClose }) => {
 
-  const [create] = useCreateTutoriumMutation()
   const toast = useToast()
+  const [create] = useCreateTutoriumMutation({
+    onError: errors => toastApolloError(toast, errors)
+  })
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -32,7 +35,7 @@ export const CreateTutoriumModal: React.FC<Props> = ({ isOpen, onClose, onCreate
           onSubmit={ async (values, actions) => {
             const res = await create({
               variables: { createTutoriumData: values },
-              refetchQueries: "active"
+              refetchQueries: "active",
             })
             const errors = res.data?.createTutorium.errors
             if (errors) {
@@ -42,7 +45,7 @@ export const CreateTutoriumModal: React.FC<Props> = ({ isOpen, onClose, onCreate
                 } else {
                   toast({
                     title: "Fehler bei der Erstellung",
-                    description: `${error.code}: ${error.message || ""}`,
+                    description: error.message == null ? error.code : `${error.code}: ${error.message}`,
                     status: "error",
                     isClosable: true
                   })

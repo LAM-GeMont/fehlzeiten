@@ -1,8 +1,11 @@
 import { Tutorium } from '../../entity/Tutorium'
 import { Field, InputType, ObjectType, registerEnumType } from 'type-graphql'
+import { Context } from '../../types'
+import { User } from '../../entity/User'
 
 export enum TutoriumCreateErrorCode {
   UNKNOWN_ERROR,
+  UNAUTHORIZED,
   NAME_TOO_SHORT,
   DUPLICATE_NAME
 }
@@ -35,8 +38,17 @@ export class TutoriumCreateInput {
   name: string
 }
 
-export async function createTutorium (args: TutoriumCreateInput) : Promise<TutoriumCreateResponse> {
+export async function createTutorium (args: TutoriumCreateInput, context: Context) : Promise<TutoriumCreateResponse> {
   try {
+    const caller = await User.fromContext(context)
+    if (caller == null || !caller.isCoordinator) {
+      return {
+        errors: [{
+          code: TutoriumCreateErrorCode.UNAUTHORIZED
+        }]
+      }
+    }
+
     if (args.name.length < 1) {
       return {
         errors: [{

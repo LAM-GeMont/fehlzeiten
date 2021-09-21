@@ -4,6 +4,7 @@ import { registerUser, UserRegisterInput, UserRegisterResponse } from './user/re
 import { Context } from '../types'
 import { loginUser, UserLoginResponse, UserLoginInput } from './user/login'
 import { self } from './user/self'
+import { logoutUser } from './user/logout'
 
 @Resolver(User)
 export class UserResolver {
@@ -33,5 +34,12 @@ export class UserResolver {
     @Ctx() context: Context
   ) : Promise<UserLoginResponse> {
     return loginUser(data, context)
+  }
+
+  @Mutation(() => Boolean, { nullable: true })
+  async logoutUser (
+    @Ctx() context: Context
+  ) : Promise<void> {
+    return logoutUser(context)
   }
 }

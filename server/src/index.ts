@@ -37,8 +37,8 @@ env.config({ path: path.resolve(process.cwd(), '..', '.env'), example: path.reso
     cookie: {
       maxAge: 1000 * 60 * 60 * 24 * 365 * 10,
       httpOnly: true,
-      sameSite: 'lax',
-      secure: __PROD__
+      secure: __PROD__,
+      sameSite: 'lax'
     }
   }))
 

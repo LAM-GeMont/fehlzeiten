@@ -1,0 +1,9 @@
+query Self {
+  self {
+    id
+    createdAt
+    updatedAt
+    name
+    role
+  }
+}

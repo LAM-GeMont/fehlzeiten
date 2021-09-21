@@ -1,7 +1,8 @@
 import { Tutorium } from '../entity/Tutorium'
-import { Arg, Mutation, Query, Resolver } from 'type-graphql'
+import { Arg, Ctx, Mutation, Query, Resolver } from 'type-graphql'
 import { createTutorium, TutoriumCreateInput, TutoriumCreateResponse } from './tutorium/create'
 import { TutoriumDeleteInput, TutoriumDeleteResponse, deleteTutorium } from './tutorium/delete'
+import { Context } from '../types'
 
 @Resolver(Tutorium)
 export class TutoriumResolver {
@@ -12,15 +13,17 @@ export class TutoriumResolver {
 
   @Mutation(() => TutoriumCreateResponse)
   async createTutorium (
-    @Arg('data') data: TutoriumCreateInput
+    @Arg('data') data: TutoriumCreateInput,
+    @Ctx() context: Context
   ) : Promise<TutoriumCreateResponse> {
-    return createTutorium(data)
+    return createTutorium(data, context)
   }
 
   @Mutation(() => TutoriumDeleteResponse)
   async deleteTutorium (
-    @Arg('data') data: TutoriumDeleteInput
+    @Arg('data') data: TutoriumDeleteInput,
+    @Ctx() context: Context
   ): Promise<TutoriumDeleteResponse> {
-    return deleteTutorium(data)
+    return deleteTutorium(data, context)
   }
 }
