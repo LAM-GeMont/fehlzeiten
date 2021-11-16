@@ -5,7 +5,7 @@ This is the repository for the absence-tracking sub-project. It is implemented a
 ## Development
 
 ### Backend
-For development, you should first clone this github repository. Node.js >14.0 and a package manager, eg. npm or yarn, is required. You will need to run to seperate projects. The Backend is located in the /server folder and serves the API for the data layer. Initially you will need to install the required packages using your package manager (`npm install` for npm). Run it for development by opening two terminals and running
+For development, you should first clone this github repository. Node.js >14.0 and a package manager, eg. npm or yarn, is required. You will need to run two seperate projects. The Backend is located in the /server folder and serves the API for the data layer. Initially you will need to install the required packages using your package manager (`npm install` for npm). Run it for development by opening two terminals and running
 
 ```bash
 npm run watch
@@ -16,6 +16,8 @@ npm run dev
 ```
 
 This will ensure that your code is continually compiled from Typescript to Javascript as you change it and restarts the application if anything changes.
+
+You should also create a .env file matching the example given. Provide values for both variables, as otherwise the application won't work.
 
 ### Frontend
 To develop on the frontend, navigate into the /web folder. Install the packages here and then run
