@@ -5,6 +5,7 @@ import { PageScaffold } from "../components/PageScaffold"
 import { Role, TutoriumDeleteErrorCode, useDeleteTutoriumMutation, useTutoriumsQuery } from "../generated/graphql";
 import { AddIcon, DeleteIcon, RepeatIcon } from "@chakra-ui/icons";
 import { CreateTutoriumModal } from "../components/CreateTutoriumModal";
+import { DeleteTutoriumModal } from "../components/DeleteTutoriumModal";
 import SortedTable from "../components/SortedTable";
 import { toastApolloError } from "../util";
 import WithAuth, { WithAuthProps } from "../components/withAuth";
@@ -15,28 +16,25 @@ interface TableRow {
   createdAt: string
 }
 
+let rowId
+
 interface Props extends WithAuthProps {}
 
 const TutoriumPage: React.FC<Props> = ({ self }) => {
   const tutoriumCreateModal = useDisclosure()
+  const tutoriumDeleteModal = useDisclosure()
   const toast = useToast()
 
   const tutoriumsQuery = useTutoriumsQuery({
     onError: errors => toastApolloError(toast, errors)
   })
-  const [ remove, removeMutation ] = useDeleteTutoriumMutation({
-    onError: errors => toastApolloError(toast, errors),
-    onCompleted: (res) => {
-      res.deleteTutorium.errors.forEach(error => {
-        toast({
-          title: "Fehler beim Löschen",
-          description: error.code,
-          isClosable: true,
-          status: "error"
-        })
-      })
-    }
-  })
+
+  const getId = (e) => {
+   if(e.target.id === undefined){
+     e.target.id = ""
+   }
+    rowId=e.currentTarget.value
+  }
 
   const data = useMemo(() => {
     if (tutoriumsQuery.data?.tutoriums != null) {
@@ -45,7 +43,6 @@ const TutoriumPage: React.FC<Props> = ({ self }) => {
       return []
     }
   }, [tutoriumsQuery.data])
-
 
   const columns = useMemo(() => [
     {
@@ -65,14 +62,8 @@ const TutoriumPage: React.FC<Props> = ({ self }) => {
       Header: "Aktionen",
       Cell: ({row}) => (
         <Flex justifyContent="center">
-          <IconButton variant="outline" aria-label="Löschen" icon={<DeleteIcon />} onClick={
-            () => {
-              remove({
-                variables: { deleteTutoriumData: { id: row.values.id }},
-                refetchQueries: "all",
-              })
-            }
-          }/>
+          <IconButton variant="outline" aria-label="Löschen" icon={<DeleteIcon />} value={row.values.id} onClick={getId} />
+          <IconButton variant="outline" aria-label="Löschen" icon={<DeleteIcon />} value={row.values.id} onClick={tutoriumDeleteModal.onOpen} />
         </Flex>
       )
     }
@@ -94,8 +85,22 @@ const TutoriumPage: React.FC<Props> = ({ self }) => {
         </Flex>
       </SimpleGrid>
       <CreateTutoriumModal isOpen={tutoriumCreateModal.isOpen} onClose={tutoriumCreateModal.onClose} />
+      <DeleteTutoriumModal isOpen={tutoriumDeleteModal.isOpen} onClose={tutoriumDeleteModal.onClose} rowId={rowId} />
     </PageScaffold>
   )
 }
+
+/*
+<Flex justifyContent="center">
+  <IconButton variant="outline" aria-label="Löschen" icon={<DeleteIcon />} onClick={
+    () => {
+      remove({
+        variables: { deleteTutoriumData: { id: row.values.id }},
+        refetchQueries: "all",
+      })
+    }
+  }/>
+</Flex>
+*/
 
 export default WithAuth(TutoriumPage, { roles: [Role.Coordinator]})
