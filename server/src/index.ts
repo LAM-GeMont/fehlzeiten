@@ -14,6 +14,7 @@ import { TypeormStore } from 'connect-typeorm/out'
 import env from 'dotenv-safe'
 import path from 'path'
 import { Session } from './entity/Session.js'
+import { authChecker } from './auth.js'
 
 env.config({ path: path.resolve(process.cwd(), '..', '.env'), example: path.resolve(process.cwd(), '..', '.env.example') });
 
@@ -45,7 +46,8 @@ env.config({ path: path.resolve(process.cwd(), '..', '.env'), example: path.reso
   const apollo = new ApolloServer({
     schema: await buildSchema({
       resolvers: [TutoriumResolver, UserResolver],
-      validate: false
+      validate: false,
+      authChecker: authChecker
     }),
     context: ({ req, res }) => ({
       req,
