@@ -40,7 +40,7 @@ export class Absence extends BaseEntity {
     @Field()
     date: string
 
-    @Column()
+    @Column({ default: false })
     @Field()
     excused: boolean
 

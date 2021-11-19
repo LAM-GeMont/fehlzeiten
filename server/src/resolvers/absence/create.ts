@@ -1,13 +1,12 @@
 import { Absence } from '../../entity/Absence'
 import { Field, ID, InputType, Int, ObjectType, registerEnumType } from 'type-graphql'
-import { Context } from '../../types'
-import { User } from '../../entity/User'
 import { Student } from '../../entity/Student'
 
 export enum AbsenceCreateErrorCode {
   UNKNOWN_ERROR,
   UNAUTHORIZED,
-  INVALID_STUDENT_ID
+  INVALID_STUDENT_ID,
+  INVALID_DATE
 }
 
 registerEnumType(AbsenceCreateErrorCode, {
@@ -44,13 +43,14 @@ export class AbsenceCreateInput {
   date: string
 }
 
-export async function createAbsence (args: AbsenceCreateInput, context: Context) : Promise<AbsenceCreateResponse> {
+export async function createAbsence (args: AbsenceCreateInput) : Promise<AbsenceCreateResponse> {
   try {
-    const caller = await User.fromContext(context)
-    if (caller == null) {
+    const isoDateRegex = /\d{4}-\d{2}-\d{2}/
+    const canBeParsedAsDate = isNaN(Date.parse(args.date))
+    if (!isoDateRegex.test(args.date) || canBeParsedAsDate) {
       return {
         errors: [{
-          code: AbsenceCreateErrorCode.UNAUTHORIZED
+          code: AbsenceCreateErrorCode.INVALID_DATE
         }]
       }
     }
