@@ -30,10 +30,10 @@ const TutoriumPage: React.FC<Props> = ({ self }) => {
   })
 
   const getId = (e) => {
-   if(e.target.id === undefined){
-     e.target.id = ""
+   if(e.id === undefined){
+     e.id = ""
    }
-    rowId=e.currentTarget.value
+    rowId=e.id
   }
 
   const data = useMemo(() => {
@@ -62,8 +62,10 @@ const TutoriumPage: React.FC<Props> = ({ self }) => {
       Header: "Aktionen",
       Cell: ({row}) => (
         <Flex justifyContent="center">
-          <IconButton variant="outline" aria-label="Löschen" icon={<DeleteIcon />} value={row.values.id} onClick={getId} />
-          <IconButton variant="outline" aria-label="Löschen" icon={<DeleteIcon />} value={row.values.id} onClick={tutoriumDeleteModal.onOpen} />
+          <IconButton variant="outline" aria-label="Löschen" icon={<DeleteIcon />} value={row.values.id} onClick={ () => {
+              getId(row.values)
+              tutoriumDeleteModal.onOpen()      
+          }} />
         </Flex>
       )
     }
