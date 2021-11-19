@@ -1,5 +1,13 @@
 import { ID, ObjectType, Field } from 'type-graphql'
-import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
+import {
+  BaseEntity,
+  Column,
+  CreateDateColumn,
+  Entity, ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn
+} from 'typeorm'
+import { Student } from './Student'
 
 @Entity()
 @ObjectType()
@@ -35,4 +43,8 @@ export class Absence extends BaseEntity {
     @Column()
     @Field()
     excused: boolean
+
+    @ManyToOne(() => Student, student => student.absences)
+    @Field(() => Student)
+    student: Student
 }
