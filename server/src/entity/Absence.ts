@@ -1,5 +1,5 @@
 import { ID, ObjectType, Field } from 'type-graphql'
-import { BaseEntity, Column, CreateDateColumn, Entity, OneToMany, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
+import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
 
 @Entity()
 @ObjectType()
@@ -35,14 +35,4 @@ export class Absence extends BaseEntity {
     @Column()
     @Field()
     excused: boolean
-
-    @Column()
-    @Field()
-    processed: boolean
-
-    @ManyToOne(() => Absence, absence => absence.grouping)
-    groupedBy: Absence;
-
-    @OneToMany(() => Absence, absence => absence.groupedBy)
-    grouping: Absence[];
 }
