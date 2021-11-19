@@ -29,11 +29,11 @@ const TutoriumPage: React.FC<Props> = ({ self }) => {
     onError: errors => toastApolloError(toast, errors)
   })
 
-  const getId = (e) => {
-   if(e.id === undefined){
-     e.id = ""
+  const getId = (rowValues) => {
+   if(rowValues.id === undefined){
+    rowValues.id = ""
    }
-    rowId=e.id
+    rowId=rowValues.id
   }
 
   const data = useMemo(() => {
