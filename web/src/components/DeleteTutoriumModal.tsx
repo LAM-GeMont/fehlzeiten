@@ -6,10 +6,11 @@ import { toastApolloError } from "../util"
 interface Props {
     isOpen: boolean,
     onClose: () => void,
-    rowId: string
+    rowId: string,
+    rowName: string
 }
 
-export const DeleteTutoriumModal: React.FC<Props> = ({ isOpen, onClose, rowId }) => {
+export const DeleteTutoriumModal: React.FC<Props> = ({ isOpen, onClose, rowId, rowName}) => {
     const toast = useToast()
 
     const [ remove, removeMutation ] = useDeleteTutoriumMutation({
@@ -47,7 +48,7 @@ export const DeleteTutoriumModal: React.FC<Props> = ({ isOpen, onClose, rowId })
                             <ModalHeader>Tutorium löschen</ModalHeader>
                             <ModalCloseButton />
                             <ModalBody>
-                                Sind Sie sich sicher, dass Sie das Tutorium {rowId} löschen möchten?
+                                Sind Sie sich sicher, dass Sie das Tutorium {rowName} löschen möchten?
                             </ModalBody>
                             <ModalFooter>
                                 <Button mr={3} variant="ghost" onClick={onClose}>Abbrechen</Button>

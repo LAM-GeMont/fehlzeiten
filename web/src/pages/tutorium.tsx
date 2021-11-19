@@ -17,6 +17,7 @@ interface TableRow {
 }
 
 let rowId
+let rowName
 
 interface Props extends WithAuthProps {}
 
@@ -29,11 +30,17 @@ const TutoriumPage: React.FC<Props> = ({ self }) => {
     onError: errors => toastApolloError(toast, errors)
   })
 
-  const getId = (rowValues) => {
+  const getIdAndName = (rowValues) => {
    if(rowValues.id === undefined){
     rowValues.id = ""
    }
-    rowId=rowValues.id
+   rowId=rowValues.id
+
+   if(rowValues.name === undefined){
+    rowValues.name = ""
+   }
+   rowName=rowValues.name
+
   }
 
   const data = useMemo(() => {
@@ -63,7 +70,7 @@ const TutoriumPage: React.FC<Props> = ({ self }) => {
       Cell: ({row}) => (
         <Flex justifyContent="center">
           <IconButton variant="outline" aria-label="Löschen" icon={<DeleteIcon />} value={row.values.id} onClick={ () => {
-              getId(row.values)
+              getIdAndName(row.values)
               tutoriumDeleteModal.onOpen()      
           }} />
         </Flex>
@@ -87,7 +94,7 @@ const TutoriumPage: React.FC<Props> = ({ self }) => {
         </Flex>
       </SimpleGrid>
       <CreateTutoriumModal isOpen={tutoriumCreateModal.isOpen} onClose={tutoriumCreateModal.onClose} />
-      <DeleteTutoriumModal isOpen={tutoriumDeleteModal.isOpen} onClose={tutoriumDeleteModal.onClose} rowId={rowId} />
+      <DeleteTutoriumModal isOpen={tutoriumDeleteModal.isOpen} onClose={tutoriumDeleteModal.onClose} rowId={rowId} rowName={rowName} />
     </PageScaffold>
   )
 }
