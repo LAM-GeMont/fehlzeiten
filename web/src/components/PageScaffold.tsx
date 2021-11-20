@@ -1,7 +1,7 @@
 import Icon from '@chakra-ui/icon'
 import { Box, Flex, Link } from '@chakra-ui/layout'
 import React from 'react'
-import { FaHome, FaUsers } from 'react-icons/fa'
+import { FaHome, FaUsers, FaAddressCard } from 'react-icons/fa'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import { ArrowLeftIcon } from '@chakra-ui/icons'
@@ -26,6 +26,12 @@ export const PageScaffold: React.FC<Props> = (props) => {
       icon: FaUsers,
       url: "/tutorium",
       title: "Tutorien",
+      roles: [Role.Coordinator]
+    },
+    {
+      icon: FaAddressCard,
+      url: "/students",
+      title: "Students",
       roles: [Role.Coordinator]
     }
   ]
