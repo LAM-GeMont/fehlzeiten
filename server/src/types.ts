@@ -3,7 +3,7 @@ import { Session } from 'express-session'
 import { User } from './entity/User'
 
 export type Context = {
-  req: Request & { session: Session, user: User };
+  req: Request & { session: Session } & { user: User };
   res: Response
 }
 

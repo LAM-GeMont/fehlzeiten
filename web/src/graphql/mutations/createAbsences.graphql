@@ -1,0 +1,20 @@
+mutation CreateAbsences($data: AbsencesCreateInput!) {
+  createAbsences(data: $data) {
+    absences {
+      date
+      lessonIndex
+      id
+      student {
+        id
+      }
+      createdAt
+      updatedAt
+      excused
+    }
+    errors {
+      studentId
+      message
+      code
+    }
+  }
+}

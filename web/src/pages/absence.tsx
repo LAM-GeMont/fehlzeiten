@@ -11,7 +11,7 @@ import {
 import {Field, Form, Formik} from "formik";
 import {formatDateISO} from "../util";
 import {Flex} from "@chakra-ui/layout";
-import {useCreateAbsenceMutation} from "../generated/graphql";
+import {useCreateAbsencesMutation} from "../generated/graphql";
 
 interface Props extends WithAuthProps {
 }
@@ -23,7 +23,7 @@ const AbsencePage: React.FC<Props> = ({self}) => {
     lessonIndexes.push(i)
   }
 
-  const [createAbsence, { data, loading, error }] = useCreateAbsenceMutation()
+  const [createAbsences, { data, loading, error }] = useCreateAbsencesMutation()
 
   return (
     <PageScaffold role={self.role}>
@@ -36,11 +36,11 @@ const AbsencePage: React.FC<Props> = ({self}) => {
         onSubmit={async (values, actions) => {
           console.log(values, actions)
           actions.setSubmitting(true)
-          const res = await createAbsence({ variables: {
+          const res = await createAbsences({ variables: {
             data: {
               date: values.date,
-              studentId: values.students[0],
-              lessonIndex: parseInt(values.lesson[0])
+              studentIds: values.students,
+              lessonIndexes: values.lesson.map(v => parseInt(v))
             }
           }})
           actions.setSubmitting(false)
