@@ -2,41 +2,41 @@ import { Absence } from '../../entity/Absence'
 import { Student } from '../../entity/Student'
 import { Field, ObjectType, registerEnumType } from 'type-graphql'
 
-export enum AbsencesForUserErrorCode {
+export enum AbsencesForStudentErrorCode {
   UNKNOWN_ERROR,
   INVALID_STUDENT_ID,
   UNAUTHORIZED
 }
 
-registerEnumType(AbsencesForUserErrorCode, {
-  name: 'AbsencesForUserErrorCode'
+registerEnumType(AbsencesForStudentErrorCode, {
+  name: 'AbsencesForStudentErrorCode'
 })
 
 @ObjectType()
-export class AbsencesForUserError {
-  @Field(() => AbsencesForUserErrorCode)
-  code: AbsencesForUserErrorCode
+export class AbsencesForStudentError {
+  @Field(() => AbsencesForStudentErrorCode)
+  code: AbsencesForStudentErrorCode
 
   @Field({ nullable: true })
   message?: string
 }
 
 @ObjectType()
-export class AbsencesForUserResponse {
+export class AbsencesForStudentResponse {
   @Field(() => [Absence], { nullable: true })
   absences?: Absence[]
 
-  @Field(() => [AbsencesForUserError], { nullable: true })
-  errors?: AbsencesForUserError[]
+  @Field(() => [AbsencesForStudentError], { nullable: true })
+  errors?: AbsencesForStudentError[]
 }
 
-export async function absencesForUser (studentId: string) : Promise<AbsencesForUserResponse> {
+export async function absencesForStudent (studentId: string) : Promise<AbsencesForStudentResponse> {
   try {
     const student = await Student.findOne(studentId, { relations: ['absences'] })
     if (student == null) {
       return {
         errors: [{
-          code: AbsencesForUserErrorCode.INVALID_STUDENT_ID
+          code: AbsencesForStudentErrorCode.INVALID_STUDENT_ID
         }]
       }
     }
@@ -47,7 +47,7 @@ export async function absencesForUser (studentId: string) : Promise<AbsencesForU
   } catch (error) {
     return {
       errors: [{
-        code: AbsencesForUserErrorCode.UNKNOWN_ERROR,
+        code: AbsencesForStudentErrorCode.UNKNOWN_ERROR,
         message: error.message
       }]
     }

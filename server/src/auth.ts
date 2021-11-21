@@ -15,6 +15,9 @@ export const authChecker: AuthChecker<Context> = async ({ context }, roles) => {
     return false
   }
 
+  // attach user to context
+  context.req.user = caller
+
   // user does exist, now check user's roles
 
   // no roles were specified in the decorator, so always allow

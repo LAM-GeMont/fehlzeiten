@@ -8,6 +8,7 @@ import {
   UpdateDateColumn
 } from 'typeorm'
 import { Student } from './Student'
+import { User } from './User'
 
 @Entity()
 @ObjectType()
@@ -47,4 +48,8 @@ export class Absence extends BaseEntity {
     @ManyToOne(() => Student, student => student.absences)
     @Field(() => Student)
     student: Student
+
+    @ManyToOne(() => User, user => user.submittedAbsences)
+    @Field(() => User)
+    submittedBy: User
 }

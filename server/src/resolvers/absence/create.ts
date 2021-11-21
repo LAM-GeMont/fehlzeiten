@@ -1,6 +1,7 @@
 import { Absence } from '../../entity/Absence'
 import { Field, ID, InputType, Int, ObjectType, registerEnumType } from 'type-graphql'
 import { Student } from '../../entity/Student'
+import { Context } from '../../types'
 
 export enum AbsenceCreateErrorCode {
   UNKNOWN_ERROR,
@@ -43,7 +44,7 @@ export class AbsenceCreateInput {
   date: string
 }
 
-export async function createAbsence (args: AbsenceCreateInput) : Promise<AbsenceCreateResponse> {
+export async function createAbsence (args: AbsenceCreateInput, context: Context) : Promise<AbsenceCreateResponse> {
   try {
     const isoDateRegex = /\d{4}-\d{2}-\d{2}/
     const canBeParsedAsDate = isNaN(Date.parse(args.date))
@@ -68,6 +69,7 @@ export async function createAbsence (args: AbsenceCreateInput) : Promise<Absence
     absence.student = student
     absence.lessonIndex = args.lessonIndex
     absence.date = args.date
+    absence.submittedBy = context.req.user
     await absence.save()
 
     return {
