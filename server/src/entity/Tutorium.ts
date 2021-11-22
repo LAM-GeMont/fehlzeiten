@@ -1,5 +1,6 @@
 import { ID, ObjectType, Field } from 'type-graphql'
-import { BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
+import { BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
+import { Student } from './Student'
 import { User } from './User'
 
 @Entity()
@@ -24,4 +25,7 @@ export class Tutorium extends BaseEntity {
     @ManyToOne(() => User, user => user.tutoriums)
     @Field(() => User)
     tutor: User
+
+    @OneToMany(() => Student, student => student.tutorium)
+    students: Student[]
 }

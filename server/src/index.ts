@@ -14,6 +14,8 @@ import { TypeormStore } from 'connect-typeorm/out'
 import env from 'dotenv-safe'
 import path from 'path'
 import { Session } from './entity/Session.js'
+import { StudentResolver } from './resolvers/StudentResolver.js'
+import { Student } from './entity/Student.js'
 
 env.config({ path: path.resolve(process.cwd(), '..', '.env'), example: path.resolve(process.cwd(), '..', '.env.example') });
 
@@ -23,7 +25,7 @@ env.config({ path: path.resolve(process.cwd(), '..', '.env'), example: path.reso
     database: './db.db',
     synchronize: true,
     logging: true,
-    entities: [Tutorium, User, Session]
+    entities: [Tutorium, User, Session, Student]
   })
 
   const app = express()
@@ -44,7 +46,7 @@ env.config({ path: path.resolve(process.cwd(), '..', '.env'), example: path.reso
 
   const apollo = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [TutoriumResolver, UserResolver],
+      resolvers: [TutoriumResolver, UserResolver, StudentResolver],
       validate: false
     }),
     context: ({ req, res }) => ({
