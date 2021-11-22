@@ -95,7 +95,11 @@ export async function editStudent(data: StudentEditInput, context: Context): Pro
             }
         }
 
-        if (data.tutorium != null) {
+        if (data.tutorium === null) {
+            student.tutorium = null
+        }
+
+        if (data.tutorium != undefined) {
             const tutorium = await Tutorium.findOne(data.tutorium)
             if (tutorium == null) {
                return {
@@ -107,7 +111,7 @@ export async function editStudent(data: StudentEditInput, context: Context): Pro
             student.tutorium = tutorium
         }
 
-        student.save()
+        await student.save()
 
         return {
             student
