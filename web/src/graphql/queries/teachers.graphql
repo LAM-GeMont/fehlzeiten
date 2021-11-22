@@ -1,0 +1,6 @@
+query Teachers {
+    users{
+        name
+        role
+    }
+}

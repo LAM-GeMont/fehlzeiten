@@ -40,7 +40,7 @@ export class TutoriumCreateInput {
 
   //self added:
   @Field()
-  tutor: User
+  tutorId: string
 }
 
 export async function createTutorium (args: TutoriumCreateInput, context: Context) : Promise<TutoriumCreateResponse> {
@@ -64,7 +64,7 @@ export async function createTutorium (args: TutoriumCreateInput, context: Contex
     }
 
     //self added:
-    if (args.tutor.id == null) { 
+    if (args.tutorId == null) { 
       return {
         errors: [{
           code: TutoriumCreateErrorCode.TUTOR_NOT_VALID,
@@ -76,7 +76,11 @@ export async function createTutorium (args: TutoriumCreateInput, context: Contex
     const tutorium = new Tutorium()
     tutorium.name = args.name
     //self added:
-    //tutorium.tutor = args.tutor
+    const tutor = await User.findOne(args.tutorId)//set Tutor via ID
+    if(tutor != undefined){
+      tutorium.tutor = tutor
+    }
+    
     await tutorium.save()
 
     return {
