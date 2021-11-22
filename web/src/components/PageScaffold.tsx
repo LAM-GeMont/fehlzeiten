@@ -41,6 +41,7 @@ export const PageScaffold: React.FC<Props> = (props) => {
             <NextLink href={url}>
               <Link title={title}>
                 <Icon w={10} h={10} as={icon} />
+                {title}
               </Link>
             </NextLink>
           </Box>
@@ -49,6 +50,7 @@ export const PageScaffold: React.FC<Props> = (props) => {
           <NextLink href={"/logout"}>
             <Link title={"Logout"}>
               <Icon w={10} h={10} as={ArrowLeftIcon} />
+              Logout
             </Link>
           </NextLink>
         </Box>
