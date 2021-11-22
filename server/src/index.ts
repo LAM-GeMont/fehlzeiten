@@ -38,7 +38,7 @@ env.config({ path: path.resolve(process.cwd(), '..', '.env'), example: path.reso
       maxAge: 1000 * 60 * 60 * 24 * 365 * 10,
       httpOnly: true,
       secure: __PROD__,
-      sameSite: 'lax'
+      sameSite: 'none'
     }
   }))
 
