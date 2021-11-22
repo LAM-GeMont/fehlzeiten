@@ -7,6 +7,7 @@ export enum TutoriumCreateErrorCode {
   UNKNOWN_ERROR,
   UNAUTHORIZED,
   NAME_TOO_SHORT,
+  TUTOR_NOT_VALID,
   DUPLICATE_NAME
 }
 
@@ -36,6 +37,10 @@ export class TutoriumCreateResponse {
 export class TutoriumCreateInput {
   @Field()
   name: string
+
+  //self added:
+  @Field()
+  tutor: User
 }
 
 export async function createTutorium (args: TutoriumCreateInput, context: Context) : Promise<TutoriumCreateResponse> {
@@ -58,8 +63,20 @@ export async function createTutorium (args: TutoriumCreateInput, context: Contex
       }
     }
 
+    //self added:
+    if (args.tutor.id == null) { 
+      return {
+        errors: [{
+          code: TutoriumCreateErrorCode.TUTOR_NOT_VALID,
+          message: 'The provided Tutor is not valid'
+        }]
+      }
+    }
+
     const tutorium = new Tutorium()
     tutorium.name = args.name
+    //self added:
+    //tutorium.tutor = args.tutor
     await tutorium.save()
 
     return {

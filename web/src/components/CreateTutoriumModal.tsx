@@ -1,8 +1,11 @@
-import { Button, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, useToast } from "@chakra-ui/react"
+import { Button, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, useToast, Select } from "@chakra-ui/react"
 import {Field, Form, Formik} from 'formik'
 import {FormControl, FormLabel, Input, FormErrorMessage} from '@chakra-ui/react'
 import { Tutorium, TutoriumCreateErrorCode, useCreateTutoriumMutation } from "../generated/graphql"
 import { toastApolloError } from "../util"
+
+import React, { useMemo } from "react";
+import { Role, TutoriumDeleteErrorCode, useDeleteTutoriumMutation, useTeachersQuery } from "../generated/graphql";
 
 interface Props {
   isOpen: boolean,
@@ -23,6 +26,21 @@ export const CreateTutoriumModal: React.FC<Props> = ({ isOpen, onClose }) => {
   const [create] = useCreateTutoriumMutation({
     onError: errors => toastApolloError(toast, errors)
   })
+
+  //gather teacher-data (name+refference) from sql via Query to add them later into 'Select'-element
+  const teachersQuery = useTeachersQuery({
+    onError: errors => toastApolloError(toast, errors)
+  })
+
+  const teachersData = useMemo(() => {
+    if (teachersQuery.data?.users != null) {
+      return teachersQuery.data.users
+    } else {
+      return []
+    }
+  }, [teachersQuery.data])
+
+  //
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -70,6 +88,13 @@ export const CreateTutoriumModal: React.FC<Props> = ({ isOpen, onClose }) => {
                     </FormControl>
                   )}
                 </Field>
+                <FormLabel>Name des Tutors</FormLabel>
+                <Select placeholder="Wähle einen Lehrer">
+                  {teachersData.map(currentUser =>
+                    (
+                      <option value={currentUser.name}> {currentUser.name} </option>
+                    ) )}
+                </Select> 
               </ModalBody>
               <ModalFooter>
                 <Button mr={3} variant="ghost" onClick={onClose}>Abbrechen</Button>
