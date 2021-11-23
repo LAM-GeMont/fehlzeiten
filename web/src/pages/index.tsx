@@ -1,4 +1,4 @@
-import { Image, Text, Heading, Box, SimpleGrid } from "@chakra-ui/react"
+import { Image, Text, Heading, Box, SimpleGrid, Stack, Center } from "@chakra-ui/react"
 import { PageScaffold } from '../components/PageScaffold'
 import WithAuth, { WithAuthProps } from '../components/withAuth'
 import { LinkBoxHomePage } from "../components/LinkBoxHomePage";
@@ -8,29 +8,31 @@ const Index: React.FC<WithAuthProps> = ({ self }) => {
   const getLinkBoxes = (userRole) => {
     if (userRole === "COORDINATOR") {
       return (
-        <><LinkBoxHomePage bgc="#56CCF2" src="https://i.ibb.co/BjYJF0L/Tutor.png" height="44"
-          alt="Tutor-Bild" margTop="4" margBottom="unset" href="/tutorium"
-          text="Tutorium Management" /><LinkBoxHomePage bgc="#FC912A"
-            src="https://i.ibb.co/rtsrGTx/Sch-ler.png" height="44"
-            alt="Schüler-Bild" margTop="4" margBottom="unset" href="/"
-            text="Schüler Management" /><LinkBoxHomePage bgc="#94E43B"
-              src="https://i.ibb.co/GPvKhRF/Abwesenheit-buchen.png" height="44"
-              alt="Abwesenheit-Bild" margTop="4" margBottom="unset" href="/"
-              text="Abwesenheit buchen" /><LinkBoxHomePage bgc="#9B51E0"
-                src="https://i.ibb.co/dDWNbHf/Support.png" height="48"
-                alt="Support-Bild" margTop="unset" margBottom="-0.5" href="/"
-                text="Support" /></>
+        <SimpleGrid minChildWidth="325px" spacing="40px">
+          <LinkBoxHomePage bgc="#56CCF2" src="https://i.ibb.co/BjYJF0L/Tutor.png" height="44"
+            alt="Tutor-Bild" margTop="4" margBottom="unset" href="/tutorium"
+            text="Tutorium Management" /><LinkBoxHomePage bgc="#FC912A"
+              src="https://i.ibb.co/rtsrGTx/Sch-ler.png" height="44"
+              alt="Schüler-Bild" margTop="4" margBottom="unset" href="/"
+              text="Schüler Management" /><LinkBoxHomePage bgc="#94E43B"
+                src="https://i.ibb.co/GPvKhRF/Abwesenheit-buchen.png" height="44"
+                alt="Abwesenheit-Bild" margTop="4" margBottom="unset" href="/"
+                text="Abwesenheit buchen" /><LinkBoxHomePage bgc="#9B51E0"
+                  src="https://i.ibb.co/dDWNbHf/Support.png" height="48"
+                  alt="Support-Bild" margTop="unset" margBottom="-0.5" href="/"
+                  text="Support" /></SimpleGrid>
       );
     }
 
     if (userRole === "TEACHER") {
       return (
-        <><LinkBoxHomePage bgc="#94E43B" src="https://i.ibb.co/GPvKhRF/Abwesenheit-buchen.png"
+        <Center><Stack direction={["column", "row"]} spacing="40px"><LinkBoxHomePage bgc="#94E43B"
+          src="https://i.ibb.co/GPvKhRF/Abwesenheit-buchen.png"
           height="44" alt="Abwesenheit-Bild" margTop="4" margBottom="unset" href="/"
           text="Abwesenheit buchen" /><LinkBoxHomePage bgc="#9B51E0"
             src="https://i.ibb.co/dDWNbHf/Support.png" height="48"
             alt="Support-Bild" margTop="unset" margBottom="-0.5" href="/"
-            text="Support" /></>
+            text="Support" /></Stack></Center>
       );
     }
   }
@@ -68,9 +70,7 @@ const Index: React.FC<WithAuthProps> = ({ self }) => {
           </Text>
         </Box>
         <Box marginTop="36" marginLeft="24" marginRight="24">
-          <SimpleGrid minChildWidth="325px" spacing="40px">
-            {getLinkBoxes(self.role)}
-          </SimpleGrid>
+          {getLinkBoxes(self.role)}
         </Box>
       </Box>
     </PageScaffold>
