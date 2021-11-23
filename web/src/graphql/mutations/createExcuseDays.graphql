@@ -1,0 +1,21 @@
+mutation CreateExcuseDays($data: ExcuseCreateInput!) {
+  createExcuse(data: $data) {
+    excuse {
+      id
+      startDate
+      endDate
+      student {
+        id
+      }
+      submittedBy {
+        id
+      }
+      createdAt
+      updatedAt
+    }
+    errors {
+      message
+      code
+    }
+  }
+}

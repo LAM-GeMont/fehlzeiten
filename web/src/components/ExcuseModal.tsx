@@ -1,6 +1,4 @@
 import React from "react";
-import {PageScaffold} from "./PageScaffold"
-import WithAuth, {WithAuthProps} from "./withAuth";
 import {
   Button,
   Checkbox,
@@ -24,14 +22,19 @@ import {
 import {Field, Form, Formik} from "formik";
 import {formatDateISO} from "../util";
 import {Box, Flex} from "@chakra-ui/layout";
+import {
+  Student,
+  useCreateExcuseDaysMutation,
+  useCreateExcuseLessonsMutation
+} from "../generated/graphql";
 
 interface Props {
   isOpen: boolean,
   onClose: () => void,
+  student: Student
 }
 
 function handleStartEndDateChange(event, field, form) {
-  console.log(event)
   let targetValue = event.target.value
   if (targetValue === '') {
     targetValue = formatDateISO(new Date())
@@ -49,32 +52,18 @@ function handleStartEndDateChange(event, field, form) {
     }
 
   }
-  console.log(targetValue)
 }
 
-function handleEndDateChange(event, field, form) {
-  let targetValue = event.target.value
-  if (targetValue === '') {
-    targetValue = formatDateISO(new Date())
-  }
-  form.setFieldValue(field.name, targetValue)
-  if (targetValue < form.values.startDate) {
-    form.setFieldValue('startDate', targetValue)
-  }
-  console.log(targetValue)
-}
-
-const ExcuseModal: React.FC<Props> = ({ isOpen, onClose }) => {
+const ExcuseModal: React.FC<Props> = ({ isOpen, onClose, student }) => {
   const initialDate = formatDateISO(new Date())
   const lessonIndexes = []
   for (let i = 1; i <= 10; i++) {
     lessonIndexes.push(i)
   }
 
-  // const [createExcuse, { data, loading, error }] = useCreateExcuseMutation()
+  const [createExcuseLessons] = useCreateExcuseLessonsMutation()
+  const [createExcuseDays] = useCreateExcuseDaysMutation()
 
-  // @ts-ignore
-  // @ts-ignore
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
@@ -95,7 +84,17 @@ const ExcuseModal: React.FC<Props> = ({ isOpen, onClose }) => {
                   lesson: []
                 }}
                 onSubmit={async (values, actions) => {
-                  console.info('TODO: submit for hours')
+                  actions.setSubmitting(true)
+                  const res = await createExcuseLessons({ variables: {
+                      data: {
+                        startDate: values.date,
+                        endDate: values.date,
+                        studentId: student.id,
+                        lessons: values.lesson.map(v => parseInt(v))
+                      }
+                    }})
+                  actions.setSubmitting(false)
+                  console.log(res)
                 }}
               >
                 {(props) => (
@@ -137,7 +136,16 @@ const ExcuseModal: React.FC<Props> = ({ isOpen, onClose }) => {
                   endDate: initialDate
                 }}
                 onSubmit={async (values, actions) => {
-                  console.info('TODO: submit for days')
+                  actions.setSubmitting(true)
+                  const res = await createExcuseDays({ variables: {
+                      data: {
+                        startDate: values.startDate,
+                        endDate: values.endDate,
+                        studentId: student.id
+                      }
+                    }})
+                  actions.setSubmitting(false)
+                  console.log(res)
                 }}
               >
                 {(props) => (
