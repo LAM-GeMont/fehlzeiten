@@ -10,11 +10,14 @@ const Index: React.FC<WithAuthProps> = ({ self }) => {
       return (
         <><LinkBoxHomePage bgc="#56CCF2" src="https://i.ibb.co/BjYJF0L/Tutor.png" height="44"
           alt="Tutor-Bild" margTop="4" margBottom="unset" href="/tutorium"
-          text="Tutorium Management" /><LinkBoxHomePage bgc="#FC912A" src="https://i.ibb.co/rtsrGTx/Sch-ler.png" height="44"
+          text="Tutorium Management" /><LinkBoxHomePage bgc="#FC912A"
+            src="https://i.ibb.co/rtsrGTx/Sch-ler.png" height="44"
             alt="Schüler-Bild" margTop="4" margBottom="unset" href="/"
-            text="Schüler Management" /><LinkBoxHomePage bgc="#94E43B" src="https://i.ibb.co/GPvKhRF/Abwesenheit-buchen.png" height="44"
+            text="Schüler Management" /><LinkBoxHomePage bgc="#94E43B"
+              src="https://i.ibb.co/GPvKhRF/Abwesenheit-buchen.png" height="44"
               alt="Abwesenheit-Bild" margTop="4" margBottom="unset" href="/"
-              text="Abwesenheit buchen" /><LinkBoxHomePage bgc="#9B51E0" src="https://i.ibb.co/dDWNbHf/Support.png" height="48"
+              text="Abwesenheit buchen" /><LinkBoxHomePage bgc="#9B51E0"
+                src="https://i.ibb.co/dDWNbHf/Support.png" height="48"
                 alt="Support-Bild" margTop="unset" margBottom="-0.5" href="/"
                 text="Support" /></>
       );
@@ -22,9 +25,10 @@ const Index: React.FC<WithAuthProps> = ({ self }) => {
 
     if (userRole === "TEACHER") {
       return (
-        <><LinkBoxHomePage bgc="#94E43B" src="https://i.ibb.co/GPvKhRF/Abwesenheit-buchen.png" height="44"
-          alt="Abwesenheit-Bild" margTop="4" margBottom="unset" href="/"
-          text="Abwesenheit buchen" /><LinkBoxHomePage bgc="#9B51E0" src="https://i.ibb.co/dDWNbHf/Support.png" height="48"
+        <><LinkBoxHomePage bgc="#94E43B" src="https://i.ibb.co/GPvKhRF/Abwesenheit-buchen.png"
+          height="44" alt="Abwesenheit-Bild" margTop="4" margBottom="unset" href="/"
+          text="Abwesenheit buchen" /><LinkBoxHomePage bgc="#9B51E0"
+            src="https://i.ibb.co/dDWNbHf/Support.png" height="48"
             alt="Support-Bild" margTop="unset" margBottom="-0.5" href="/"
             text="Support" /></>
       );
