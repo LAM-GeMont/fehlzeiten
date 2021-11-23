@@ -9,7 +9,6 @@ mutation CreateAbsences($data: AbsencesCreateInput!) {
       }
       createdAt
       updatedAt
-      excused
     }
     errors {
       studentId
