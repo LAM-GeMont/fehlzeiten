@@ -1,6 +1,6 @@
 import { Flex, Heading, SimpleGrid } from "@chakra-ui/layout";
 import { Spinner, Button, IconButton, useDisclosure, useToast } from "@chakra-ui/react";
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { PageScaffold } from "../components/PageScaffold"
 import { Role, TutoriumDeleteErrorCode, useDeleteTutoriumMutation, useTutoriumsQuery } from "../generated/graphql";
 import { AddIcon, DeleteIcon, RepeatIcon } from "@chakra-ui/icons";
@@ -16,32 +16,18 @@ interface TableRow {
   createdAt: string
 }
 
-let rowId
-let rowName
-
 interface Props extends WithAuthProps {}
 
 const TutoriumPage: React.FC<Props> = ({ self }) => {
   const tutoriumCreateModal = useDisclosure()
   const tutoriumDeleteModal = useDisclosure()
   const toast = useToast()
+  const [rowId, setRowId] = React.useState("")
+  const [rowName, setRowName] = React.useState("")
 
   const tutoriumsQuery = useTutoriumsQuery({
     onError: errors => toastApolloError(toast, errors)
   })
-
-  const getIdAndName = (rowValues) => {
-   if(rowValues.id === undefined){
-    rowValues.id = ""
-   }
-   rowId=rowValues.id
-
-   if(rowValues.name === undefined){
-    rowValues.name = ""
-   }
-   rowName=rowValues.name
-
-  }
 
   const data = useMemo(() => {
     if (tutoriumsQuery.data?.tutoriums != null) {
@@ -69,9 +55,10 @@ const TutoriumPage: React.FC<Props> = ({ self }) => {
       Header: "Aktionen",
       Cell: ({row}) => (
         <Flex justifyContent="center">
-          <IconButton variant="outline" aria-label="Löschen" icon={<DeleteIcon />} value={row.values.id} onClick={ () => {
-              getIdAndName(row.values)
-              tutoriumDeleteModal.onOpen()      
+          <IconButton variant="outline" aria-label="Löschen" icon={<DeleteIcon />} onClick={ () => {
+              setRowId(row.values.id)
+              setRowName(row.values.name)
+              tutoriumDeleteModal.onOpen()   
           }} />
         </Flex>
       )
@@ -98,18 +85,5 @@ const TutoriumPage: React.FC<Props> = ({ self }) => {
     </PageScaffold>
   )
 }
-
-/*
-<Flex justifyContent="center">
-  <IconButton variant="outline" aria-label="Löschen" icon={<DeleteIcon />} onClick={
-    () => {
-      remove({
-        variables: { deleteTutoriumData: { id: row.values.id }},
-        refetchQueries: "all",
-      })
-    }
-  }/>
-</Flex>
-*/
 
 export default WithAuth(TutoriumPage, { roles: [Role.Coordinator]})

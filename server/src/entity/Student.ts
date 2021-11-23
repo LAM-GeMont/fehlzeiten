@@ -25,7 +25,7 @@ export class Student extends BaseEntity {
     @Field()
     lastName: string
 
-    @ManyToOne(() => Tutorium, tutorium => tutorium.students)
+    @ManyToOne(() => Tutorium, tutorium => tutorium.students, {onDelete: 'SET NULL'})
     @Field(() => Tutorium, {nullable: true})
     tutorium?: Tutorium | null
 

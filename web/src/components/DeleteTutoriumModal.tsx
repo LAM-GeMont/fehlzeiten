@@ -1,6 +1,6 @@
 import { Button, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, useToast } from "@chakra-ui/react"
 import {Field, Form, Formik} from 'formik'
-import { useDeleteTutoriumMutation } from "../generated/graphql"
+import { TutoriumDeleteErrorCode, useDeleteTutoriumMutation } from "../generated/graphql"
 import { toastApolloError } from "../util"
 
 interface Props {
@@ -14,17 +14,7 @@ export const DeleteTutoriumModal: React.FC<Props> = ({ isOpen, onClose, rowId, r
     const toast = useToast()
 
     const [ remove, removeMutation ] = useDeleteTutoriumMutation({
-        onError: errors => toastApolloError(toast, errors),
-        onCompleted: (res) => {
-            res.deleteTutorium.errors.forEach(error => {
-                toast({
-                    title: "Fehler beim Löschen",
-                    description: error.code,
-                    isClosable: true,
-                    status: "error"
-                })
-            })
-        }
+        onError: errors => toastApolloError(toast, errors)
     })
 
     return (
@@ -36,10 +26,28 @@ export const DeleteTutoriumModal: React.FC<Props> = ({ isOpen, onClose, rowId, r
                         id: ""
                     }}
                     onSubmit={ async (values, actions) => {
-                        remove({
+                        const res = await remove({
                             variables: { deleteTutoriumData: { id: rowId }},
                             refetchQueries: "all",
                         })
+                        const errors = res.data?.deleteTutorium.errors
+                        if (errors) {
+                            errors.forEach(error => {
+                                toast({
+                                    title: "Fehler beim Löschen",
+                                    description: error.message == null ? error.code : `${error.code}: ${error.message}`,
+                                    isClosable: true,
+                                    status: "error"
+                                })
+                            })
+                        } else {
+                            toast({
+                                title: "Tutorium gelöscht",
+                                description: "Das Tutorium wurde erfolgreich gelöscht",
+                                isClosable: true,
+                                status: "success"
+                            })
+                        }
                         onClose()
                     }}
                 >
@@ -48,11 +56,11 @@ export const DeleteTutoriumModal: React.FC<Props> = ({ isOpen, onClose, rowId, r
                             <ModalHeader>Tutorium löschen</ModalHeader>
                             <ModalCloseButton />
                             <ModalBody>
-                                Sind Sie sich sicher, dass Sie das Tutorium {rowName} löschen möchten?
+                                Sind Sie sich sicher, dass Sie das Tutorium {rowName} löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.
                             </ModalBody>
                             <ModalFooter>
                                 <Button mr={3} variant="ghost" onClick={onClose}>Abbrechen</Button>
-                                <Button colorScheme="red" type="submit" isLoading={props.isSubmitting}>Bestätigen</Button>
+                                <Button colorScheme="red" type="submit" isLoading={props.isSubmitting}>Löschen</Button>
                             </ModalFooter>
                         </Form>
                     )}

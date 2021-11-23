@@ -52,6 +52,12 @@ export const CreateTutoriumModal: React.FC<Props> = ({ isOpen, onClose }) => {
                 }
               })
             } else if (res.data.createTutorium.tutorium) {
+              toast({
+                title: `Tutorium "${res.data.createTutorium.tutorium.name}" hinzugefügt`,
+                description: `Das Tutorium "${res.data.createTutorium.tutorium.name}" wurde erfolgreich erstellt`,
+                status: "success",
+                isClosable: true
+              })
               onClose()
             }
           }}
