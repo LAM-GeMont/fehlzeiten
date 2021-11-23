@@ -5,6 +5,32 @@ import { LinkBoxHomePage } from "../components/LinkBoxHomePage";
 
 const Index: React.FC<WithAuthProps> = ({ self }) => {
 
+  const getLinkBoxes = (userRole) => {
+    if (userRole === "COORDINATOR") {
+      return (
+        <><LinkBoxHomePage bgc="#56CCF2" src="https://i.ibb.co/BjYJF0L/Tutor.png" height="44"
+          alt="Tutor-Bild" margTop="4" margBottom="unset" href="/tutorium"
+          text="Tutorium Management" /><LinkBoxHomePage bgc="#FC912A" src="https://i.ibb.co/rtsrGTx/Sch-ler.png" height="44"
+            alt="Schüler-Bild" margTop="4" margBottom="unset" href="/"
+            text="Schüler Management" /><LinkBoxHomePage bgc="#94E43B" src="https://i.ibb.co/GPvKhRF/Abwesenheit-buchen.png" height="44"
+              alt="Abwesenheit-Bild" margTop="4" margBottom="unset" href="/"
+              text="Abwesenheit buchen" /><LinkBoxHomePage bgc="#9B51E0" src="https://i.ibb.co/dDWNbHf/Support.png" height="48"
+                alt="Support-Bild" margTop="unset" margBottom="-0.5" href="/"
+                text="Support" /></>
+      );
+    }
+
+    if (userRole === "TEACHER") {
+      return (
+        <><LinkBoxHomePage bgc="#94E43B" src="https://i.ibb.co/GPvKhRF/Abwesenheit-buchen.png" height="44"
+          alt="Abwesenheit-Bild" margTop="4" margBottom="unset" href="/"
+          text="Abwesenheit buchen" /><LinkBoxHomePage bgc="#9B51E0" src="https://i.ibb.co/dDWNbHf/Support.png" height="48"
+            alt="Support-Bild" margTop="unset" margBottom="-0.5" href="/"
+            text="Support" /></>
+      );
+    }
+  }
+
   return (
     <PageScaffold role={self.role}>
       <Box w="full" right={0}>
@@ -39,18 +65,7 @@ const Index: React.FC<WithAuthProps> = ({ self }) => {
         </Box>
         <Box marginTop="36" marginLeft="24" marginRight="24">
           <SimpleGrid minChildWidth="325px" spacing="40px">
-            <LinkBoxHomePage bgc="#56CCF2" src="https://i.ibb.co/BjYJF0L/Tutor.png"  height="44"
-              alt="Tutor-Bild" margTop="4" margBottom="unset" href="/tutorium"
-              text="Tutorium Management"/>
-            <LinkBoxHomePage bgc="#FC912A" src="https://i.ibb.co/rtsrGTx/Sch-ler.png"  height="44"
-              alt="Schüler-Bild" margTop="4" margBottom="unset" href="/"
-              text="Schüler Management"/>
-            <LinkBoxHomePage bgc="#94E43B" src="https://i.ibb.co/GPvKhRF/Abwesenheit-buchen.png"  height="44"
-              alt="Abwesenheit-Bild" margTop="4" margBottom="unset" href="/"
-              text="Abwesenheit buchen"/>
-            <LinkBoxHomePage bgc="#9B51E0" src="https://i.ibb.co/dDWNbHf/Support.png"  height="48"
-              alt="Support-Bild" margTop="unset" margBottom="-0.5" href="/"
-              text="Support"/>
+            {getLinkBoxes(self.role)}
           </SimpleGrid>
         </Box>
       </Box>
