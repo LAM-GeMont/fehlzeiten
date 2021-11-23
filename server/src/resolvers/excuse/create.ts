@@ -77,7 +77,6 @@ export async function createExcuse (args: ExcuseCreateInput, context: Context) :
         }]
       }
     }
-    let lessons
     if (args.lessons != null) {
       if (args.startDate !== args.endDate) {
         return {
@@ -93,13 +92,12 @@ export async function createExcuse (args: ExcuseCreateInput, context: Context) :
           }]
         }
       }
-      lessons = JSON.stringify(args.lessons)
     }
     const excuse = new Excuse()
     excuse.startDate = args.startDate
     excuse.endDate = args.endDate
     excuse.student = student
-    excuse.lessons = lessons
+    excuse.lessons = args.lessons
     excuse.submittedBy = context.req.user
     await excuse.save()
     return { excuse }

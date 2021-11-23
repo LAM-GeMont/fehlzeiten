@@ -1,4 +1,4 @@
-import { ID, ObjectType, Field } from 'type-graphql'
+import { ID, ObjectType, Field, Int } from 'type-graphql'
 import {
   BaseEntity,
   Column,
@@ -33,9 +33,25 @@ export class Excuse extends BaseEntity {
     @Field()
     endDate: string
 
-    @Column({ nullable: true })
-    @Field()
-    lessons?: string
+    @Column('varchar', {
+      nullable: true,
+      transformer: {
+        from: (value: string | null): number[] | null => {
+          if (value) {
+            return JSON.parse(value)
+          }
+          return null
+        },
+        to: (value: number[] | null): string | null => {
+          if (value) {
+            return JSON.stringify(value)
+          }
+          return null
+        }
+      }
+    })
+    @Field(() => [Int])
+    lessons?: number[]
 
     @ManyToOne(() => Student, student => student.excuses)
     @Field(() => Student)
