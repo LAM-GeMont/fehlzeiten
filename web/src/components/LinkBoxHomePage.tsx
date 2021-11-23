@@ -1,12 +1,10 @@
-import { Image, Center, LinkBox, LinkOverlay } from "@chakra-ui/react"
+import Icon from "@chakra-ui/icon"
+import { Center, LinkBox, LinkOverlay, Box } from "@chakra-ui/react"
+import { IconType } from "react-icons";
 
 interface Props {
     bgc: string,
-    src: string,
-    height: string,
-    alt: string,
-    margTop: string,
-    margBottom: string,
+    icon: IconType,
     href: string,
     text: string
 }
@@ -14,23 +12,21 @@ interface Props {
 export const LinkBoxHomePage: React.FC<Props> = (props) => {
     return (
         <LinkBox
-            bg={props.bgc} color="white" width="325px" height="235px" fontSize="larger"
-            textAlign="center" borderStyle="solid" borderWidth="thin" borderColor="black"
+            bg={props.bgc} color="white" width="325px" height="235px" fontSize="x-large"
+            textAlign="center" borderRadius="25px"
         >
-            <Center marginTop={props.margTop}>
-                <Image
-                    objectFit="cover"
-                    src={props.src}
-                    height={props.height}
-                    alt={props.alt}
-                    marginBottom={props.margBottom}
-                />
+            <Center marginTop={3}>
+                <Box>
+                    <Icon w={44} h={44} as={props.icon}></Icon>
+                    <Box>
+                        <b>
+                            <LinkOverlay href={props.href}>
+                                {props.text}
+                            </LinkOverlay>
+                        </b>
+                    </Box>
+                </Box>
             </Center>
-            <b>
-                <LinkOverlay href={props.href}>
-                    {props.text}
-                </LinkOverlay>
-            </b>
         </LinkBox>
     )
 }

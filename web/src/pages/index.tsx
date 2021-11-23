@@ -1,38 +1,61 @@
 import { Image, Text, Heading, Box, SimpleGrid, Stack, Center } from "@chakra-ui/react"
+import { GiTeacher } from "react-icons/gi"
+import { IoIosPeople } from "react-icons/io"
+import { FaAddressBook } from "react-icons/fa"
+import { BiSupport } from "react-icons/bi"
 import { PageScaffold } from '../components/PageScaffold'
 import WithAuth, { WithAuthProps } from '../components/withAuth'
 import { LinkBoxHomePage } from "../components/LinkBoxHomePage";
 
 const Index: React.FC<WithAuthProps> = ({ self }) => {
 
+  const TeacherLinkBoxes = () => {
+    return (
+      <>
+        <LinkBoxHomePage
+          bgc="#94E43B"
+          icon={FaAddressBook}
+          href="/"
+          text="Abwesenheit buchen"
+        />
+        <LinkBoxHomePage
+          bgc="#9B51E0"
+          icon={BiSupport}
+          href="/"
+          text="Support"
+        />
+      </>
+    );
+  }
+
   const getLinkBoxes = (userRole) => {
     if (userRole === "COORDINATOR") {
       return (
         <SimpleGrid minChildWidth="325px" spacing="40px">
-          <LinkBoxHomePage bgc="#56CCF2" src="https://i.ibb.co/BjYJF0L/Tutor.png" height="44"
-            alt="Tutor-Bild" margTop="4" margBottom="unset" href="/tutorium"
-            text="Tutorium Management" /><LinkBoxHomePage bgc="#FC912A"
-              src="https://i.ibb.co/rtsrGTx/Sch-ler.png" height="44"
-              alt="Schüler-Bild" margTop="4" margBottom="unset" href="/"
-              text="Schüler Management" /><LinkBoxHomePage bgc="#94E43B"
-                src="https://i.ibb.co/GPvKhRF/Abwesenheit-buchen.png" height="44"
-                alt="Abwesenheit-Bild" margTop="4" margBottom="unset" href="/"
-                text="Abwesenheit buchen" /><LinkBoxHomePage bgc="#9B51E0"
-                  src="https://i.ibb.co/dDWNbHf/Support.png" height="48"
-                  alt="Support-Bild" margTop="unset" margBottom="-0.5" href="/"
-                  text="Support" /></SimpleGrid>
+          <LinkBoxHomePage
+            bgc="#56CCF2"
+            icon={GiTeacher}
+            href="/tutorium"
+            text="Tutorium Management"
+          />
+          <LinkBoxHomePage
+            bgc="#FC912A"
+            icon={IoIosPeople}
+            href="/"
+            text="Schüler Management"
+          />
+          {TeacherLinkBoxes()}
+        </SimpleGrid>
       );
     }
 
     if (userRole === "TEACHER") {
       return (
-        <Center><Stack direction={["column", "row"]} spacing="40px"><LinkBoxHomePage bgc="#94E43B"
-          src="https://i.ibb.co/GPvKhRF/Abwesenheit-buchen.png"
-          height="44" alt="Abwesenheit-Bild" margTop="4" margBottom="unset" href="/"
-          text="Abwesenheit buchen" /><LinkBoxHomePage bgc="#9B51E0"
-            src="https://i.ibb.co/dDWNbHf/Support.png" height="48"
-            alt="Support-Bild" margTop="unset" margBottom="-0.5" href="/"
-            text="Support" /></Stack></Center>
+        <Center>
+          <Stack direction={["column", "row"]} spacing="40px">
+            {TeacherLinkBoxes()}
+          </Stack>
+        </Center>
       );
     }
   }
