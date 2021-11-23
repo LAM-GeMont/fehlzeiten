@@ -75,7 +75,7 @@ const AbsencePage: React.FC<Props> = ({self}) => {
             </Field>
             <Field name="exam">
               {({field, form}) => (
-                <FormControl isInvalid={form.errors.lesson && form.touched.lesson} mb={6} display="flex" alignItems="center">
+                <FormControl isInvalid={form.errors.exam && form.touched.exam} mb={6} display="flex" alignItems="center">
                   <Switch id="exam" {...field} />
                   <FormLabel htmlFor="exam" mb="0" marginInlineEnd={0} marginInlineStart={3}>Klausur</FormLabel>
                 </FormControl>
