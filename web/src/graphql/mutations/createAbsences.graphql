@@ -1,14 +1,15 @@
 mutation CreateAbsences($data: AbsencesCreateInput!) {
   createAbsences(data: $data) {
     absences {
+      id
+      createdAt
+      updatedAt
       date
       lessonIndex
-      id
+      exam
       student {
         id
       }
-      createdAt
-      updatedAt
     }
     errors {
       studentId

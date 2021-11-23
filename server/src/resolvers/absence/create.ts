@@ -45,6 +45,9 @@ export class AbsencesCreateInput {
 
   @Field()
   date: string
+
+  @Field()
+  exam: boolean
 }
 
 export async function createAbsences (args: AbsencesCreateInput, context: Context) : Promise<AbsencesCreateResponse> {
@@ -73,6 +76,7 @@ export async function createAbsences (args: AbsencesCreateInput, context: Contex
         absence.student = student
         absence.lessonIndex = lessonIndex
         absence.date = args.date
+        absence.exam = args.exam
         absence.submittedBy = context.req.user
         try {
           await absence.save()

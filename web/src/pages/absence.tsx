@@ -6,7 +6,7 @@ import {
   FormControl,
   FormErrorMessage,
   FormLabel,
-  Input
+  Input, Switch
 } from "@chakra-ui/react";
 import {Field, Form, Formik} from "formik";
 import {formatDateISO} from "../util";
@@ -31,7 +31,8 @@ const AbsencePage: React.FC<Props> = ({self}) => {
         initialValues={{
           date: initialDate,
           lesson: [],
-          students: []
+          students: [],
+          exam: false
         }}
         onSubmit={async (values, actions) => {
           actions.setSubmitting(true)
@@ -39,7 +40,8 @@ const AbsencePage: React.FC<Props> = ({self}) => {
             data: {
               date: values.date,
               studentIds: values.students,
-              lessonIndexes: values.lesson.map(v => parseInt(v))
+              lessonIndexes: values.lesson.map(v => parseInt(v)),
+              exam: values.exam
             }
           }})
           actions.setSubmitting(false)
@@ -67,6 +69,14 @@ const AbsencePage: React.FC<Props> = ({self}) => {
                     </Flex>
                   </CheckboxGroup>
                   <FormErrorMessage>{form.errors.lesson}</FormErrorMessage>
+                </FormControl>
+              )}
+            </Field>
+            <Field name="exam">
+              {({field, form}) => (
+                <FormControl isInvalid={form.errors.exam && form.touched.exam} mb={6} display="flex" alignItems="center">
+                  <Switch id="exam" {...field} />
+                  <FormLabel htmlFor="exam" mb="0" marginInlineEnd={0} marginInlineStart={3}>Klausur</FormLabel>
                 </FormControl>
               )}
             </Field>

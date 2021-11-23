@@ -41,6 +41,10 @@ export class Absence extends BaseEntity {
     @Field()
     date: string
 
+    @Column({ default: false })
+    @Field()
+    exam: boolean
+
     @ManyToOne(() => Student, student => student.absences)
     @Field(() => Student)
     student: Student
