@@ -15,6 +15,7 @@ import env from 'dotenv-safe'
 import path from 'path'
 import { Session } from './entity/Session.js'
 import { Student } from './entity/Student.js'
+import { StudentResolver } from './resolvers/StudentResolver.js'
 import { Absence } from './entity/Absence.js'
 import { AbsenceResolver } from './resolvers/AbsenceResolver.js'
 import { authChecker } from './auth.js'
@@ -50,7 +51,7 @@ env.config({ path: path.resolve(process.cwd(), '..', '.env'), example: path.reso
 
   const apollo = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [AbsenceResolver, ExcuseResolver, TutoriumResolver, UserResolver],
+      resolvers: [AbsenceResolver, ExcuseResolver, StudentResolver, TutoriumResolver, UserResolver],
       validate: false,
       authChecker: authChecker
     }),

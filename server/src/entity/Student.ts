@@ -1,5 +1,15 @@
-import { ID, ObjectType, Field } from 'type-graphql'
-import { BaseEntity, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
+import { ID, Field, ObjectType } from 'type-graphql'
+import {
+  BaseEntity,
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn
+} from 'typeorm'
+import { Tutorium } from './Tutorium'
 import { Absence } from './Absence'
 import { Excuse } from './Excuse'
 
@@ -17,6 +27,21 @@ export class Student extends BaseEntity {
     @UpdateDateColumn()
     @Field()
     updatedAt: number
+
+    @Column()
+    @Field()
+    firstName: string
+
+    @Column()
+    @Field()
+    lastName: string
+
+    @ManyToOne(() => Tutorium, tutorium => tutorium.students)
+    @Field(() => Tutorium, { nullable: true })
+    tutorium?: Tutorium | null
+
+    @Column({ nullable: true })
+    tutoriumId?: string
 
     @OneToMany(() => Absence, absence => absence.student)
     @Field(() => [Absence])
