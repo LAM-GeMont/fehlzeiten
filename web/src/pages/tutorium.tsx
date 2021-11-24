@@ -53,8 +53,12 @@ const TutoriumPage: React.FC<Props> = ({ self }) => {
 
   const columns = useMemo(() => [
     {
-      Header: 'Name',
+      Header: 'Kursname',
       accessor: 'name' as keyof TableRow
+    },
+    {
+      Header: 'Tutorname',
+      accessor: 'tutor.name' as keyof TableRow
     },
     {
       Header: "ID",
