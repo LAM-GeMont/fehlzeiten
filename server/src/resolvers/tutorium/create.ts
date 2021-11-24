@@ -38,7 +38,6 @@ export class TutoriumCreateInput {
   @Field()
   name: string
 
-  //self added:
   @Field()
   tutorId: string
 }
@@ -63,21 +62,18 @@ export async function createTutorium (args: TutoriumCreateInput, context: Contex
       }
     }
 
-    //self added:
-    if (args.tutorId.length < 1) {
+    const tutorium = new Tutorium()
+    tutorium.name = args.name
+    const tutor = await User.findOne(args.tutorId)
+
+    if(tutor == null){
       return {
         errors: [{
           code: TutoriumCreateErrorCode.TUTOR_NOT_VALID,
           message: 'The provided Tutor is not valid'
         }]
       }
-    }
-
-    const tutorium = new Tutorium()
-    tutorium.name = args.name
-    const tutor = await User.findOne(args.tutorId)//set Tutor via ID
-
-    if(tutor?.hasId){
+    }else{
       tutorium.tutor = tutor
     }
     
