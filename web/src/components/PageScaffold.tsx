@@ -1,7 +1,7 @@
 import Icon from '@chakra-ui/icon'
 import { Box, Flex, Link } from '@chakra-ui/layout'
 import React from 'react'
-import { FaChalkboardTeacher, FaHome, FaSignOutAlt, FaUserGraduate } from 'react-icons/fa'
+import { FaChalkboardTeacher, FaHome, FaSignOutAlt, FaUserGraduate, FaBook } from 'react-icons/fa'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import { Role } from '../generated/graphql'
@@ -40,15 +40,21 @@ export const PageScaffold: React.FC<Props> = (props) => {
       url: "/student",
       title: "Schüler",
       roles: [Role.Teacher, Role.Coordinator]
+    },
+    {
+      icon: FaBook,
+      url: "/absence",
+      title: "Fehlzeiten",
+      roles: [Role.Teacher, Role.Coordinator]
     }
   ]
 
   return (
     <Box w="full" pos="relative">
-      <Flex pos="absolute" left={24} top={0} padding={5}>
+      <Flex pos="absolute" left={{ base: "0", lg: "24" }} top={0} padding={5}>
         {props.children}
       </Flex>
-      <Flex w={24} h="full" boxShadow="md" pos="fixed" left={0} top={0} bg="white" direction="column" alignItems="center">
+      <Flex w={24} h="full" boxShadow="md" pos="fixed" left={0} top={0} bg="white" direction="column" alignItems="center" display={{ base: "none", lg: "flex" }}>
         {links.filter(({roles}) => roles.includes(props.role)).map(({icon, url, title}, key) => (
           <Box key={key} margin={4} _hover={{color: "primary.200"}} borderBottom="2px solid" borderBottomColor={router.pathname == url ? "primary.100" : "transparent"} >
             <NextLink href={url}>

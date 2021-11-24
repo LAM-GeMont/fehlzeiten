@@ -17,7 +17,7 @@ export const toastApolloError = (toast, errors: ApolloError) => {
   if (errors.graphQLErrors) {
     errors.graphQLErrors.forEach( error => toastError(toast, error))
   }
-  
+
   if (errors.networkError != null) {
     toast({
       title: "Netzwerk Fehler",
@@ -26,4 +26,12 @@ export const toastApolloError = (toast, errors: ApolloError) => {
       isClosable: true
     })
   }
+}
+
+export const formatDateISO = (date: Date) => {
+  const d = new Date(date)
+  const month = ('' + (d.getMonth() + 1)).padStart(2, '0')
+  const day = ('' + d.getDate()).padStart(2, '0')
+  const year = d.getFullYear();
+  return [year, month, day].join('-');
 }
