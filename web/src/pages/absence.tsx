@@ -1,29 +1,29 @@
-import React from "react";
-import {PageScaffold} from "../components/PageScaffold"
-import WithAuth, {WithAuthProps} from "../components/withAuth";
+import React from 'react'
+import { PageScaffold } from '../components/PageScaffold'
+import WithAuth, { WithAuthProps } from '../components/withAuth'
 import {
   Button, Checkbox, CheckboxGroup,
   FormControl,
   FormErrorMessage,
   FormLabel,
   Input, Switch
-} from "@chakra-ui/react";
-import {Field, Form, Formik} from "formik";
-import {formatDateISO} from "../util";
-import {Flex} from "@chakra-ui/layout";
-import {useCreateAbsencesMutation} from "../generated/graphql";
+} from '@chakra-ui/react'
+import { Field, Form, Formik } from 'formik'
+import { formatDateISO } from '../util'
+import { Flex } from '@chakra-ui/layout'
+import { useCreateAbsencesMutation } from '../generated/graphql'
 
 interface Props extends WithAuthProps {
 }
 
-const AbsencePage: React.FC<Props> = ({self}) => {
+const AbsencePage: React.FC<Props> = ({ self }) => {
   const initialDate = formatDateISO(new Date())
   const lessonIndexes = []
   for (let i = 1; i <= 10; i++) {
     lessonIndexes.push(i)
   }
 
-  const [createAbsences, { data, loading, error }] = useCreateAbsencesMutation()
+  const [createAbsences] = useCreateAbsencesMutation()
 
   return (
     <PageScaffold role={self.role}>
@@ -36,14 +36,16 @@ const AbsencePage: React.FC<Props> = ({self}) => {
         }}
         onSubmit={async (values, actions) => {
           actions.setSubmitting(true)
-          const res = await createAbsences({ variables: {
-            data: {
-              date: values.date,
-              studentIds: values.students,
-              lessonIndexes: values.lesson.map(v => parseInt(v)),
-              exam: values.exam
+          const res = await createAbsences({
+            variables: {
+              data: {
+                date: values.date,
+                studentIds: values.students,
+                lessonIndexes: values.lesson.map(v => parseInt(v)),
+                exam: values.exam
+              }
             }
-          }})
+          })
           actions.setSubmitting(false)
           console.log(res)
         }}
@@ -51,7 +53,7 @@ const AbsencePage: React.FC<Props> = ({self}) => {
         {(props) => (
           <Form>
             <Field name="date">
-              {({field, form}) => (
+              {({ field, form }) => (
                 <FormControl isInvalid={form.errors.date && form.touched.date} mb={6}>
                   <FormLabel htmlFor="date">Tag der Fehlzeit</FormLabel>
                   <Input {...field} id="date" type="date"/>
@@ -60,7 +62,7 @@ const AbsencePage: React.FC<Props> = ({self}) => {
               )}
             </Field>
             <Field name="lesson">
-              {({field, form}) => (
+              {({ field, form }) => (
                 <FormControl isInvalid={form.errors.lesson && form.touched.lesson} mb={6}>
                   <FormLabel>Unterrichtsstunden</FormLabel>
                   <CheckboxGroup>
@@ -73,7 +75,7 @@ const AbsencePage: React.FC<Props> = ({self}) => {
               )}
             </Field>
             <Field name="exam">
-              {({field, form}) => (
+              {({ field, form }) => (
                 <FormControl isInvalid={form.errors.exam && form.touched.exam} mb={6} display="flex" alignItems="center">
                   <Switch id="exam" {...field} />
                   <FormLabel htmlFor="exam" mb="0" marginInlineEnd={0} marginInlineStart={3}>Klausur</FormLabel>
@@ -81,7 +83,7 @@ const AbsencePage: React.FC<Props> = ({self}) => {
               )}
             </Field>
             <Field name="students">
-              {({field, form}) => (
+              {({ field, form }) => (
                 <FormControl isInvalid={form.errors.students && form.touched.students} mb={6}>
                   <FormLabel>Schüler</FormLabel>
                   <CheckboxGroup>

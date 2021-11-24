@@ -1,21 +1,21 @@
-import { Student } from "../entity/Student";
-import { Context } from "../types";
-import { Arg, Ctx, FieldResolver, Mutation, Query, Resolver, Root } from "type-graphql";
-import { createStudent, StudentCreateInput, StudentCreateResponse } from "./student/create";
-import { editStudent, StudentEditInput, StudentEditResponse } from "./student/edit";
-import { deleteStudent, StudentDeleteInput, StudentDeleteResponse } from "./student/delete";
-import { Tutorium } from "../entity/Tutorium";
+import { Student } from '../entity/Student'
+import { Context } from '../types'
+import { Arg, Ctx, FieldResolver, Mutation, Query, Resolver, Root } from 'type-graphql'
+import { createStudent, StudentCreateInput, StudentCreateResponse } from './student/create'
+import { editStudent, StudentEditInput, StudentEditResponse } from './student/edit'
+import { deleteStudent, StudentDeleteInput, StudentDeleteResponse } from './student/delete'
+import { Tutorium } from '../entity/Tutorium'
 
 @Resolver(Student)
 export class StudentResolver {
     @FieldResolver()
-    async tutorium(@Root() student: Student) {
-        return await Tutorium.findOne({where: {id: student.tutoriumId}})
-    }
+  async tutorium (@Root() student: Student) {
+    return await Tutorium.findOne({ where: { id: student.tutoriumId } })
+  }
 
     @Query(() => [Student])
     async students () {
-        return await Student.find()
+      return await Student.find()
     }
 
     @Mutation(() => StudentCreateResponse)
@@ -23,7 +23,7 @@ export class StudentResolver {
         @Arg('data') data: StudentCreateInput,
         @Ctx() context: Context
     ) : Promise<StudentCreateResponse> {
-        return createStudent(data, context)
+      return createStudent(data, context)
     }
 
     @Mutation(() => StudentEditResponse)
@@ -31,14 +31,14 @@ export class StudentResolver {
         @Arg('data') data: StudentEditInput,
         @Ctx() context: Context
     ) : Promise<StudentEditResponse> {
-        return editStudent(data, context)
+      return editStudent(data, context)
     }
 
     @Mutation(() => StudentDeleteResponse)
-    async deleteStudent(
+    async deleteStudent (
         @Arg('data') data: StudentDeleteInput,
         @Ctx() context: Context
     ): Promise<StudentDeleteResponse> {
-        return deleteStudent(data, context)
+      return deleteStudent(data, context)
     }
 }

@@ -7,10 +7,10 @@ import { AppProps } from 'next/app'
 const client = new ApolloClient({
   uri: 'http://localhost:4000/graphql',
   cache: new InMemoryCache(),
-  credentials: "include"
+  credentials: 'include'
 })
 
-function MyApp({ Component, pageProps }: AppProps) {
+function MyApp ({ Component, pageProps }: AppProps) {
   return (
     <ApolloProvider client={client}>
       <ChakraProvider resetCSS theme={theme}>
