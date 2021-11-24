@@ -47,7 +47,6 @@ export const CreateStudentModal: React.FC<Props> = ({ isOpen, onClose }) => {
             tutoriumId: ''
           }}
           onSubmit={ async (values, actions) => {
-            console.log(values)
             const res = await create({
               variables: { createStudentData: values },
               refetchQueries: 'active'
