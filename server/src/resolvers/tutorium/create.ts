@@ -79,12 +79,7 @@ export async function createTutorium (args: TutoriumCreateInput, context: Contex
     const tutor = await User.findOne(args.tutorId)//set Tutor via ID
 
     if(tutor?.hasId){
-      var user = tutor
-
-      user.tutoriums.id = args.name
       tutorium.tutor = tutor
-
-      console.log(tutor)
     }
     
     await tutorium.save()
