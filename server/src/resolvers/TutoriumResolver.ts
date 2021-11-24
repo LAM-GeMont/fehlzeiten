@@ -8,7 +8,7 @@ import { Context } from '../types'
 export class TutoriumResolver {
   @Query(() => [Tutorium])
   async tutoriums () {
-    return await Tutorium.find()
+    return await Tutorium.find({relations:['tutor']})
   }
 
   @Mutation(() => TutoriumCreateResponse)
