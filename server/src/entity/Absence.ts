@@ -3,7 +3,7 @@ import {
   BaseEntity,
   Column,
   CreateDateColumn,
-  Entity, ManyToOne,
+  Entity, Index, ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm'
@@ -11,6 +11,7 @@ import { Student } from './Student'
 import { User } from './User'
 
 @Entity()
+@Index(['lessonIndex', 'date'], { unique: true })
 @ObjectType()
 export class Absence extends BaseEntity {
     @PrimaryGeneratedColumn('uuid')
