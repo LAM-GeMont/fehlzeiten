@@ -1,8 +1,8 @@
-import { useDisclosure } from "@chakra-ui/react";
-import React from "react";
-import { PageScaffold } from "../components/PageScaffold"
-import WithAuth, { WithAuthProps } from "../components/withAuth";
-import ExcuseModal from "../components/ExcuseModal";
+import { useDisclosure } from '@chakra-ui/react'
+import React from 'react'
+import { PageScaffold } from '../components/PageScaffold'
+import WithAuth, { WithAuthProps } from '../components/withAuth'
+import ExcuseModal from '../components/ExcuseModal'
 
 interface Props extends WithAuthProps {}
 

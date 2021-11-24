@@ -12,38 +12,37 @@ interface Props {
 }
 
 export const PageScaffold: React.FC<Props> = (props) => {
-
   const router = useRouter()
 
   const links = [
     {
       icon: FaHome,
-      url: "/",
-      title: "Home",
+      url: '/',
+      title: 'Home',
       roles: [Role.Teacher, Role.Coordinator]
     },
     {
       icon: FaUsers,
-      url: "/tutorium",
-      title: "Tutorien",
+      url: '/tutorium',
+      title: 'Tutorien',
       roles: [Role.Coordinator]
     },
     {
       icon: FaBook,
-      url: "/absence",
-      title: "Fehlzeiten",
+      url: '/absence',
+      title: 'Fehlzeiten',
       roles: [Role.Teacher, Role.Coordinator]
     }
   ]
 
   return (
     <Box w="full" pos="relative">
-      <Flex pos="absolute" left={{ base: "0", lg: "24" }} top={0} padding={5}>
+      <Flex pos="absolute" left={{ base: '0', lg: '24' }} top={0} padding={5}>
         {props.children}
       </Flex>
-      <Flex w={24} h="100vh" boxShadow="md" pos="fixed" left={0} top={0} bg="white" direction="column" alignItems="center" display={{ base: "none", lg: "flex" }}>
-        {links.filter(({roles}) => roles.includes(props.role)).map(({icon, url, title}, key) => (
-          <Box key={key} margin={4} _hover={{color: "primary.200"}} borderBottom="2px solid" borderBottomColor={router.pathname == url ? "primary.100" : "transparent"} >
+      <Flex w={24} h="100vh" boxShadow="md" pos="fixed" left={0} top={0} bg="white" direction="column" alignItems="center" display={{ base: 'none', lg: 'flex' }}>
+        {links.filter(({ roles }) => roles.includes(props.role)).map(({ icon, url, title }, key) => (
+          <Box key={key} margin={4} _hover={{ color: 'primary.200' }} borderBottom="2px solid" borderBottomColor={router.pathname === url ? 'primary.100' : 'transparent'} >
             <NextLink href={url}>
               <Link title={title}>
                 <Icon w={10} h={10} as={icon} />
@@ -51,9 +50,9 @@ export const PageScaffold: React.FC<Props> = (props) => {
             </NextLink>
           </Box>
         ))}
-        <Box key="logout" margin={4} mt="auto" _hover={{ color: "primary.200" }}>
-          <NextLink href={"/logout"}>
-            <Link title={"Logout"}>
+        <Box key="logout" margin={4} mt="auto" _hover={{ color: 'primary.200' }}>
+          <NextLink href={'/logout'}>
+            <Link title={'Logout'}>
               <Icon w={10} h={10} as={ArrowLeftIcon} />
             </Link>
           </NextLink>

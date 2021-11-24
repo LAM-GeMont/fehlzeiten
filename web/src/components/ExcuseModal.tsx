@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react'
 import {
   Button,
   Checkbox,
@@ -18,15 +18,15 @@ import {
   TabPanel,
   TabPanels,
   Tabs
-} from "@chakra-ui/react";
-import {Field, Form, Formik} from "formik";
-import {formatDateISO} from "../util";
-import {Box, Flex} from "@chakra-ui/layout";
+} from '@chakra-ui/react'
+import { Field, Form, Formik } from 'formik'
+import { formatDateISO } from '../util'
+import { Box, Flex } from '@chakra-ui/layout'
 import {
   Student,
   useCreateExcuseDaysMutation,
   useCreateExcuseLessonsMutation
-} from "../generated/graphql";
+} from '../generated/graphql'
 
 interface Props {
   isOpen: boolean,
@@ -34,7 +34,7 @@ interface Props {
   student: Student
 }
 
-function handleStartEndDateChange(event, field, form) {
+function handleStartEndDateChange (event, field, form) {
   let targetValue = event.target.value
   if (targetValue === '') {
     targetValue = formatDateISO(new Date())
@@ -50,7 +50,6 @@ function handleStartEndDateChange(event, field, form) {
         form.setFieldValue('startDate', targetValue)
       }
     }
-
   }
 }
 
@@ -85,14 +84,16 @@ const ExcuseModal: React.FC<Props> = ({ isOpen, onClose, student }) => {
                 }}
                 onSubmit={async (values, actions) => {
                   actions.setSubmitting(true)
-                  const res = await createExcuseLessons({ variables: {
+                  const res = await createExcuseLessons({
+                    variables: {
                       data: {
                         startDate: values.date,
                         endDate: values.date,
                         studentId: student.id,
                         lessons: values.lesson.map(v => parseInt(v))
                       }
-                    }})
+                    }
+                  })
                   actions.setSubmitting(false)
                   console.log(res)
                 }}
@@ -100,7 +101,7 @@ const ExcuseModal: React.FC<Props> = ({ isOpen, onClose, student }) => {
                 {(props) => (
                   <Form id="from-hours">
                     <Field name="date">
-                      {({field, form}) => (
+                      {({ field, form }) => (
                         <FormControl isInvalid={form.errors.date && form.touched.date} mb={6}>
                           <FormLabel htmlFor="date">Tag der Fehlzeit</FormLabel>
                           <Input {...field} id="date" type="date"/>
@@ -109,7 +110,7 @@ const ExcuseModal: React.FC<Props> = ({ isOpen, onClose, student }) => {
                       )}
                     </Field>
                     <Field name="lesson">
-                      {({field, form}) => (
+                      {({ field, form }) => (
                         <FormControl isInvalid={form.errors.lesson && form.touched.lesson} mb={6}>
                           <FormLabel>Unterrichtsstunden</FormLabel>
                           <CheckboxGroup>
@@ -137,13 +138,15 @@ const ExcuseModal: React.FC<Props> = ({ isOpen, onClose, student }) => {
                 }}
                 onSubmit={async (values, actions) => {
                   actions.setSubmitting(true)
-                  const res = await createExcuseDays({ variables: {
+                  const res = await createExcuseDays({
+                    variables: {
                       data: {
                         startDate: values.startDate,
                         endDate: values.endDate,
                         studentId: student.id
                       }
-                    }})
+                    }
+                  })
                   actions.setSubmitting(false)
                   console.log(res)
                 }}
@@ -151,7 +154,7 @@ const ExcuseModal: React.FC<Props> = ({ isOpen, onClose, student }) => {
                 {(props) => (
                   <Form id="from-days">
                     <Field name="startDate">
-                      {({field, form}) => (
+                      {({ field, form }) => (
                         <FormControl isInvalid={form.errors.startDate && form.touched.startDate} mb={6}>
                           <FormLabel htmlFor="startDate">Start der Fehlzeit</FormLabel>
                           <Input
@@ -166,7 +169,7 @@ const ExcuseModal: React.FC<Props> = ({ isOpen, onClose, student }) => {
                       )}
                     </Field>
                     <Field name="endDate">
-                      {({field, form}) => (
+                      {({ field, form }) => (
                         <FormControl isInvalid={form.errors.endDate && form.touched.endDate} mb={6}>
                           <FormLabel htmlFor="endDate">Ende der Fehlzeit</FormLabel>
                           <Input
@@ -181,9 +184,9 @@ const ExcuseModal: React.FC<Props> = ({ isOpen, onClose, student }) => {
                       )}
                     </Field>
                     <Field>
-                      {({field, form}) => (
+                      {({ form }) => (
                         <Box mb={6}>
-                          {Math.round((new Date(form.values.endDate).getTime() - new Date(form.values.startDate).getTime()) / (1000*60*60*24)) + 1} Wochentag(e)
+                          {Math.round((new Date(form.values.endDate).getTime() - new Date(form.values.startDate).getTime()) / (1000 * 60 * 60 * 24)) + 1} Wochentag(e)
                         </Box>
                       )}
                     </Field>
