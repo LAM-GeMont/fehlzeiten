@@ -1,15 +1,12 @@
-import { Image, Text, Heading, Box, SimpleGrid, Stack, Center } from "@chakra-ui/react"
-import { GiTeacher } from "react-icons/gi"
-import { IoIosPeople } from "react-icons/io"
-import { FaAddressBook } from "react-icons/fa"
-import { BiSupport } from "react-icons/bi"
+import { Image, Text, Heading, Box, SimpleGrid, Stack, Center, Flex, Divider } from "@chakra-ui/react"
+import { FaAddressBook, FaChalkboardTeacher, FaUserGraduate, FaQuestion } from "react-icons/fa"
 import { PageScaffold } from '../components/PageScaffold'
 import WithAuth, { WithAuthProps } from '../components/withAuth'
 import { LinkBoxHomePage } from "../components/LinkBoxHomePage";
 
 const Index: React.FC<WithAuthProps> = ({ self }) => {
 
-  const TeacherLinkBoxes = () => {
+  const getTeacherLinkBoxes = () => {
     return (
       <>
         <LinkBoxHomePage
@@ -20,7 +17,7 @@ const Index: React.FC<WithAuthProps> = ({ self }) => {
         />
         <LinkBoxHomePage
           bgc="#9B51E0"
-          icon={BiSupport}
+          icon={FaQuestion}
           href="/"
           text="Support"
         />
@@ -31,20 +28,22 @@ const Index: React.FC<WithAuthProps> = ({ self }) => {
   const getLinkBoxes = (userRole) => {
     if (userRole === "COORDINATOR") {
       return (
-        <SimpleGrid minChildWidth="325px" spacing="40px">
+        <SimpleGrid minChildWidth={{ base: "90px", md: "225px", lg: "325px" }} 
+          height="auto" spacing="40px"
+          fontSize={{ base: "10px", md: "24px", lg: "40px" }} >
           <LinkBoxHomePage
             bgc="#56CCF2"
-            icon={GiTeacher}
+            icon={FaChalkboardTeacher}
             href="/tutorium"
             text="Tutorium Management"
           />
           <LinkBoxHomePage
             bgc="#FC912A"
-            icon={IoIosPeople}
+            icon={FaUserGraduate}
             href="/"
             text="Schüler Management"
           />
-          {TeacherLinkBoxes()}
+          {getTeacherLinkBoxes()}
         </SimpleGrid>
       );
     }
@@ -53,7 +52,7 @@ const Index: React.FC<WithAuthProps> = ({ self }) => {
       return (
         <Center>
           <Stack direction={["column", "row"]} spacing="40px">
-            {TeacherLinkBoxes()}
+            {getTeacherLinkBoxes()}
           </Stack>
         </Center>
       );
@@ -62,29 +61,35 @@ const Index: React.FC<WithAuthProps> = ({ self }) => {
 
   return (
     <PageScaffold role={self.role}>
-      <Box w="full" right={0}>
+      <Box w="full" >
         <Box>
-          <SimpleGrid columns={[2, null, 3]} spacing="40px">
-            <Image
-              objectFit="cover"
-              src="https://image.jimcdn.com/app/cms/image/transf/none/path/se04d54dd5603e862/image/id9085589dffdbb35/version/1516615343/image.png"
-              alt="GeMont-Logo"
-            />
-            <Heading
-              as="h1"
-              fontSize="6xl"
-              fontWeight="extrabold"
-              textAlign="center"
-              color=""
-              wordBreak="break-word"
-            >
-              Erfassung von Fehlzeiten
-            </Heading>
-          </SimpleGrid>
+          <Flex direction={["column", "column"]} alignItems="center">
+            <Box>
+              <Image
+                objectFit="cover"
+                max-width="100%"
+                height="auto"
+                src="https://image.jimcdn.com/app/cms/image/transf/none/path/se04d54dd5603e862/image/id9085589dffdbb35/version/1516615343/image.png"
+                alt="GeMont-Logo"
+              />
+            </Box>
+            <Box>
+              <Heading
+                as="h1"
+                fontSize={{ base: "24px", md: "40px", lg: "56px" }}
+                fontWeight="extrabold"
+                textAlign="center"
+                color=""
+                wordBreak="break-word"
+              >
+                Erfassung von Fehlzeiten
+              </Heading>
+            </Box>
+          </Flex>
         </Box>
         <Box w="full" marginTop="10">
           <Text
-            fontSize="xx-large"
+            fontSize={{ base: "16px", md: "24px", lg: "40px" }}
             fontWeight="extrabold"
             textAlign="center"
             color="#333333"
@@ -92,7 +97,7 @@ const Index: React.FC<WithAuthProps> = ({ self }) => {
             Willkommen "Username"
           </Text>
         </Box>
-        <Box marginTop="36" marginLeft="24" marginRight="24">
+        <Box marginTop="28">
           {getLinkBoxes(self.role)}
         </Box>
       </Box>
