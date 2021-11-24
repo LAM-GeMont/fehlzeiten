@@ -2,9 +2,9 @@ query Tutoriums {
   tutoriums {
     id
     tutor {
-        id
-        name
-      }
+      id
+      name
+    }
     createdAt
     updatedAt
     name
