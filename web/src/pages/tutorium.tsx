@@ -1,14 +1,14 @@
 import { Flex, Heading, SimpleGrid } from "@chakra-ui/layout";
-import { Spinner, Button, IconButton, useDisclosure, useToast } from "@chakra-ui/react";
-import React, { useMemo, useState } from "react";
+import { Spinner, Button, IconButton, useDisclosure, useToast, Text, Box } from "@chakra-ui/react";
+import React, { useMemo } from "react";
 import { PageScaffold } from "../components/PageScaffold"
-import { Role, TutoriumDeleteErrorCode, useDeleteTutoriumMutation, useTutoriumsQuery } from "../generated/graphql";
+import { Role, useTutoriumsQuery } from "../generated/graphql";
 import { AddIcon, DeleteIcon, RepeatIcon } from "@chakra-ui/icons";
 import { CreateTutoriumModal } from "../components/CreateTutoriumModal";
-import { DeleteTutoriumModal } from "../components/DeleteTutoriumModal";
 import SortedTable from "../components/SortedTable";
 import { toastApolloError } from "../util";
 import WithAuth, { WithAuthProps } from "../components/withAuth";
+import { DeleteTutoriumAlertDialog } from "../components/DeleteTutoriumAlertDialog";
 
 interface TableRow {
   name: string,
@@ -20,7 +20,7 @@ interface Props extends WithAuthProps {}
 
 const TutoriumPage: React.FC<Props> = ({ self }) => {
   const tutoriumCreateModal = useDisclosure()
-  const tutoriumDeleteModal = useDisclosure()
+  const tutoriumDeleteAlertDialog = useDisclosure()
   const toast = useToast()
   const [rowId, setRowId] = React.useState("")
   const [rowName, setRowName] = React.useState("")
@@ -56,9 +56,9 @@ const TutoriumPage: React.FC<Props> = ({ self }) => {
       Cell: ({row}) => (
         <Flex justifyContent="center">
           <IconButton variant="outline" aria-label="Löschen" icon={<DeleteIcon />} onClick={ () => {
-              setRowId(row.values.id)
-              setRowName(row.values.name)
-              tutoriumDeleteModal.onOpen()   
+              setRowId(row.original.id)
+              setRowName(row.original.name)
+              tutoriumDeleteAlertDialog.onOpen()   
           }} />
         </Flex>
       )
@@ -71,17 +71,27 @@ const TutoriumPage: React.FC<Props> = ({ self }) => {
         <Flex direction="column" alignItems="center" minW="300px" minH="600px" margin={5}>
           <Flex w="full" padding={5}>
             <Button marginLeft="auto" leftIcon={<AddIcon />} onClick={tutoriumCreateModal.onOpen}>Tutorium hinzufügen</Button>
-            <IconButton ml={4} variant="outline" aria-label="Daten neu laden" icon={<RepeatIcon />} onClick={() => { tutoriumsQuery.refetch() }}>Tutorium hinzufügen</IconButton>
+            <IconButton ml={4} variant="outline" aria-label="Daten neu laden" icon={<RepeatIcon />} onClick={() => { tutoriumsQuery.refetch() }}></IconButton>
           </Flex>
           {tutoriumsQuery.loading && (<Spinner />)}
           {tutoriumsQuery.error != null && (<Heading>Error!</Heading>)}
           {tutoriumsQuery.data != null && (
             <SortedTable columns={columns} data={data} />
           )}
+          {(data.length == 0) &&(
+            <Box mt={5}>
+              {(self.role == "COORDINATOR" && (
+                <Text>Es wurden noch keine Tutorien erstellt.</Text>
+              ))}
+              {(self.role == "TEACHER" && (
+                <Text>Ihnen sind noch keine Tutorien zugewiesen.</Text>
+              ) )}
+            </Box>
+            )}
         </Flex>
       </SimpleGrid>
       <CreateTutoriumModal isOpen={tutoriumCreateModal.isOpen} onClose={tutoriumCreateModal.onClose} />
-      <DeleteTutoriumModal isOpen={tutoriumDeleteModal.isOpen} onClose={tutoriumDeleteModal.onClose} rowId={rowId} rowName={rowName} />
+      <DeleteTutoriumAlertDialog isOpen={tutoriumDeleteAlertDialog.isOpen} onClose={tutoriumDeleteAlertDialog.onClose} rowId={rowId} name={rowName} />
     </PageScaffold>
   )
 }
