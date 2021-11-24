@@ -1,0 +1,11 @@
+mutation EditTutorium($editTutoriumData: TutoriumEditInput!) {
+    editTutorium(data: $editTutoriumData) {
+        tutorium {
+            name
+        }
+        errors {
+            message
+            code
+        }
+    }
+}

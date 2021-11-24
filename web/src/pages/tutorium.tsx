@@ -3,9 +3,10 @@ import { Spinner, Button, IconButton, useDisclosure, useToast } from "@chakra-ui
 import React, { useMemo } from "react";
 import { PageScaffold } from "../components/PageScaffold"
 import { Role, TutoriumDeleteErrorCode, useDeleteTutoriumMutation, useTutoriumsQuery } from "../generated/graphql";
-import { AddIcon, DeleteIcon, RepeatIcon } from "@chakra-ui/icons";
+import { AddIcon, DeleteIcon, RepeatIcon, EditIcon } from "@chakra-ui/icons";
 import { CreateTutoriumModal } from "../components/CreateTutoriumModal";
 import { DeleteTutoriumModal } from "../components/DeleteTutoriumModal";
+import { EditTutoriumModal } from "../components/EditTutoriumModal";
 import SortedTable from "../components/SortedTable";
 import { toastApolloError } from "../util";
 import WithAuth, { WithAuthProps } from "../components/withAuth";
@@ -24,6 +25,7 @@ interface Props extends WithAuthProps {}
 const TutoriumPage: React.FC<Props> = ({ self }) => {
   const tutoriumCreateModal = useDisclosure()
   const tutoriumDeleteModal = useDisclosure()
+  const tutoriumEditModal = useDisclosure()
   const toast = useToast()
 
   const tutoriumsQuery = useTutoriumsQuery({
@@ -69,10 +71,14 @@ const TutoriumPage: React.FC<Props> = ({ self }) => {
       Header: "Aktionen",
       Cell: ({row}) => (
         <Flex justifyContent="center">
-          <IconButton variant="outline" aria-label="Löschen" icon={<DeleteIcon />} value={row.values.id} onClick={ () => {
+            <IconButton mr={2} variant="outline" aria-label="Löschen" icon={<EditIcon />} value={row.values.id} onClick={ () => {
               getIdAndName(row.values)
-              tutoriumDeleteModal.onOpen()      
-          }} />
+              tutoriumEditModal.onOpen()
+            }} />
+            <IconButton variant="outline" aria-label="Löschen" icon={<DeleteIcon />} value={row.values.id} onClick={ () => {
+                getIdAndName(row.values)
+                tutoriumDeleteModal.onOpen()
+            }} />
         </Flex>
       )
     }
@@ -95,6 +101,7 @@ const TutoriumPage: React.FC<Props> = ({ self }) => {
       </SimpleGrid>
       <CreateTutoriumModal isOpen={tutoriumCreateModal.isOpen} onClose={tutoriumCreateModal.onClose} />
       <DeleteTutoriumModal isOpen={tutoriumDeleteModal.isOpen} onClose={tutoriumDeleteModal.onClose} rowId={rowId} rowName={rowName} />
+      <EditTutoriumModal isOpen={tutoriumEditModal.isOpen} onClose={tutoriumEditModal.onClose} rowName={rowName} />
     </PageScaffold>
   )
 }
