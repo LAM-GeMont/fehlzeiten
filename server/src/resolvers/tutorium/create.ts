@@ -64,7 +64,7 @@ export async function createTutorium (args: TutoriumCreateInput, context: Contex
     }
 
     //self added:
-    if (args.tutorId == null) { 
+    if (args.tutorId.length < 1) {
       return {
         errors: [{
           code: TutoriumCreateErrorCode.TUTOR_NOT_VALID,
@@ -75,8 +75,6 @@ export async function createTutorium (args: TutoriumCreateInput, context: Contex
 
     const tutorium = new Tutorium()
     tutorium.name = args.name
-    //tutorium.tutor.id = args.tutorId
-    //self added:
     const tutor = await User.findOne(args.tutorId)//set Tutor via ID
 
     if(tutor?.hasId){

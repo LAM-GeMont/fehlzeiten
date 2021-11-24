@@ -12,6 +12,7 @@ interface Props {
   onClose: () => void,
 }
 
+//Check if a name was put into the field
 const validateName = (value: string) => {
   let error
   if (!value || value.length===0) {
@@ -20,18 +21,29 @@ const validateName = (value: string) => {
   return error
 }
 
+//Check if a tutor was selected
+const validateTutorId = (value: string) => {
+  let error
+  if (!value || value.length===0) {
+    error = "Ein Tutor muss ausgewählt werden"
+  }
+  return error
+}
+
 export const CreateTutoriumModal: React.FC<Props> = ({ isOpen, onClose }) => {
 
+  //Creating toast, establishing connections with useCreateTutoriumMutation and gather errors saved in errors
   const toast = useToast()
   const [create] = useCreateTutoriumMutation({
     onError: errors => toastApolloError(toast, errors)
   })
 
-  //gather teacher-data (name+refference) from sql via Query to add them later into 'Select'-element
+  //Creating teacher query for later gathering of teacher data
   const teachersQuery = useTeachersQuery({
     onError: errors => toastApolloError(toast, errors)
   })
 
+  //Gather teacherData from memo
   const teachersData = useMemo(() => {
     if (teachersQuery.data?.users != null) {
       return teachersQuery.data.users
@@ -40,8 +52,7 @@ export const CreateTutoriumModal: React.FC<Props> = ({ isOpen, onClose }) => {
     }
   }, [teachersQuery.data])
 
-  //
-
+  //Returning Modal for Tutorium Creation
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
@@ -49,7 +60,7 @@ export const CreateTutoriumModal: React.FC<Props> = ({ isOpen, onClose }) => {
         <Formik
           initialValues={{
             name: "",
-            tutorId: "93a50a64-1e5b-4601-9a32-28cff8c887c2"
+            tutorId: ""
           }}
           onSubmit={ async (values, actions) => {
             const res = await create({
@@ -90,12 +101,19 @@ export const CreateTutoriumModal: React.FC<Props> = ({ isOpen, onClose }) => {
                   )}
                 </Field>
                 <FormLabel>Name des Tutors</FormLabel>
-                <Select placeholder="Wähle einen Lehrer">
-                  {teachersData.map(currentUser =>
-                    (
-                      <option value={currentUser.id}> {currentUser.name} </option>
-                    ) )}
-                </Select>
+                <Field name="tutorId" validate={validateTutorId}>
+                  {({ field, form }) => (
+                    <FormControl isInvalid={form.errors.tutorId && form.touched.tutorId}>
+                      <Select {...field} placeholder="Wähle einen Lehrer">
+                        {teachersData.map(currentUser =>
+                            (
+                                <option id="tutorId" value={currentUser.id}> {currentUser.name} </option>
+                            ) )}
+                      </Select>
+                      <FormErrorMessage>{form.errors.tutorId}</FormErrorMessage>
+                    </FormControl>
+                  )}
+                </Field>
               </ModalBody>
               <ModalFooter>
                 <Button mr={3} variant="ghost" onClick={onClose}>Abbrechen</Button>
