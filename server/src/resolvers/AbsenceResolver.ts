@@ -13,9 +13,10 @@ export class AbsenceResolver {
   @Authorized()
   @Query(() => AbsencesForStudentResponse)
   async absencesForStudent (
-    @Arg('studentId') studentId: string
+    @Arg('studentId') studentId: string,
+    @Ctx() context: Context
   ) {
-    return absencesForStudent(studentId)
+    return absencesForStudent(studentId, context)
   }
 
   @Authorized()
