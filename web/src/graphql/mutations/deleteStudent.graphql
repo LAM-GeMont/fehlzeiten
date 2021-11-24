@@ -1,0 +1,8 @@
+mutation DeleteStudent($deleteStudentData: StudentDeleteInput!) {
+  deleteStudent(data: $deleteStudentData) {
+    errors {
+      code
+      message
+    }
+  }
+}

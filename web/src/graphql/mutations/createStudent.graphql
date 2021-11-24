@@ -1,0 +1,18 @@
+mutation createStudent($createStudentData: StudentCreateInput!) {
+  createStudent(data: $createStudentData) {
+    errors {
+      code
+      message
+    }
+    student {
+      id
+      createdAt
+      firstName
+      lastName
+      tutorium {
+        id
+        name
+      }
+    }
+  }
+}

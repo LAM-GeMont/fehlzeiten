@@ -3,12 +3,14 @@ import { Field, ID, InputType, ObjectType, registerEnumType } from 'type-graphql
 import { User } from '../../entity/User'
 import { Student } from '../../entity/Student'
 import { Tutorium } from '../../entity/Tutorium'
+import { Not } from 'typeorm'
 
 export enum StudentEditErrorCode {
     UNKNOWN_ERROR,
     NOT_FOUND,
     UNAUTHORIZED,
     NAME_TOO_SHORT,
+    DUPLICATE_NAME,
     TUTORIUM_NOT_FOUND
 }
 
@@ -45,7 +47,7 @@ export class StudentEditInput {
     @Field({ nullable: true })
     lastName?: string
 
-    @Field(() => ID!, { nullable: true })
+    @Field({ nullable: true })
     tutorium?: string
 }
 
@@ -95,11 +97,22 @@ export async function editStudent (data: StudentEditInput, context: Context): Pr
       }
     }
 
-    if (data.tutorium === null) {
+    const existingStudents = await Student.find({ where: { lastName: student.lastName, firstName: student.firstName, id: Not(student.id) } })
+    console.log(existingStudents)
+    if (existingStudents.length > 0) {
+      return {
+        errors: [{
+          code: StudentEditErrorCode.DUPLICATE_NAME,
+          message: `A student with the name ${student.firstName} ${student.lastName} already exists`
+        }]
+      }
+    }
+
+    if (data.tutorium == null || data.tutorium === '') {
       student.tutorium = null
     }
 
-    if (data.tutorium !== undefined) {
+    if (data.tutorium !== undefined && data.tutorium !== '') {
       const tutorium = await Tutorium.findOne(data.tutorium)
       if (tutorium == null) {
         return {

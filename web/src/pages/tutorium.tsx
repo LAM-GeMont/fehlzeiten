@@ -59,7 +59,7 @@ const TutoriumPage: React.FC<Props> = ({ self }) => {
       Header: 'Aktionen',
       Cell: ({ row }) => (
         <Flex justifyContent="center">
-          <IconButton variant="outline" aria-label="Löschen" icon={<DeleteIcon />} onClick={ () => {
+          <IconButton isDisabled={self.role === 'TEACHER'} variant="outline" aria-label="Löschen" icon={<DeleteIcon />} onClick={ () => {
             setRowId(row.original.id)
             setRowName(row.original.name)
             tutoriumDeleteAlertDialog.onOpen()
@@ -67,7 +67,7 @@ const TutoriumPage: React.FC<Props> = ({ self }) => {
         </Flex>
       )
     }
-  ], [tutoriumDeleteAlertDialog])
+  ], [tutoriumDeleteAlertDialog, self.role])
 
   return (
     <PageScaffold role={self.role}>
