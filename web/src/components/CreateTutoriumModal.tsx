@@ -48,7 +48,8 @@ export const CreateTutoriumModal: React.FC<Props> = ({ isOpen, onClose }) => {
       <ModalContent>
         <Formik
           initialValues={{
-            name: ""
+            name: "",
+            tutorId: "93a50a64-1e5b-4601-9a32-28cff8c887c2"
           }}
           onSubmit={ async (values, actions) => {
             const res = await create({
@@ -92,9 +93,9 @@ export const CreateTutoriumModal: React.FC<Props> = ({ isOpen, onClose }) => {
                 <Select placeholder="Wähle einen Lehrer">
                   {teachersData.map(currentUser =>
                     (
-                      <option value={currentUser.name}> {currentUser.name} </option>
+                      <option value={currentUser.id}> {currentUser.name} </option>
                     ) )}
-                </Select> 
+                </Select>
               </ModalBody>
               <ModalFooter>
                 <Button mr={3} variant="ghost" onClick={onClose}>Abbrechen</Button>

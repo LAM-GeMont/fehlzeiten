@@ -1,5 +1,6 @@
 query Teachers {
     users{
+        id
         name
         role
     }

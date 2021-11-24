@@ -58,7 +58,7 @@ const TutoriumPage: React.FC<Props> = ({ self }) => {
     },
     {
       Header: 'Tutorname',
-      accessor: 'tutor' as keyof TableRow
+      accessor: 'tutor.name' as keyof TableRow
     },
     {
       Header: "ID",

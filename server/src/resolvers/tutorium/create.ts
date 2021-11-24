@@ -75,6 +75,7 @@ export async function createTutorium (args: TutoriumCreateInput, context: Contex
 
     const tutorium = new Tutorium()
     tutorium.name = args.name
+    //tutorium.tutor.id = args.tutorId
     //self added:
     const tutor = await User.findOne(args.tutorId)//set Tutor via ID
 
