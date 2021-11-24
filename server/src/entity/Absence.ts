@@ -43,10 +43,6 @@ export class Absence extends BaseEntity {
 
     @Column({ default: false })
     @Field()
-    excused: boolean
-
-    @Column({ default: false })
-    @Field()
     exam: boolean
 
     @ManyToOne(() => Student, student => student.absences)

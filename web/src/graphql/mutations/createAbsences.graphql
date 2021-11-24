@@ -6,7 +6,6 @@ mutation CreateAbsences($data: AbsencesCreateInput!) {
       updatedAt
       date
       lessonIndex
-      excused
       exam
       student {
         id

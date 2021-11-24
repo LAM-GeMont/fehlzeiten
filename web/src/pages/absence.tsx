@@ -35,7 +35,6 @@ const AbsencePage: React.FC<Props> = ({self}) => {
           exam: false
         }}
         onSubmit={async (values, actions) => {
-          console.log(values, actions)
           actions.setSubmitting(true)
           const res = await createAbsences({ variables: {
             data: {

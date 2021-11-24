@@ -18,6 +18,8 @@ import { Student } from './entity/Student.js'
 import { Absence } from './entity/Absence.js'
 import { AbsenceResolver } from './resolvers/AbsenceResolver.js'
 import { authChecker } from './auth.js'
+import { Excuse } from './entity/Excuse'
+import { ExcuseResolver } from './resolvers/ExcuseResolver'
 
 env.config({ path: path.resolve(process.cwd(), '..', '.env'), example: path.resolve(process.cwd(), '..', '.env.example') });
 
@@ -27,7 +29,7 @@ env.config({ path: path.resolve(process.cwd(), '..', '.env'), example: path.reso
     database: './db.db',
     synchronize: true,
     logging: true,
-    entities: [Absence, Session, Student, Tutorium, User]
+    entities: [Absence, Excuse, Session, Student, Tutorium, User]
   })
 
   const app = express()
@@ -48,7 +50,7 @@ env.config({ path: path.resolve(process.cwd(), '..', '.env'), example: path.reso
 
   const apollo = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [AbsenceResolver, TutoriumResolver, UserResolver],
+      resolvers: [AbsenceResolver, ExcuseResolver, TutoriumResolver, UserResolver],
       validate: false,
       authChecker: authChecker
     }),
