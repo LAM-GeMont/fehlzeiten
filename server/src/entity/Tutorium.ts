@@ -23,7 +23,7 @@ export class Tutorium extends BaseEntity {
     name: string
 
     @ManyToOne(() => User, user => user.tutoriums)
-    @Field(() => User, {nullable: true})
+    @Field(() => User, { nullable: true })
     tutor?: User
 
     @OneToMany(() => Student, student => student.tutorium)

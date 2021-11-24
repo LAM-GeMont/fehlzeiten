@@ -66,17 +66,17 @@ export async function createTutorium (args: TutoriumCreateInput, context: Contex
     tutorium.name = args.name
     const tutor = await User.findOne(args.tutorId)
 
-    if(tutor == null){
+    if (tutor == null) {
       return {
         errors: [{
           code: TutoriumCreateErrorCode.TUTOR_NOT_VALID,
           message: 'The provided Tutor is not valid'
         }]
       }
-    }else{
+    } else {
       tutorium.tutor = tutor
     }
-    
+
     await tutorium.save()
 
     return {
