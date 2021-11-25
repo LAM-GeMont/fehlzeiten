@@ -1,5 +1,5 @@
 import { Image, Text, Heading, Box, SimpleGrid, Stack, Center, Flex, Divider } from "@chakra-ui/react"
-import { FaAddressBook, FaChalkboardTeacher, FaUserGraduate, FaQuestion } from "react-icons/fa"
+import { FaBook, FaChalkboardTeacher, FaUserGraduate, FaQuestion } from "react-icons/fa"
 import { PageScaffold } from '../components/PageScaffold'
 import WithAuth, { WithAuthProps } from '../components/withAuth'
 import { LinkBoxHomePage } from "../components/LinkBoxHomePage";
@@ -10,13 +10,11 @@ const Index: React.FC<WithAuthProps> = ({ self }) => {
     return (
       <>
         <LinkBoxHomePage
-          bgc="#94E43B"
-          icon={FaAddressBook}
+          icon={FaBook}
           href="/"
           text="Abwesenheit buchen"
         />
         <LinkBoxHomePage
-          bgc="#9B51E0"
           icon={FaQuestion}
           href="/"
           text="Support"
@@ -30,15 +28,13 @@ const Index: React.FC<WithAuthProps> = ({ self }) => {
       return (
         <SimpleGrid minChildWidth={{ base: "125px", sm:"225px", md: "225px", lg: "325px" }} 
           height="auto" spacing={{ base: "16px", sm:"24px", md: "24px", lg: "40px" }}
-          fontSize={{ base: "16px", sm: "24px", md: "24px", lg: "40px" }} wordBreak="break-word">
+          fontSize={{ base: "16px", sm: "24px", md: "24px", lg: "36px" }} wordBreak="break-word">
           <LinkBoxHomePage
-            bgc="#56CCF2"
             icon={FaChalkboardTeacher}
             href="/tutorium"
             text="Tutorium Management"
           />
           <LinkBoxHomePage
-            bgc="#FC912A"
             icon={FaUserGraduate}
             href="/"
             text="Schüler Management"

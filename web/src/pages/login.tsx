@@ -1,20 +1,20 @@
-import { ApolloClient, useApolloClient } from "@apollo/client";
-import { Button, Center, Flex, FormControl, FormErrorMessage, FormLabel, Heading, Input, useToast } from "@chakra-ui/react";
-import { Field, Form, Formik } from "formik";
-import { useRouter } from "next/router";
-import React from "react"
-import WithAuth from "../components/withAuth";
-import { useLoginMutation, useSelfQuery } from "../generated/graphql";
-import { toastApolloError } from "../util";
+import { useApolloClient } from '@apollo/client'
+import { Button, Center, Flex, FormControl, FormErrorMessage, FormLabel, Heading, Input, useToast } from '@chakra-ui/react'
+import { Field, Form, Formik } from 'formik'
+import { useRouter } from 'next/router'
+import React from 'react'
+import WithAuth from '../components/withAuth'
+import { useLoginMutation } from '../generated/graphql'
+import { toastApolloError } from '../util'
 
 interface LoginProps {
-  
+
 }
 
 const validateName = (value: string) => {
   let error
   if (!value || value.length === 0) {
-    error = "Ein Name muss angegeben werden"
+    error = 'Ein Name muss angegeben werden'
   }
   return error
 }
@@ -22,13 +22,12 @@ const validateName = (value: string) => {
 const validatePassword = (value: string) => {
   let error
   if (!value || value.length === 0) {
-    error = "Ein Passwort muss angegeben werden"
+    error = 'Ein Passwort muss angegeben werden'
   }
   return error
 }
 
-const Login: React.FC<LoginProps> = ({}) => {
-  
+const Login: React.FC<LoginProps> = () => {
   const toast = useToast()
   const router = useRouter()
 
@@ -36,7 +35,7 @@ const Login: React.FC<LoginProps> = ({}) => {
 
   const [login] = useLoginMutation({
     onError: errors => toastApolloError(toast, errors),
-    onCompleted: () => client.cache.evict({fieldName: 'self'})
+    onCompleted: () => client.cache.evict({ fieldName: 'self' })
   })
 
   return (
@@ -45,8 +44,8 @@ const Login: React.FC<LoginProps> = ({}) => {
         <Heading textAlign="center" mb={5}>Login</Heading>
         <Formik
           initialValues={{
-            name: "",
-            password: ""
+            name: '',
+            password: ''
           }}
           onSubmit={async (values, actions) => {
             const res = await login({
@@ -54,14 +53,13 @@ const Login: React.FC<LoginProps> = ({}) => {
             })
 
             if (res.data?.loginUser.user != null && res.data?.loginUser.errors == null) {
-              router.push("/")
+              router.push('/')
             } else {
               actions.setErrors({
-                name: "Falsches Passwort oder unbekannter Benutzer",
-                password: "Falsches Passwort oder unbekannter Benutzer"
+                name: 'Falsches Passwort oder unbekannter Benutzer',
+                password: 'Falsches Passwort oder unbekannter Benutzer'
               })
             }
-
           }}
         >
           {(props) => (
@@ -92,7 +90,7 @@ const Login: React.FC<LoginProps> = ({}) => {
         </Formik>
       </Flex>
     </Center>
-  );
+  )
 }
 
-export default WithAuth(Login, { redirectAuthorized: true, redirectTo: '/'})
+export default WithAuth(Login, { redirectAuthorized: true, redirectTo: '/' })

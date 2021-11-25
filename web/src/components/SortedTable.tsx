@@ -1,8 +1,8 @@
-import { TriangleDownIcon, TriangleUpIcon } from "@chakra-ui/icons";
-import { chakra, shouldForwardProp, Table, Tbody, Td, Th, Thead } from "@chakra-ui/react";
-import { AnimatePresence, motion } from "framer-motion";
-import React from "react"
-import { useSortBy, useTable } from "react-table";
+import { TriangleDownIcon, TriangleUpIcon } from '@chakra-ui/icons'
+import { chakra, shouldForwardProp, Table, Tbody, Td, Th, Thead } from '@chakra-ui/react'
+import { AnimatePresence, motion } from 'framer-motion'
+import React from 'react'
+import { useSortBy, useTable } from 'react-table'
 
 interface SortedTableProps {
   columns: any,
@@ -19,9 +19,8 @@ const Tr = chakra(
 )
 
 const SortedTable: React.FC<SortedTableProps> = ({ columns, data }) => {
+  const table = useTable({ columns, data, autoResetSortBy: false }, useSortBy)
 
-  const table = useTable({ columns, data, autoResetSortBy: false}, useSortBy)
-  
   const {
     getTableProps,
     getTableBodyProps,
@@ -34,20 +33,26 @@ const SortedTable: React.FC<SortedTableProps> = ({ columns, data }) => {
     <Table {...getTableProps()}>
       <Thead>
         {headerGroups.map((headerGroup) => (
+          // eslint-disable-next-line react/jsx-key
           <Tr {...headerGroup.getHeaderGroupProps()}>
             {headerGroup.headers.map((column) => (
+              // eslint-disable-next-line react/jsx-key
               <Th
                 {...column.getHeaderProps(column.getSortByToggleProps())}
               >
-                {column.render("Header")}
+                {column.render('Header')}
                 <chakra.span pl="4">
-                  {column.isSorted ? (
-                    column.isSortedDesc ? (
+                  {column.isSorted
+                    ? (
+                        column.isSortedDesc
+                          ? (
                       <TriangleDownIcon aria-label="sorted descending" />
-                    ) : (
+                            )
+                          : (
                       <TriangleUpIcon aria-label="sorted ascending" />
-                    )
-                  ) : null}
+                            )
+                      )
+                    : null}
                 </chakra.span>
               </Th>
             ))}
@@ -59,6 +64,7 @@ const SortedTable: React.FC<SortedTableProps> = ({ columns, data }) => {
           {rows.map((row) => {
             prepareRow(row)
             return (
+              // eslint-disable-next-line react/jsx-key
               <Tr {...row.getRowProps()}
                 initial={{
                   opacity: 0,
@@ -69,12 +75,13 @@ const SortedTable: React.FC<SortedTableProps> = ({ columns, data }) => {
                   y: 0
                 }}
                 transition={{
-                  ease: "easeOut"
+                  ease: 'easeOut'
                 }}
               >
                 {row.cells.map((cell) => (
+                  // eslint-disable-next-line react/jsx-key
                   <Td {...cell.getCellProps()}>
-                    {cell.render("Cell")}
+                    {cell.render('Cell')}
                   </Td>
                 ))}
               </Tr>
@@ -84,7 +91,7 @@ const SortedTable: React.FC<SortedTableProps> = ({ columns, data }) => {
       </Tbody>
     </Table>
 
-  );
+  )
 }
 
-export default SortedTable;
+export default SortedTable

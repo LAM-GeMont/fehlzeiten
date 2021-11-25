@@ -1,0 +1,17 @@
+mutation EditStudent($editStudentData: StudentEditInput!) {
+  editStudent(data: $editStudentData) {
+    student {
+      id
+      firstName
+      lastName
+      tutorium {
+        id
+        name
+      }
+    }
+    errors {
+      code
+      message
+    }
+  }
+}

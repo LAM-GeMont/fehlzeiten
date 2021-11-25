@@ -3,7 +3,6 @@ import { Center, LinkBox, LinkOverlay, Box } from "@chakra-ui/react"
 import { IconType } from "react-icons";
 
 interface Props {
-    bgc: string,
     icon: IconType,
     href: string,
     text: string
@@ -12,11 +11,11 @@ interface Props {
 export const LinkBoxHomePage: React.FC<Props> = (props) => {
     return (
         <LinkBox
-            bg={props.bgc} color="white" width="inherit" height="inherit" fontSize="inherit"
-            textAlign="center" borderRadius="25px"
+            bg="#001955" color="white" width="inherit" height="inherit" fontSize="inherit"
+            textAlign="center" borderRadius="25px" 
         >
-            <Center mt={[2, 4, 6, 8]}>
-                <Box>
+            <Center>
+                <Box m={4}>
                     <Icon boxSize={{ base: 24, sm: 36, md: 36, lg: 40 }} as={props.icon}> 
                     </Icon>
                     <Box>
