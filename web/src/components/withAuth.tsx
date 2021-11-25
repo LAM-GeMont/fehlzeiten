@@ -13,7 +13,7 @@ interface Options {
 const isAuthorized = (data, roles) => data?.self != null && (roles == null || roles.includes(data.self.role))
 
 export interface WithAuthProps {
-  self: Omit<User, 'tutoriums'>
+  self: Omit<User, 'tutoriums' | 'submittedAbsences' | 'submittedExcuses'>
 }
 
 const WithAuth = (Component: React.FC<WithAuthProps>, options?: Options) => {
