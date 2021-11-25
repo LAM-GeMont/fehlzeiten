@@ -17,7 +17,7 @@ export const LinkBoxHomePage: React.FC<Props> = (props) => {
         >
             <Center mt={[2, 4, 6, 8]}>
                 <Box>
-                    <Icon max-width="100%" height="auto" as={props.icon}> 
+                    <Icon boxSize={{ base: 24, sm: 36, md: 36, lg: 40 }} as={props.icon}> 
                     </Icon>
                     <Box>
                         <b>

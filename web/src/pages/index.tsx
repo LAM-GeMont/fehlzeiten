@@ -28,9 +28,9 @@ const Index: React.FC<WithAuthProps> = ({ self }) => {
   const getLinkBoxes = (userRole) => {
     if (userRole === "COORDINATOR") {
       return (
-        <SimpleGrid minChildWidth={{ base: "90px", md: "225px", lg: "325px" }} 
-          height="auto" spacing="40px"
-          fontSize={{ base: "10px", md: "24px", lg: "40px" }} >
+        <SimpleGrid minChildWidth={{ base: "125px", sm:"225px", md: "225px", lg: "325px" }} 
+          height="auto" spacing={{ base: "16px", sm:"24px", md: "24px", lg: "40px" }}
+          fontSize={{ base: "16px", sm: "24px", md: "24px", lg: "40px" }} wordBreak="break-word">
           <LinkBoxHomePage
             bgc="#56CCF2"
             icon={FaChalkboardTeacher}
@@ -76,7 +76,7 @@ const Index: React.FC<WithAuthProps> = ({ self }) => {
             <Box>
               <Heading
                 as="h1"
-                fontSize={{ base: "24px", md: "40px", lg: "56px" }}
+                fontSize={{ base: "24px", sm: "40px", md: "40px", lg: "56px" }}
                 fontWeight="extrabold"
                 textAlign="center"
                 color=""
@@ -89,7 +89,7 @@ const Index: React.FC<WithAuthProps> = ({ self }) => {
         </Box>
         <Box w="full" marginTop="10">
           <Text
-            fontSize={{ base: "16px", md: "24px", lg: "40px" }}
+            fontSize={{ base: "16px", sm: "24px", md: "24px", lg: "40px" }}
             fontWeight="extrabold"
             textAlign="center"
             color="#333333"
@@ -97,7 +97,7 @@ const Index: React.FC<WithAuthProps> = ({ self }) => {
             Willkommen "Username"
           </Text>
         </Box>
-        <Box marginTop="28">
+        <Box marginTop={{ base: "10", sm: "16", md: "16", lg: "28" }}>
           {getLinkBoxes(self.role)}
         </Box>
       </Box>
