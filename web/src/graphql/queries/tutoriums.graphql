@@ -1,6 +1,10 @@
 query Tutoriums {
   tutoriums {
     id
+    tutor {
+      id
+      name
+    }
     createdAt
     updatedAt
     name
