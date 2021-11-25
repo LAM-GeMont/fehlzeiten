@@ -11,7 +11,7 @@ import { Student } from './Student'
 import { User } from './User'
 
 @Entity()
-@Index(['lessonIndex', 'date'], { unique: true })
+@Index(['lessonIndex', 'date', 'studentId'], { unique: true })
 @ObjectType()
 export class Absence extends BaseEntity {
     @PrimaryGeneratedColumn('uuid')
@@ -45,6 +45,9 @@ export class Absence extends BaseEntity {
     @Column({ default: false })
     @Field()
     exam: boolean
+
+    @Column()
+    studentId: string
 
     @ManyToOne(() => Student, student => student.absences)
     @Field(() => Student)
