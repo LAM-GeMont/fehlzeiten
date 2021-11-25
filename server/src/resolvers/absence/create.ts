@@ -7,7 +7,8 @@ export enum AbsenceCreateErrorCode {
   UNKNOWN_ERROR,
   UNAUTHORIZED,
   INVALID_STUDENT_ID,
-  INVALID_DATE
+  INVALID_DATE,
+  ABSENCE_ALREADY_EXISTS
 }
 
 registerEnumType(AbsenceCreateErrorCode, {
@@ -82,10 +83,18 @@ export async function createAbsences (args: AbsencesCreateInput, context: Contex
           await absence.save()
           absences.push(absence)
         } catch (error) {
-          errors.push({
-            code: AbsenceCreateErrorCode.UNKNOWN_ERROR,
-            message: error.message
-          })
+          if (error.message.includes('UNIQUE')) {
+            errors.push({
+              code: AbsenceCreateErrorCode.ABSENCE_ALREADY_EXISTS,
+              message: error.message,
+              studentId: student.id
+            })
+          } else {
+            errors.push({
+              code: AbsenceCreateErrorCode.UNKNOWN_ERROR,
+              message: error.message
+            })
+          }
         }
       }
     }
