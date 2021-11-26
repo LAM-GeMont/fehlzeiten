@@ -4,7 +4,7 @@
     "dev": "next",
     "build": "next build",
     "start": "next start",
-    "codegen": "graphql-codegen --config codegen.yml"
+    "codegen": "set NODE_TLS_REJECT_UNAUTHORIZED=0; graphql-codegen --skipSSLValidation --config codegen.yml"
   },
   "dependencies": {
     "@apollo/client": "^3.4.11",
