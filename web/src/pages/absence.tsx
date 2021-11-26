@@ -6,12 +6,13 @@ import {
   FormControl,
   FormErrorMessage,
   FormLabel,
-  Input, Switch
+  Input, Switch,
+  Flex, Box
 } from '@chakra-ui/react'
 import { Field, Form, Formik } from 'formik'
 import { formatDateISO } from '../util'
-import { Flex } from '@chakra-ui/layout'
-import { useCreateAbsencesMutation } from '../generated/graphql'
+import { useCreateAbsencesMutation, useStudentsQuery } from '../generated/graphql'
+import { SearchSelectInputMultiple } from '../components/SearchSelectInput'
 
 interface Props extends WithAuthProps {
 }
@@ -23,6 +24,7 @@ const AbsencePage: React.FC<Props> = ({ self }) => {
     lessonIndexes.push(i)
   }
 
+  const studentsQuery = useStudentsQuery()
   const [createAbsences] = useCreateAbsencesMutation()
 
   return (
@@ -82,19 +84,15 @@ const AbsencePage: React.FC<Props> = ({ self }) => {
                 </FormControl>
               )}
             </Field>
-            <Field name="students">
-              {({ field, form }) => (
-                <FormControl isInvalid={form.errors.students && form.touched.students} mb={6}>
-                  <FormLabel>Schüler</FormLabel>
-                  <CheckboxGroup>
-                    <Flex direction="column">
-                      <Checkbox {...field} key="ad07c79e-7d96-46dd-9cdf-8fccae1ba75b" value="ad07c79e-7d96-46dd-9cdf-8fccae1ba75b">Heinz Müller</Checkbox>
-                    </Flex>
-                  </CheckboxGroup>
-                  <FormErrorMessage>{form.errors.students}</FormErrorMessage>
-                </FormControl>
-              )}
-            </Field>
+            <SearchSelectInputMultiple
+              name="students"
+              label="Schüler"
+              items={studentsQuery.data?.students}
+              textTransformer={t => `${t.lastName}, ${t.firstName}`}
+              valueTransformer={t => t.id}
+              placeholder={'Keine Schüler gewählt'}
+            />
+            <Box mb={4} />
             <Button colorScheme="primary" type="submit" isLoading={props.isSubmitting}>Weiter</Button>
           </Form>
         )}
