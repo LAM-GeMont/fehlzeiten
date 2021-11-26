@@ -53,9 +53,15 @@ export class Excuse extends BaseEntity {
     @Field(() => [Int])
     lessons?: number[]
 
+    @Column()
+    studentId: string
+
     @ManyToOne(() => Student, student => student.excuses, { nullable: false, onDelete: 'CASCADE' })
     @Field(() => Student)
     student: Student
+
+    @Column({ nullable: true })
+    submittedById?: string
 
     @ManyToOne(() => User, user => user.submittedAbsences, { onDelete: 'SET NULL' })
     @Field(() => User, { nullable: true })

@@ -1,25 +1,26 @@
 import { User } from '../entity/User'
-import { Arg, Ctx, Mutation, Query, Resolver } from 'type-graphql'
+import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql'
 import { registerUser, UserRegisterInput, UserRegisterResponse } from './user/register'
 import { Context } from '../types'
 import { loginUser, UserLoginResponse, UserLoginInput } from './user/login'
-import { self } from './user/self'
-import { logoutUser } from './user/logout'
 
 @Resolver(User)
 export class UserResolver {
+  @Authorized()
   @Query(() => [User])
   async users () {
     return await User.find()
   }
 
+  @Authorized()
   @Query(() => User, { nullable: true })
   async self (
     @Ctx() context: Context
   ) {
-    return self(context)
+    return context.req.user
   }
 
+  @Authorized('COORDINATOR')
   @Mutation(() => UserRegisterResponse)
   async registerUser (
     @Arg('data') data: UserRegisterInput,
@@ -40,6 +41,8 @@ export class UserResolver {
   async logoutUser (
     @Ctx() context: Context
   ) : Promise<void> {
-    return logoutUser(context)
+    return new Promise<void>((resolve) => {
+      context.req.session.destroy(resolve)
+    })
   }
 }

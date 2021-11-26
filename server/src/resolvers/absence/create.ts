@@ -5,7 +5,6 @@ import { Student } from '../../entity/Student'
 
 export enum AbsenceCreateErrorCode {
   UNKNOWN_ERROR,
-  UNAUTHORIZED,
   INVALID_STUDENT_ID,
   INVALID_DATE,
   ABSENCE_ALREADY_EXISTS

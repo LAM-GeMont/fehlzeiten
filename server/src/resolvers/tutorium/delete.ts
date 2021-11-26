@@ -1,12 +1,9 @@
 import { Tutorium } from '../../entity/Tutorium'
 import { registerEnumType, ObjectType, Field, InputType, ID } from 'type-graphql'
-import { User } from '../../entity/User'
-import { Context } from '../../types'
 
 export enum TutoriumDeleteErrorCode {
   UNKNOWN_ERROR,
   NOT_FOUND,
-  UNAUTHORIZED
 }
 
 registerEnumType(TutoriumDeleteErrorCode, {
@@ -34,17 +31,8 @@ export class TutoriumDeleteInput {
   id: string
 }
 
-export async function deleteTutorium (data: TutoriumDeleteInput, context: Context): Promise<TutoriumDeleteResponse> {
+export async function deleteTutorium (data: TutoriumDeleteInput): Promise<TutoriumDeleteResponse> {
   try {
-    const caller = await User.fromContext(context)
-    if (caller == null || !caller.isCoordinator) {
-      return {
-        errors: [{
-          code: TutoriumDeleteErrorCode.UNAUTHORIZED
-        }]
-      }
-    }
-
     const tutorium = await Tutorium.findOne(data.id)
     if (tutorium == null) {
       return {
