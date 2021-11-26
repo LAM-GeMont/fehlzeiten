@@ -53,6 +53,9 @@ export class Absence extends BaseEntity {
     @Field(() => Student)
     student: Student
 
+    @Column({ nullable: true })
+    submittedById?: string
+
     @ManyToOne(() => User, user => user.submittedAbsences, { onDelete: 'SET NULL' })
     @Field(() => User, { nullable: true })
     submittedBy?: User
