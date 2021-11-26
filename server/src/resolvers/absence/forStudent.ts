@@ -7,7 +7,6 @@ import { Context } from '../../types'
 export enum AbsencesForStudentErrorCode {
   UNKNOWN_ERROR,
   INVALID_STUDENT_ID,
-  UNAUTHORIZED
 }
 
 registerEnumType(AbsencesForStudentErrorCode, {
