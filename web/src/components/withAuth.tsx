@@ -40,7 +40,7 @@ const WithAuth = (Component: React.FC<WithAuthProps>, options?: Options) => {
           </Center>
         )}
         {!loading && isAuthorized(data, roles) === !redirectAuthorized && (
-          <Component self={data.self} />
+          <Component self={data?.self} />
         )}
       </>
     )
