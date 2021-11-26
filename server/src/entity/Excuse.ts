@@ -53,11 +53,11 @@ export class Excuse extends BaseEntity {
     @Field(() => [Int])
     lessons?: number[]
 
-    @ManyToOne(() => Student, student => student.excuses)
+    @ManyToOne(() => Student, student => student.excuses, { nullable: false, onDelete: 'CASCADE' })
     @Field(() => Student)
     student: Student
 
-    @ManyToOne(() => User, user => user.submittedAbsences)
-    @Field(() => User)
-    submittedBy: User
+    @ManyToOne(() => User, user => user.submittedAbsences, { onDelete: 'SET NULL' })
+    @Field(() => User, { nullable: true })
+    submittedBy?: User
 }
