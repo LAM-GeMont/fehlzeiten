@@ -1,6 +1,6 @@
 import { useDisclosure } from '@chakra-ui/hooks'
 import { AddIcon, DeleteIcon, RepeatIcon } from '@chakra-ui/icons'
-import { Box, Spinner, Button, Flex, IconButton, SimpleGrid, useToast, Heading } from '@chakra-ui/react'
+import { Box, Text, Spinner, Button, Flex, IconButton, SimpleGrid, useToast, Heading, Link } from '@chakra-ui/react'
 import React, { useMemo } from 'react'
 import { FaEdit } from 'react-icons/fa'
 import { CreateStudentModal } from '../components/CreateStudentModal'
@@ -39,7 +39,12 @@ const StudentPage: React.FC<Props> = ({ self }) => {
   const columns = useMemo(() => [
     {
       Header: 'Vorname',
-      accessor: 'firstName'
+      accessor: 'firstName',
+      Cell: ({ row }) => (
+        <Link href={`/student/${row.original.id}`}>
+          <Text>{`${row.original.firstName}`}</Text>
+        </Link>
+      )
     },
     {
       Header: 'Nachname',
