@@ -1,9 +1,10 @@
-import { Box, Button, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Select, useToast, FormControl, FormLabel, Input, FormErrorMessage } from '@chakra-ui/react'
+import { Box, Button, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, useToast, FormControl, FormLabel, Input, FormErrorMessage } from '@chakra-ui/react'
 import { Field, Form, Formik } from 'formik'
 
 import { StudentEditErrorCode, useEditStudentMutation, useTutoriumsQuery } from '../generated/graphql'
 import { toastApolloError } from '../util'
 import React, { useMemo } from 'react'
+import { SearchSelectInputSingle } from './SearchSelectInput'
 
 interface Props {
   isOpen: boolean,
@@ -106,18 +107,14 @@ export const EditStudentModal: React.FC<Props> = ({ isOpen, onClose, studentId, 
                     )}
                 </Field>
                 <Box mt={4} />
-                <Field name="tutorium">
-                    {({ field }) => (
-                        <FormControl id="tutorium">
-                            <FormLabel>Tutorium (optional)</FormLabel>
-                            <Select {...field} placeholder="Kein Tutorium">
-                                {data.map(tutorium => {
-                                  return <option value={tutorium.id} key={tutorium.id}> {tutorium.name}</option>
-                                })}
-                            </Select>
-                        </FormControl>
-                    )}
-                </Field>
+                <SearchSelectInputSingle
+                  label="Tutorium (optional)"
+                  name="tutorium"
+                  placeholder="Kein Tutorium gewählt"
+                  items={data}
+                  textTransformer={t => t.name}
+                  valueTransformer={t => t.id}
+                />
               </ModalBody>
               <ModalFooter>
                 <Button mr={3} variant="ghost" onClick={onClose}>Abbrechen</Button>

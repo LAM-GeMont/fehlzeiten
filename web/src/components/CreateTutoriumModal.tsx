@@ -8,7 +8,7 @@ import {
   ModalHeader,
   ModalOverlay,
   useToast,
-  Select,
+  Box,
   FormControl,
   FormLabel,
   Input,
@@ -19,6 +19,7 @@ import { TutoriumCreateErrorCode, useCreateTutoriumMutation, useTeachersQuery } 
 import { toastApolloError } from '../util'
 
 import React, { useMemo } from 'react'
+import { SearchSelectInputSingle } from './SearchSelectInput'
 
 interface Props {
   isOpen: boolean,
@@ -118,20 +119,16 @@ export const CreateTutoriumModal: React.FC<Props> = ({ isOpen, onClose }) => {
                     </FormControl>
                   )}
                 </Field>
-                <FormLabel>Name des Tutors</FormLabel>
-                <Field name="tutorId" validate={validateTutorId}>
-                  {({ field, form }) => (
-                    <FormControl isInvalid={form.errors.tutorId && form.touched.tutorId}>
-                      <Select {...field} placeholder="Wähle einen Lehrer">
-                        {teachersData.map(currentUser =>
-                          (
-                            <option id="tutorId" value={currentUser.id} key={currentUser.id}> {currentUser.name} </option>
-                          ))}
-                      </Select>
-                      <FormErrorMessage>{form.errors.tutorId}</FormErrorMessage>
-                    </FormControl>
-                  )}
-                </Field>
+                <Box mt={4} />
+                <SearchSelectInputSingle
+                  name="tutorId"
+                  label="Name des Tutors"
+                  items={teachersData}
+                  valueTransformer={t => t.id}
+                  textTransformer={t => t.name}
+                  validate={validateTutorId}
+                  placeholder="Wähle einen Lehrer"
+                />
               </ModalBody>
               <ModalFooter>
                 <Button mr={3} variant="ghost" onClick={onClose}>Abbrechen</Button>
