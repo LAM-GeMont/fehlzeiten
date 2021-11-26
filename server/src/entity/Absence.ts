@@ -45,7 +45,7 @@ export class Absence extends BaseEntity {
     @Column({ default: false })
     @Field()
     exam: boolean
-  
+
     @Column()
     studentId: string
 
