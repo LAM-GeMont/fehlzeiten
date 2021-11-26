@@ -1,12 +1,9 @@
-import { Context } from '../../types'
 import { Student } from '../../entity/Student'
-import { User } from '../../entity/User'
 import { Field, InputType, ObjectType, registerEnumType } from 'type-graphql'
 import { Tutorium } from '../../entity/Tutorium'
 
 export enum StudentCreateErrorCode {
     UNKNOWN_ERROR,
-    UNAUTHORIZED,
     NAME_TOO_SHORT,
     DUPLICATE_NAME,
     TUTORIUM_NOT_FOUND
@@ -46,17 +43,8 @@ export class StudentCreateInput {
     tutoriumId?: string
 }
 
-export async function createStudent (args: StudentCreateInput, context: Context) : Promise<StudentCreateResponse> {
+export async function createStudent (args: StudentCreateInput) : Promise<StudentCreateResponse> {
   try {
-    const caller = await User.fromContext(context)
-    if (caller == null || !caller.isCoordinator) {
-      return {
-        errors: [{
-          code: StudentCreateErrorCode.UNAUTHORIZED
-        }]
-      }
-    }
-
     if (args.firstName.length < 1 || args.lastName.length < 1) {
       return {
         errors: [{
