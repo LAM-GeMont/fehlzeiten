@@ -34,42 +34,26 @@ export class AbsencesForStudentResponse {
 
 export async function absencesForStudent (studentId: string, context: Context) : Promise<AbsencesForStudentResponse> {
   try {
-    if (context.req.user.role === Role.COORDINATOR) {
-      const student = await Student.findOne(studentId, { relations: ['absences'] })
-      if (student == null) {
-        return {
-          errors: [{
-            code: AbsencesForStudentErrorCode.INVALID_STUDENT_ID
-          }]
-        }
+    const student = await Student.findOne(studentId, { relations: ['absences', 'tutorium'] })
+    if (student == null) {
+      return {
+        errors: [{
+          code: AbsencesForStudentErrorCode.INVALID_STUDENT_ID
+        }]
       }
+    }
+
+    // Allow coordinators and the students tutor to access all absences
+    if (context.req.user.role === Role.COORDINATOR || student.tutorium?.tutorId === context.req.user.id) {
       return {
         absences: student.absences
       }
     }
-    const absences = await Absence.find({
-      join: {
-        alias: 'absence',
-        leftJoinAndSelect: {
-          student: 'absence.student',
-          user: 'absence.submittedBy'
-        }
-      },
-      where: (qb: any) => {
-        qb.where('user.id = :id', { id: context.req.user.id }).andWhere('student.id = :studentId', { studentId })
-      }
-    })
-    if (absences.length < 1) {
-      const student = await Student.findOne(studentId)
-      if (student == null) {
-        return {
-          errors: [{
-            code: AbsencesForStudentErrorCode.INVALID_STUDENT_ID
-          }]
-        }
-      }
+
+    // Other users see only the absences submitted by themselves
+    return {
+      absences: student.absences.filter(absence => absence.submittedById === context.req.user.id)
     }
-    return { absences }
   } catch (error) {
     return {
       errors: [{
