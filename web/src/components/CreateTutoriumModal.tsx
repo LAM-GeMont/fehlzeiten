@@ -30,7 +30,7 @@ interface Props {
 const validateName = (value: string) => {
   let error
   if (!value || value.length === 0) {
-    error = 'Ein Name muss festgelegt werden'
+    error = 'Ein Name muss festgelegt werden.'
   }
   return error
 }

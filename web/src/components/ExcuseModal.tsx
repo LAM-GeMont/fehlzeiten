@@ -17,10 +17,10 @@ import {
   TabList,
   TabPanel,
   TabPanels,
-  Tabs
+  Tabs, useToast
 } from '@chakra-ui/react'
 import { Field, Form, Formik } from 'formik'
-import { formatDateISO } from '../util'
+import {formatDateISO, toastApolloError} from '../util'
 import { Box, Flex } from '@chakra-ui/layout'
 import {
   Student,
@@ -59,9 +59,14 @@ const ExcuseModal: React.FC<Props> = ({ isOpen, onClose, student }) => {
   for (let i = 1; i <= 10; i++) {
     lessonIndexes.push(i)
   }
+  const toast = useToast()
 
-  const [createExcuseLessons] = useCreateExcuseLessonsMutation()
-  const [createExcuseDays] = useCreateExcuseDaysMutation()
+  const [createExcuseLessons] = useCreateExcuseLessonsMutation({
+    onError: errors => toastApolloError(toast, errors)
+  })
+  const [createExcuseDays] = useCreateExcuseDaysMutation({
+    onError: errors => toastApolloError(toast, errors)
+  })
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -115,7 +120,11 @@ const ExcuseModal: React.FC<Props> = ({ isOpen, onClose, student }) => {
                         </FormControl>
                       )}
                     </Field>
-                    <Field name="lesson">
+                    <Field name="lesson" validate={values => {
+                      if (values.length < 1) {
+                        return 'Bitte mindestens eine Unterrichtsstunde auswählen.'
+                      }
+                    }}>
                       {({ field, form }) => (
                         <FormControl isInvalid={form.errors.lesson && form.touched.lesson} mb={6}>
                           <FormLabel>Unterrichtsstunden</FormLabel>

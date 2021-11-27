@@ -89,7 +89,6 @@ const AbsencePage: React.FC<Props> = ({ self }) => {
               })
             }
           }
-          console.log(res)
         }}
       >
         {(props) => (
@@ -109,7 +108,11 @@ const AbsencePage: React.FC<Props> = ({ self }) => {
                 </FormControl>
               )}
             </Field>
-            <Field name="lesson">
+            <Field name="lesson" validate={values => {
+              if (values.length < 1) {
+                return 'Bitte mindestens eine Unterrichtsstunde auswählen.'
+              }
+            }}>
               {({ field, form }) => (
                 <FormControl isInvalid={form.errors.lesson && form.touched.lesson} mb={6}>
                   <FormLabel>Unterrichtsstunden</FormLabel>
