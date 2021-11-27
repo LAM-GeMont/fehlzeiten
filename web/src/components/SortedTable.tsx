@@ -130,7 +130,4 @@ const SortedTable: React.FC<{table: TableInstance, tableFilter: string}> = ({ ta
   )
 }
 
-export default React.memo(SortedTable, (prevProps, nextProps) => {
-  return prevProps.table === nextProps.table &&
-    prevProps.tableFilter === nextProps.tableFilter
-})
+export default React.memo(SortedTable)
