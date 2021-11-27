@@ -100,7 +100,7 @@ const AbsencePage: React.FC<Props> = ({ self }) => {
                   <FormLabel htmlFor="date">Tag der Fehlzeit</FormLabel>
                   <Input {...field} id="date" type="date" onChange={(event) => {
                     let targetValue = event.target.value
-                    if (targetValue === '') {
+                    if (event.target.value === '') {
                       targetValue = formatDateISO(new Date())
                     }
                     form.setFieldValue(field.name, targetValue)

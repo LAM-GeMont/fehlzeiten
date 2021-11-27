@@ -36,11 +36,11 @@ interface Props {
 
 function handleStartEndDateChange (event, field, form) {
   let targetValue = event.target.value
-  if (targetValue === '') {
+  if (event.target.value === '') {
     targetValue = formatDateISO(new Date())
   }
   form.setFieldValue(field.name, targetValue)
-  if (event.type === 'blur') {
+  if (event.type === 'blur' || event.target.value === '') {
     if (event.target.id === 'startDate') {
       if (targetValue > form.values.endDate) {
         form.setFieldValue('endDate', targetValue)
@@ -104,7 +104,13 @@ const ExcuseModal: React.FC<Props> = ({ isOpen, onClose, student }) => {
                       {({ field, form }) => (
                         <FormControl isInvalid={form.errors.date && form.touched.date} mb={6}>
                           <FormLabel htmlFor="date">Tag der Fehlzeit</FormLabel>
-                          <Input {...field} id="date" type="date"/>
+                          <Input {...field} id="date" type="date" onChange={(event) => {
+                            let targetValue = event.target.value
+                            if (event.target.value === '') {
+                              targetValue = formatDateISO(new Date())
+                            }
+                            form.setFieldValue(field.name, targetValue)
+                          }}/>
                           <FormErrorMessage>{form.errors.date}</FormErrorMessage>
                         </FormControl>
                       )}
