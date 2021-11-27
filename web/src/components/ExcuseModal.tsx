@@ -23,7 +23,6 @@ import { Field, Form, Formik } from 'formik'
 import { formatDateISO, toastApolloError } from '../util'
 import { Box, Flex } from '@chakra-ui/layout'
 import {
-  ExcuseCreateResponse,
   Student,
   useCreateExcuseDaysMutation,
   useCreateExcuseLessonsMutation
