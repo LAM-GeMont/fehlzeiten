@@ -1,11 +1,11 @@
 import { Flex, Heading, SimpleGrid } from '@chakra-ui/layout'
-import { Spinner, Button, IconButton, useDisclosure, useToast, Text, Box } from '@chakra-ui/react'
-import React, { useMemo } from 'react'
+import { Spinner, Button, IconButton, useDisclosure, useToast, Text, Box, Input, InputGroup, InputLeftElement } from '@chakra-ui/react'
+import React, { useCallback, useMemo, useState } from 'react'
 import { PageScaffold } from '../components/PageScaffold'
 import { Role, useTutoriumsQuery } from '../generated/graphql'
-import { AddIcon, DeleteIcon, RepeatIcon } from '@chakra-ui/icons'
+import { AddIcon, DeleteIcon, RepeatIcon, SearchIcon } from '@chakra-ui/icons'
 import { CreateTutoriumModal } from '../components/CreateTutoriumModal'
-import SortedTable from '../components/SortedTable'
+import SortedTable, { useSortedTable } from '../components/SortedTable'
 import { toastApolloError } from '../util'
 import WithAuth, { WithAuthProps } from '../components/withAuth'
 import { DeleteTutoriumAlertDialog } from '../components/DeleteTutoriumAlertDialog'
@@ -22,12 +22,19 @@ const TutoriumPage: React.FC<Props> = ({ self }) => {
   const tutoriumCreateModal = useDisclosure()
   const tutoriumDeleteAlertDialog = useDisclosure()
   const toast = useToast()
-  const [rowId, setRowId] = React.useState('')
-  const [rowName, setRowName] = React.useState('')
+  const [rowId, setRowId] = useState('')
+  const [rowName, setRowName] = useState('')
 
   const tutoriumsQuery = useTutoriumsQuery({
     onError: errors => toastApolloError(toast, errors)
   })
+
+  const openDelete = tutoriumDeleteAlertDialog.onOpen
+  const deleteTutorium = useCallback((row) => {
+    setRowId(row.original.id)
+    setRowName(row.original.name)
+    openDelete()
+  }, [openDelete])
 
   const data = useMemo(() => {
     if (tutoriumsQuery.data?.tutoriums != null) {
@@ -59,28 +66,36 @@ const TutoriumPage: React.FC<Props> = ({ self }) => {
       Header: 'Aktionen',
       Cell: ({ row }) => (
         <Flex justifyContent="center">
-          <IconButton isDisabled={self.role === 'TEACHER'} variant="outline" aria-label="Löschen" icon={<DeleteIcon />} onClick={ () => {
-            setRowId(row.original.id)
-            setRowName(row.original.name)
-            tutoriumDeleteAlertDialog.onOpen()
-          }} />
+          <IconButton isDisabled={self.role === 'TEACHER'} variant="outline" aria-label="Löschen" icon={<DeleteIcon />} onClick={ () => deleteTutorium(row)} />
         </Flex>
       )
     }
-  ], [tutoriumDeleteAlertDialog, self.role])
+  ], [deleteTutorium, self.role])
+
+  const sortedTable = useSortedTable({
+    columns,
+    data,
+    filterKeys: ['name', 'tutor.name']
+  })
 
   return (
     <PageScaffold role={self.role}>
       <SimpleGrid>
         <Flex direction="column" alignItems="center" minW="300px" minH="600px" margin={5}>
           <Flex w="full" padding={5}>
+            <InputGroup flexShrink={10}>
+              <InputLeftElement>
+                <SearchIcon />
+              </InputLeftElement>
+              <Input width="xs" value={sortedTable.filter} onChange={e => sortedTable.setFilter(e.target.value)} />
+            </InputGroup>
             <Button marginLeft="auto" leftIcon={<AddIcon />} onClick={tutoriumCreateModal.onOpen}>Tutorium hinzufügen</Button>
             <IconButton ml={4} variant="outline" aria-label="Daten neu laden" icon={<RepeatIcon />} onClick={() => { tutoriumsQuery.refetch() }}></IconButton>
           </Flex>
           {tutoriumsQuery.loading && (<Spinner />)}
           {tutoriumsQuery.error != null && (<Heading>Error!</Heading>)}
           {tutoriumsQuery.data != null && (
-            <SortedTable columns={columns} data={data} />
+            <SortedTable table={sortedTable.table} tableFilter={sortedTable.tableFilter}/>
           )}
           {(data.length === 0) && (
             <Box mt={5}>
