@@ -23,6 +23,7 @@ import { Field, Form, Formik } from 'formik'
 import { formatDateISO, toastApolloError } from '../util'
 import { Box, Flex } from '@chakra-ui/layout'
 import {
+  ExcuseCreateResponse,
   Student,
   useCreateExcuseDaysMutation,
   useCreateExcuseLessonsMutation
@@ -50,6 +51,26 @@ function handleStartEndDateChange (event, field, form) {
         form.setFieldValue('startDate', targetValue)
       }
     }
+  }
+}
+
+function handleSubmitFeedback (createExcuse, toast) {
+  if (createExcuse.errors) {
+    createExcuse.errors.forEach(error => {
+      toast({
+        title: 'Fehler bei der Erstellung',
+        description: error.message == null ? error.code : `${error.code}: ${error.message}`,
+        status: 'error',
+        isClosable: true
+      })
+    })
+  }
+  if (createExcuse.excuse) {
+    toast({
+      title: 'Entschuldigung erfolgreich eingetragen',
+      status: 'success',
+      isClosable: true
+    })
   }
 }
 
@@ -100,7 +121,9 @@ const ExcuseModal: React.FC<Props> = ({ isOpen, onClose, student }) => {
                     }
                   })
                   actions.setSubmitting(false)
-                  console.log(res)
+                  if (res.data) {
+                    handleSubmitFeedback(res.data.createExcuse, toast)
+                  }
                 }}
               >
                 {(props) => (
