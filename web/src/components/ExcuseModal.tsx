@@ -20,7 +20,7 @@ import {
   Tabs, useToast
 } from '@chakra-ui/react'
 import { Field, Form, Formik } from 'formik'
-import {formatDateISO, toastApolloError} from '../util'
+import { formatDateISO, toastApolloError } from '../util'
 import { Box, Flex } from '@chakra-ui/layout'
 import {
   Student,
