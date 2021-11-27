@@ -2,16 +2,21 @@ import React from 'react'
 import { PageScaffold } from '../components/PageScaffold'
 import WithAuth, { WithAuthProps } from '../components/withAuth'
 import {
-  Button, Checkbox, CheckboxGroup,
+  Box,
+  Button,
+  Checkbox,
+  CheckboxGroup,
+  Flex,
   FormControl,
   FormErrorMessage,
   FormLabel,
-  Input, Switch,
-  Flex, Box
+  Input,
+  Switch,
+  useToast
 } from '@chakra-ui/react'
 import { Field, Form, Formik } from 'formik'
-import { formatDateISO } from '../util'
-import { useCreateAbsencesMutation, useStudentsQuery } from '../generated/graphql'
+import { formatDateISO, toastApolloError } from '../util'
+import { AbsenceCreateErrorCode, useCreateAbsencesMutation, useStudentsQuery } from '../generated/graphql'
 import { SearchSelectInputMultiple } from '../components/SearchSelectInput'
 
 interface Props extends WithAuthProps {
@@ -23,9 +28,12 @@ const AbsencePage: React.FC<Props> = ({ self }) => {
   for (let i = 1; i <= 10; i++) {
     lessonIndexes.push(i)
   }
+  const toast = useToast()
 
   const studentsQuery = useStudentsQuery()
-  const [createAbsences] = useCreateAbsencesMutation()
+  const [createAbsences] = useCreateAbsencesMutation({
+    onError: errors => toastApolloError(toast, errors)
+  })
 
   return (
     <PageScaffold role={self.role}>
@@ -49,6 +57,38 @@ const AbsencePage: React.FC<Props> = ({ self }) => {
             }
           })
           actions.setSubmitting(false)
+          if (res.data) {
+            let existingAbsences = 0
+            if (res.data.createAbsences.errors) {
+              res.data.createAbsences.errors.forEach(error => {
+                switch (error.code) {
+                  case AbsenceCreateErrorCode.InvalidDate:
+                    actions.setFieldError('date', 'Ungülitges Datum. Bitte wählen Sie ein gültiges Datum.')
+                    break
+                  case AbsenceCreateErrorCode.AbsenceAlreadyExists:
+                    existingAbsences++
+                    break
+                  default:
+                    toast({
+                      title: 'Fehler bei der Erstellung',
+                      description: error.message == null ? error.code : `${error.code}: ${error.message}`,
+                      status: 'error',
+                      isClosable: true
+                    })
+                    break
+                }
+              })
+            }
+            if (res.data.createAbsences.absences || existingAbsences > 0) {
+              const count = (res.data.createAbsences.absences?.length || 0) + existingAbsences
+              const title = count > 1 ? `${count} Fehlzeiten erfolgreich eingetragen.` : 'Eine Fehlzeit erfolgreich eingetragen'
+              toast({
+                title,
+                status: 'success',
+                isClosable: true
+              })
+            }
+          }
           console.log(res)
         }}
       >
@@ -58,7 +98,13 @@ const AbsencePage: React.FC<Props> = ({ self }) => {
               {({ field, form }) => (
                 <FormControl isInvalid={form.errors.date && form.touched.date} mb={6}>
                   <FormLabel htmlFor="date">Tag der Fehlzeit</FormLabel>
-                  <Input {...field} id="date" type="date"/>
+                  <Input {...field} id="date" type="date" onChange={(event) => {
+                    let targetValue = event.target.value
+                    if (targetValue === '') {
+                      targetValue = formatDateISO(new Date())
+                    }
+                    form.setFieldValue(field.name, targetValue)
+                  }}/>
                   <FormErrorMessage>{form.errors.date}</FormErrorMessage>
                 </FormControl>
               )}
