@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import React, { useMemo } from 'react'
 import { FaEdit } from 'react-icons/fa'
 import { PageScaffold } from '../../components/PageScaffold'
-import SortedTable from '../../components/SortedTable'
+import SortedTable from './SortedTableAbsences'
 import WithAuth, { WithAuthProps } from '../../components/withAuth'
 import { Role, useAbsencesForStudentQuery, useStudentsQuery } from '../../generated/graphql' //mus weggemacht werden
 import { toastApolloError } from '../../util'
@@ -55,11 +55,8 @@ const Student: React.FC<Props> = ({ self }) => {
       accessor: 'id'
     },
     {
-      Header: 'Klausur',
-      Cell: ({ row }) => (
-        //TODO
-        <CheckIcon/>
-      )
+      Header: '',
+      accessor: 'exam'
     },
     {
       Header: 'Aktionen',
@@ -133,7 +130,7 @@ const Student: React.FC<Props> = ({ self }) => {
         <Flex direction="column" alignItems="center" minW="300px" minH="600px" margin={5}>
           <Flex w="full" padding={5}>
             <Text fontSize="24" fontWeight="bold">Fehlzeiten</Text>
-            <Button marginLeft="auto" leftIcon={<AddIcon />} /* onClick={studentCreateModal.onOpen} */>Schüler hinzufügen</Button>
+            <Button marginLeft="auto" leftIcon={<AddIcon />} /* onClick={studentCreateModal.onOpen} */>Entschuldigung hinzufügen</Button>
             <IconButton ml={4} variant="outline" aria-label="Daten neu laden" icon={<RepeatIcon />} onClick={() => { studentAbsences.refetch() }}></IconButton>
           </Flex>
           {studentAbsences.loading && (<Spinner />)}
