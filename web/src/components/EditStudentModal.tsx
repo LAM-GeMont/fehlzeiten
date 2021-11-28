@@ -84,7 +84,7 @@ export const EditStudentModal: React.FC<Props> = ({ isOpen, onClose, studentId, 
         >
           {(props) => (
             <Form>
-              <ModalHeader>Schüler bearbeitenn</ModalHeader>
+              <ModalHeader>Schüler bearbeiten</ModalHeader>
               <ModalCloseButton />
               <ModalBody>
                 <Field name="firstName" validate={validateName}>

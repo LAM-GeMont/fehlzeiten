@@ -1,7 +1,7 @@
 import { Box, Button, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, useToast, FormControl, FormLabel, Input, FormErrorMessage } from '@chakra-ui/react'
 import { Field, Form, Formik } from 'formik'
 
-import { StudentEditErrorCode, useEditStudentMutation, useTutoriumsQuery } from '../generated/graphql'
+import { TutoriumEditErrorCode, useEditTutoriumMutation, useTeachersQuery } from '../generated/graphql'
 import { toastApolloError } from '../util'
 import React, { useMemo } from 'react'
 import { SearchSelectInputSingle } from './SearchSelectInput'
@@ -9,18 +9,10 @@ import { SearchSelectInputSingle } from './SearchSelectInput'
 interface Props {
   isOpen: boolean,
   onClose: () => void,
-  studentId: string,
-  firstName: string,
-  lastName: string,
-  tutoriumId: string
+  tutoriumId: string,
+  name: string,
+  teacherId: string
 }
-
-export const EditTutoriumAlertDialog: React.FC<Props> = ({ isOpen, onClose, rowId, name }) => {
-  const toast = useToast()
-
-  const [remove] = useEditTutoriumMutation({
-    onError: errors => toastApolloError(toast, errors)
-  })
 
 const validateName = (value: string) => {
   let error: string
@@ -30,23 +22,23 @@ const validateName = (value: string) => {
   return error
 }
 
-export const EditStudentModal: React.FC<Props> = ({ isOpen, onClose, studentId, firstName, lastName, tutoriumId }) => {
+export const EditTutoriumAlertDialog: React.FC<Props> = ({ isOpen, onClose, tutoriumId, name, teacherId}) => {
   const toast = useToast()
-  const [edit] = useEditStudentMutation({
+  const [edit] = useEditTutoriumMutation({
     onError: errors => toastApolloError(toast, errors)
   })
 
-  const tutoriumsQuery = useTutoriumsQuery({
+  const teachersQuery = useTeachersQuery({
     onError: errors => toastApolloError(toast, errors)
   })
 
-  const data = useMemo(() => {
-    if (tutoriumsQuery.data?.tutoriums != null) {
-      return tutoriumsQuery.data.tutoriums
+  const teachersData = useMemo(() => {
+    if (teachersQuery.data?.users != null) {
+      return teachersQuery.data.users
     } else {
       return []
     }
-  }, [tutoriumsQuery.data])
+  }, [teachersQuery.data])
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -54,22 +46,20 @@ export const EditStudentModal: React.FC<Props> = ({ isOpen, onClose, studentId, 
       <ModalContent>
         <Formik
           initialValues={{
-            id: studentId,
-            firstName: firstName,
-            lastName: lastName,
-            tutorium: tutoriumId
+            id: tutoriumId,
+            name: name,
+            tutor: teacherId
           }}
           onSubmit={ async (values, actions) => {
             const res = await edit({
-              variables: { editStudentData: values },
+              variables: { editTutoriumData: values },
               refetchQueries: 'active'
             })
-            const errors = res.data?.editStudent.errors
+            const errors = res.data?.editTutorium.errors
             if (errors) {
               errors.forEach(error => {
-                if (error.code === StudentEditErrorCode.DuplicateName) {
-                  actions.setFieldError('firstName', 'Diesen Schüler gibt es bereits. Bitte wählen sie einen anderen Namen.')
-                  actions.setFieldError('lastName', 'Diesen Schüler gibt es bereits. Bitte wählen sie einen anderen Namen.')
+                if (error.code === TutoriumEditErrorCode.DuplicateName) {
+                  actions.setFieldError('name', 'Dieses Tutorium gibt es bereits. Bitte wählen sie einen anderen Namen.')
                 } else {
                   toast({
                     title: 'Fehler bei der Erstellung',
@@ -79,9 +69,9 @@ export const EditStudentModal: React.FC<Props> = ({ isOpen, onClose, studentId, 
                   })
                 }
               })
-            } else if (res.data.editStudent.student) {
+            } else if (res.data.editTutorium.tutorium) {
               toast({
-                title: `Schüler ${res.data.editStudent.student.firstName} ${res.data.editStudent.student.lastName} bearbeitet`,
+                title: `Tutorium ${res.data.editTutorium.tutorium.name} bearbeitet`,
                 status: 'success',
                 isClosable: true
               })
@@ -91,36 +81,26 @@ export const EditStudentModal: React.FC<Props> = ({ isOpen, onClose, studentId, 
         >
           {(props) => (
             <Form>
-              <ModalHeader>Schüler bearbeitenn</ModalHeader>
+              <ModalHeader>Tutorium bearbeiten</ModalHeader>
               <ModalCloseButton />
               <ModalBody>
-                <Field name="firstName" validate={validateName}>
+                <Field name="name" validate={validateName}>
                   {({ field, form }) => (
-                    <FormControl isRequired isInvalid={form.errors.firstName && form.touched.firstName}>
-                      <FormLabel htmlFor="firstName">Vorname</FormLabel>
-                      <Input {...field} id="firstName" placeholder="Vorname" autoFocus={true}/>
-                      <FormErrorMessage>{form.errors.firstName}</FormErrorMessage>
+                    <FormControl isRequired isInvalid={form.errors.name && form.touched.name}>
+                      <FormLabel htmlFor="name">Name</FormLabel>
+                      <Input {...field} id="name" placeholder="name" autoFocus={true}/>
+                      <FormErrorMessage>{form.errors.name}</FormErrorMessage>
                     </FormControl>
                   )}
                 </Field>
                 <Box mt={4} />
-                <Field name="lastName" validate={validateName}>
-                    {({ field, form }) => (
-                    <FormControl isRequired isInvalid={form.errors.lastName && form.touched.lastName}>
-                        <FormLabel htmlFor="lastName">Nachname</FormLabel>
-                        <Input {...field} id="lastName" placeholder="Nachname" />
-                        <FormErrorMessage>{form.errors.lastName}</FormErrorMessage>
-                    </FormControl>
-                    )}
-                </Field>
-                <Box mt={4} />
                 <SearchSelectInputSingle
-                  label="Tutorium (optional)"
-                  name="tutorium"
-                  placeholder="Kein Tutorium gewählt"
-                  items={data}
-                  textTransformer={t => t.name}
-                  valueTransformer={t => t.id}
+                    name="tutorId"
+                    label="Tutor (optional)"
+                    items={teachersData}
+                    valueTransformer={t => t.id}
+                    textTransformer={t => t.name}
+                    placeholder="Kein Lehrer gewählt"
                 />
               </ModalBody>
               <ModalFooter>
