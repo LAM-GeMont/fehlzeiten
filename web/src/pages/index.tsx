@@ -1,8 +1,10 @@
-import { Image, Text, Heading, Box, SimpleGrid, Stack, Center, Flex} from '@chakra-ui/react'
+import { Image, Text, Heading, Box, SimpleGrid, Stack, Center, Flex } from '@chakra-ui/react'
 import { FaBook, FaChalkboardTeacher, FaUserGraduate, FaQuestion } from 'react-icons/fa'
 import { PageScaffold } from '../components/PageScaffold'
 import WithAuth, { WithAuthProps } from '../components/withAuth'
-import { LinkBoxHomePage } from '../components/LinkBoxHomePage';
+import { LinkBoxHomePage } from '../components/LinkBoxHomePage'
+import React from 'react'
+
 
 const Index: React.FC<WithAuthProps> = ({ self }) => {
 
@@ -25,7 +27,7 @@ const Index: React.FC<WithAuthProps> = ({ self }) => {
           text='Support'
         />
       </>
-    );
+    )
   }
 
   const getLinkBoxes = (userRole) => {
@@ -45,7 +47,7 @@ const Index: React.FC<WithAuthProps> = ({ self }) => {
           />
           {getTeacherLinkBoxes()}
         </SimpleGrid>
-      );
+      )
     }
 
     if (userRole === 'TEACHER') {
@@ -62,7 +64,7 @@ const Index: React.FC<WithAuthProps> = ({ self }) => {
             {getTeacherLinkBoxes()}
           </Stack>
         </Center>
-      );
+      )
     }
   }
 
@@ -101,7 +103,7 @@ const Index: React.FC<WithAuthProps> = ({ self }) => {
             textAlign='center'
             color='#333333'
           >
-            Willkommen 'Username'
+            Willkommen &apos;Username&apos;
           </Text>
         </Box>
         <Box marginTop={{ base: '10', sm: '16', md: '16', lg: '28' }}>
