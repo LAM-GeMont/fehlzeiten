@@ -10,8 +10,13 @@ const Index: React.FC<WithAuthProps> = ({ self }) => {
     return (
       <>
         <LinkBoxHomePage
+          icon={FaUserGraduate}
+          href="/student"
+          text="Schüler Management"
+        />
+        <LinkBoxHomePage
           icon={FaBook}
-          href="/"
+          href="/absence"
           text="Abwesenheit buchen"
         />
         <LinkBoxHomePage
@@ -26,18 +31,17 @@ const Index: React.FC<WithAuthProps> = ({ self }) => {
   const getLinkBoxes = (userRole) => {
     if (userRole === "COORDINATOR") {
       return (
-        <SimpleGrid minChildWidth={{ base: "125px", sm:"225px", md: "225px", lg: "325px" }} 
-          height="auto" spacing={{ base: "16px", sm:"24px", md: "24px", lg: "40px" }}
-          fontSize={{ base: "16px", sm: "24px", md: "24px", lg: "36px" }} wordBreak="break-word">
+        <SimpleGrid 
+          minChildWidth={{ base: "125px", sm: "225px", md: "225px", lg: "325px" }}
+          height="auto"
+          spacing={{ base: "16px", sm: "24px", md: "24px", lg: "40px" }}
+          fontSize={{ base: "16px", sm: "24px", md: "24px", lg: "36px" }}
+          wordBreak="break-word"
+        >
           <LinkBoxHomePage
             icon={FaChalkboardTeacher}
             href="/tutorium"
             text="Tutorium Management"
-          />
-          <LinkBoxHomePage
-            icon={FaUserGraduate}
-            href="/"
-            text="Schüler Management"
           />
           {getTeacherLinkBoxes()}
         </SimpleGrid>
@@ -46,8 +50,15 @@ const Index: React.FC<WithAuthProps> = ({ self }) => {
 
     if (userRole === "TEACHER") {
       return (
+        //different layout, buttons are smaller --> maybe it is better???
         <Center>
-          <Stack direction={["column", "row"]} spacing="40px">
+          <Stack 
+            direction={["column", "row"]}
+            spacing={{ base: "16px", sm: "24px", md: "24px", lg: "40px" }}
+            minChildWidth="inherit"
+            height="inherit"
+            fontSize="inherit"
+          >
             {getTeacherLinkBoxes()}
           </Stack>
         </Center>
