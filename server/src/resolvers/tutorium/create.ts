@@ -36,8 +36,8 @@ export class TutoriumCreateInput {
   @Field()
   name: string
 
-  @Field()
-  tutorId: string
+  @Field({ nullable: true })
+  tutorId?: string
 }
 
 export async function createTutorium (args: TutoriumCreateInput) : Promise<TutoriumCreateResponse> {
@@ -53,16 +53,20 @@ export async function createTutorium (args: TutoriumCreateInput) : Promise<Tutor
 
     const tutorium = new Tutorium()
     tutorium.name = args.name
-    const tutor = await User.findOne(args.tutorId)
 
-    if (tutor == null) {
-      return {
-        errors: [{
-          code: TutoriumCreateErrorCode.TUTOR_NOT_VALID,
-          message: 'The provided Tutor is not valid'
-        }]
+    if (args.tutorId != null && args.tutorId !== '') {
+      const tutor = await User.findOne(args.tutorId)
+
+      if (tutor == null) {
+        return {
+          errors: [
+            {
+              code: TutoriumCreateErrorCode.TUTOR_NOT_VALID,
+              message: 'The provided Tutor is not valid'
+            }
+          ]
+        }
       }
-    } else {
       tutorium.tutor = tutor
     }
 
