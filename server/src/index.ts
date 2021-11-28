@@ -21,6 +21,8 @@ import { AbsenceResolver } from './resolvers/AbsenceResolver.js'
 import { authChecker } from './auth.js'
 import { Excuse } from './entity/Excuse'
 import { ExcuseResolver } from './resolvers/ExcuseResolver'
+import { createAbsenceLoader, createExcuseLoader, createStudentLoader, createTutoriumLoader, createUserLoader } from './loaders'
+import { Context } from './types.js'
 
 env.config({ path: path.resolve(process.cwd(), '..', '.env'), example: path.resolve(process.cwd(), '..', '.env.example') });
 
@@ -49,16 +51,28 @@ env.config({ path: path.resolve(process.cwd(), '..', '.env'), example: path.reso
     }
   }))
 
+  const loaders = {
+    absence: createAbsenceLoader(),
+    excuse: createExcuseLoader(),
+    student: createStudentLoader(),
+    tutorium: createTutoriumLoader(),
+    user: createUserLoader()
+  }
+
   const apollo = new ApolloServer({
     schema: await buildSchema({
       resolvers: [AbsenceResolver, ExcuseResolver, StudentResolver, TutoriumResolver, UserResolver],
       validate: false,
       authChecker: authChecker
     }),
-    context: ({ req, res }) => ({
-      req,
-      res
-    })
+    context: async ({ req, res }): Promise<Context> => {
+      return {
+        req,
+        res,
+        caller: req.session.userId != null ? await loaders.user.load(req.session.userId) : undefined,
+        loaders
+      }
+    }
   })
 
   await apollo.start()

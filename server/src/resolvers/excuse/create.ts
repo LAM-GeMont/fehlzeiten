@@ -49,7 +49,7 @@ export class ExcuseCreateInput {
   lessons?: number[]
 }
 
-export async function createExcuse (args: ExcuseCreateInput, context: Context) : Promise<ExcuseCreateResponse> {
+export async function createExcuse (args: ExcuseCreateInput, { caller }: Context) : Promise<ExcuseCreateResponse> {
   try {
     const isoDateRegex = /\d{4}-\d{2}-\d{2}/
     const startDateCanBeParsedAsDate = isNaN(Date.parse(args.startDate))
@@ -97,7 +97,7 @@ export async function createExcuse (args: ExcuseCreateInput, context: Context) :
     excuse.endDate = args.endDate
     excuse.student = student
     excuse.lessons = args.lessons
-    excuse.submittedBy = context.req.user
+    excuse.submittedBy = caller
     await excuse.save()
     return { excuse }
   } catch (error) {
