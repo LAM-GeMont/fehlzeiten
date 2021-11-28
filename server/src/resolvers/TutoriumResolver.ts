@@ -1,9 +1,9 @@
 import { Tutorium } from '../entity/Tutorium'
-import {Arg, Authorized, FieldResolver, Mutation, Query, Resolver, Root} from 'type-graphql'
+import { Arg, Authorized, FieldResolver, Mutation, Query, Resolver, Root } from 'type-graphql'
 import { createTutorium, TutoriumCreateInput, TutoriumCreateResponse } from './tutorium/create'
 import { editTutorium, TutoriumEditInput, TutoriumEditResponse } from './tutorium/edit'
 import { deleteTutorium, TutoriumDeleteInput, TutoriumDeleteResponse } from './tutorium/delete'
-import { User } from "../entity/User";
+import { User } from '../entity/User'
 
 @Resolver(Tutorium)
 export class TutoriumResolver {
@@ -16,7 +16,7 @@ export class TutoriumResolver {
   @Authorized()
   @Query(() => [Tutorium])
   async tutoriums () {
-    return await Tutorium.find({relations: ['tutor']})
+    return await Tutorium.find({ relations: ['tutor'] })
   }
 
   @Authorized('COORDINATOR')
