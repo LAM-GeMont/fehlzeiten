@@ -62,14 +62,6 @@ const Student: React.FC<Props> = ({ self }) => {
       Header: 'Aktionen',
       Cell: ({ row }) => (
         <Flex justifyContent="center">
-          <IconButton isDisabled={self.role === 'TEACHER'} variant="outline" aria-label="Bearbeiten" icon={<FaEdit />} onClick={() => {
-            /*setRowId(row.original.id)
-            setRowFirstName(row.original.firstName)
-            setRowLastName(row.original.lastName)
-            row.original.tutorium ? setRowTutoriumId(row.original.tutorium.id) : setRowTutoriumId('')
-            studentEditModal.onOpen()*/
-          }} />
-          <Box mr={2}></Box>
           <IconButton isDisabled={self.role === 'TEACHER'} variant="outline" aria-label="Löschen" icon={<DeleteIcon />} onClick={() => {
             /*setRowId(row.original.id)
             setRowFirstName(row.original.firstName)
@@ -98,7 +90,9 @@ const Student: React.FC<Props> = ({ self }) => {
       if (e['id'] === id_string) {
         firstName = (e['firstName'])
         lastName = (e['lastName'])
-        tutorium = (e['tutorium'].name)
+        if (e['tutorium'] !== null) {
+          tutorium = (e['tutorium'].name)
+        }
       }
     })
   }

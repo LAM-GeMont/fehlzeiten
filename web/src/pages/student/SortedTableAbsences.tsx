@@ -18,7 +18,7 @@ const Tr = chakra(
   }
 )
 
-function checkIfExam(props) {
+function checkIfExam(props: any) {
   if (typeof props == "boolean" && props) {
       return (
         <Box borderRadius="md" bg="blue.400" color="white" w='full' p={3} pt={1} h={8} textAlign="center">
