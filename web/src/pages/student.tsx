@@ -1,13 +1,13 @@
 import { useDisclosure } from '@chakra-ui/hooks'
-import { AddIcon, DeleteIcon, RepeatIcon } from '@chakra-ui/icons'
-import { Box, Spinner, Button, Flex, IconButton, SimpleGrid, useToast, Heading } from '@chakra-ui/react'
-import React, { useMemo } from 'react'
+import { AddIcon, DeleteIcon, RepeatIcon, SearchIcon } from '@chakra-ui/icons'
+import { Box, Spinner, Button, Flex, IconButton, SimpleGrid, useToast, Heading, Input, InputGroup, InputLeftElement } from '@chakra-ui/react'
+import React, { useCallback, useMemo, useState } from 'react'
 import { FaEdit } from 'react-icons/fa'
 import { CreateStudentModal } from '../components/CreateStudentModal'
 import { DeleteStudentAlertDialog } from '../components/DeleteStudentAlertDialog'
 import { EditStudentModal } from '../components/EditStudentModal'
 import { PageScaffold } from '../components/PageScaffold'
-import SortedTable from '../components/SortedTable'
+import SortedTable, { useSortedTable } from '../components/SortedTable'
 import WithAuth, { WithAuthProps } from '../components/withAuth'
 import { Role, useStudentsQuery } from '../generated/graphql'
 import { toastApolloError } from '../util'
@@ -19,10 +19,10 @@ const StudentPage: React.FC<Props> = ({ self }) => {
   const studentEditModal = useDisclosure()
   const studentDeleteAlertDialog = useDisclosure()
   const toast = useToast()
-  const [rowId, setRowId] = React.useState('')
-  const [rowFirstName, setRowFirstName] = React.useState('')
-  const [rowLastName, setRowLastName] = React.useState('')
-  const [rowtutoriumId, setRowTutoriumId] = React.useState('')
+  const [rowId, setRowId] = useState('')
+  const [rowFirstName, setRowFirstName] = useState('')
+  const [rowLastName, setRowLastName] = useState('')
+  const [rowtutoriumId, setRowTutoriumId] = useState('')
 
   const studentsQuery = useStudentsQuery({
     onError: errors => toastApolloError(toast, errors)
@@ -35,6 +35,23 @@ const StudentPage: React.FC<Props> = ({ self }) => {
       return []
     }
   }, [studentsQuery.data])
+
+  const openEdit = studentEditModal.onOpen
+  const editStudent = useCallback((row) => {
+    setRowId(row.original.id)
+    setRowFirstName(row.original.firstName)
+    setRowLastName(row.original.lastName)
+    row.original.tutorium ? setRowTutoriumId(row.original.tutorium.id) : setRowTutoriumId('')
+    openEdit()
+  }, [openEdit])
+
+  const openDelete = studentDeleteAlertDialog.onOpen
+  const deleteStudent = useCallback((row) => {
+    setRowId(row.original.id)
+    setRowFirstName(row.original.firstName)
+    setRowLastName(row.original.lastName)
+    openDelete()
+  }, [openDelete])
 
   const columns = useMemo(() => [
     {
@@ -53,37 +70,37 @@ const StudentPage: React.FC<Props> = ({ self }) => {
       Header: 'Aktionen',
       Cell: ({ row }) => (
                 <Flex justifyContent="center">
-                    <IconButton isDisabled={self.role === 'TEACHER'} variant="outline" aria-label="Bearbeiten" icon={<FaEdit />} onClick={ () => {
-                      setRowId(row.original.id)
-                      setRowFirstName(row.original.firstName)
-                      setRowLastName(row.original.lastName)
-                      row.original.tutorium ? setRowTutoriumId(row.original.tutorium.id) : setRowTutoriumId('')
-                      studentEditModal.onOpen()
-                    }} />
+                    <IconButton isDisabled={self.role === 'TEACHER'} variant="outline" aria-label="Bearbeiten" icon={<FaEdit />} onClick={ () => { editStudent(row) }} />
                     <Box mr={2}></Box>
-                    <IconButton isDisabled={self.role === 'TEACHER'} variant="outline" aria-label="Löschen" icon={<DeleteIcon />} onClick={ () => {
-                      setRowId(row.original.id)
-                      setRowFirstName(row.original.firstName)
-                      setRowLastName(row.original.lastName)
-                      studentDeleteAlertDialog.onOpen()
-                    }} />
+                    <IconButton isDisabled={self.role === 'TEACHER'} variant="outline" aria-label="Löschen" icon={<DeleteIcon />} onClick={ () => { deleteStudent(row) }} />
                 </Flex>
       )
     }
-  ], [studentEditModal, studentDeleteAlertDialog, self.role])
+  ], [deleteStudent, editStudent, self.role])
+
+  const sortedTable = useSortedTable({
+    columns,
+    data
+  })
 
   return (
         <PageScaffold role={self.role}>
             <SimpleGrid>
                 <Flex direction="column" alignItems="center" minW="300px" minH="600px" margin={5}>
-                    <Flex w="full" padding={5}>
-                        <Button marginLeft="auto" leftIcon={<AddIcon />} onClick={studentCreateModal.onOpen}>Schüler hinzufügen</Button>
-                        <IconButton ml={4} variant="outline" aria-label="Daten neu laden" icon={<RepeatIcon />} onClick={() => { studentsQuery.refetch() } }></IconButton>
+                    <Flex padding={5}>
+                        <InputGroup flexShrink={10}>
+                          <InputLeftElement>
+                            <SearchIcon />
+                          </InputLeftElement>
+                          <Input width="xs" value={sortedTable.filter} onChange={e => sortedTable.setFilter(e.target.value)}/>
+                        </InputGroup>
+                        <Button mx={2} leftIcon={<AddIcon />} onClick={studentCreateModal.onOpen}>Schüler hinzufügen</Button>
+                        <IconButton variant="outline" aria-label="Daten neu laden" icon={<RepeatIcon />} onClick={() => { studentsQuery.refetch() } }></IconButton>
                     </Flex>
                     {studentsQuery.loading && (<Spinner />)}
                     {studentsQuery.error != null && (<Heading>Error!</Heading>)}
                     {studentsQuery.data != null && (
-                        <SortedTable columns={columns} data={data} />
+                        <SortedTable table={sortedTable.table} tableFilter={sortedTable.tableFilter}/>
                     )}
                 </Flex>
             </SimpleGrid>

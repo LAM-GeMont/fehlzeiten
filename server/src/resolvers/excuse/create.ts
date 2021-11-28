@@ -5,7 +5,6 @@ import { Student } from '../../entity/Student'
 
 export enum ExcuseCreateErrorCode {
   UNKNOWN_ERROR,
-  UNAUTHORIZED,
   INVALID_STUDENT_ID,
   INVALID_START_DATE,
   INVALID_END_DATE,

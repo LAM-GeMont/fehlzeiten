@@ -8,7 +8,7 @@ import {
   ModalHeader,
   ModalOverlay,
   useToast,
-  Select,
+  Box,
   FormControl,
   FormLabel,
   Input,
@@ -19,6 +19,7 @@ import { TutoriumCreateErrorCode, useCreateTutoriumMutation, useTeachersQuery } 
 import { toastApolloError } from '../util'
 
 import React, { useMemo } from 'react'
+import { SearchSelectInputSingle } from './SearchSelectInput'
 
 interface Props {
   isOpen: boolean,
@@ -30,15 +31,6 @@ const validateName = (value: string) => {
   let error
   if (!value || value.length === 0) {
     error = 'Ein Name muss festgelegt werden'
-  }
-  return error
-}
-
-// Check if a tutor was selected
-const validateTutorId = (value: string) => {
-  let error
-  if (!value || value.length === 0) {
-    error = 'Ein Tutor muss ausgewählt werden'
   }
   return error
 }
@@ -118,20 +110,15 @@ export const CreateTutoriumModal: React.FC<Props> = ({ isOpen, onClose }) => {
                     </FormControl>
                   )}
                 </Field>
-                <FormLabel>Name des Tutors</FormLabel>
-                <Field name="tutorId" validate={validateTutorId}>
-                  {({ field, form }) => (
-                    <FormControl isInvalid={form.errors.tutorId && form.touched.tutorId}>
-                      <Select {...field} placeholder="Wähle einen Lehrer">
-                        {teachersData.map(currentUser =>
-                          (
-                            <option id="tutorId" value={currentUser.id} key={currentUser.id}> {currentUser.name} </option>
-                          ))}
-                      </Select>
-                      <FormErrorMessage>{form.errors.tutorId}</FormErrorMessage>
-                    </FormControl>
-                  )}
-                </Field>
+                <Box mt={4} />
+                <SearchSelectInputSingle
+                  name="tutorId"
+                  label="Tutor (optional)"
+                  items={teachersData}
+                  valueTransformer={t => t.id}
+                  textTransformer={t => t.name}
+                  placeholder="Kein Lehrer gewählt"
+                />
               </ModalBody>
               <ModalFooter>
                 <Button mr={3} variant="ghost" onClick={onClose}>Abbrechen</Button>

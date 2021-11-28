@@ -49,11 +49,14 @@ export class Absence extends BaseEntity {
     @Column()
     studentId: string
 
-    @ManyToOne(() => Student, student => student.absences)
+    @ManyToOne(() => Student, student => student.absences, { nullable: false, onDelete: 'CASCADE' })
     @Field(() => Student)
     student: Student
 
-    @ManyToOne(() => User, user => user.submittedAbsences)
-    @Field(() => User)
-    submittedBy: User
+    @Column({ nullable: true })
+    submittedById?: string
+
+    @ManyToOne(() => User, user => user.submittedAbsences, { onDelete: 'SET NULL' })
+    @Field(() => User, { nullable: true })
+    submittedBy?: User
 }
