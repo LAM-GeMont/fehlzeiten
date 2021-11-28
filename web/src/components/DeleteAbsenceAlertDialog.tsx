@@ -18,7 +18,7 @@ interface Props {
   rowId: string
 }
 
-export const DeleteAbsenceAlertDialog: React.FC<Props> = ({ isOpen, onClose, rowId}) => {
+export const DeleteAbsenceAlertDialog: React.FC<Props> = ({ isOpen, onClose, rowId }) => {
   const toast = useToast()
 
   const [remove] = useDeleteAbsenceMutation({
@@ -27,7 +27,7 @@ export const DeleteAbsenceAlertDialog: React.FC<Props> = ({ isOpen, onClose, row
 
   return (
     <AlertDialog isOpen={isOpen} onClose={onClose} leastDestructiveRef={undefined} isCentered>
-      {console.log("test" + rowId)}
+      {console.log('test' + rowId)}
       <AlertDialogOverlay/>
       <AlertDialogContent>
         <AlertDialogHeader>Fehlzeit löschen</AlertDialogHeader>

@@ -18,7 +18,7 @@ const Student: React.FC<Props> = ({ self }) => {
 
   const [rowId, setRowId] = React.useState('')
 
-  const id_string: string = id.toString()
+  const idString: string = id.toString()
 
   const toast = useToast()
 
@@ -28,7 +28,7 @@ const Student: React.FC<Props> = ({ self }) => {
 
   const studentAbsences = useAbsencesForStudentQuery({
     variables: {
-      studentId: id_string
+      studentId: idString
     }
   })
 
@@ -78,37 +78,37 @@ const Student: React.FC<Props> = ({ self }) => {
   let lastName = ''
   let tutorium = ''
 
-  function getStudent() {
+  function getStudent () {
     studentsData.forEach(e => {
-      if (e['id'] === id_string) {
-        firstName = (e['firstName'])
-        lastName = (e['lastName'])
-        if (e['tutorium'] !== null) {
-          tutorium = (e['tutorium'].name)
+      if (e.id === idString) {
+        firstName = (e.firstName)
+        lastName = (e.lastName)
+        if (e.tutorium !== null) {
+          tutorium = (e.tutorium.name)
         }
       }
     })
   }
 
-  var dates = []
+  const dates = []
 
-  function getAbsencesDates() {
+  function getAbsencesDates () {
     absenceData.forEach(e => {
-      dates.push(e['date'])
+      dates.push(e.date)
     })
 
-    let unique = [...Array.from(new Set(dates))]
+    const unique = [...Array.from(new Set(dates))]
     unique.sort()
     unique.reverse()
 
     return unique
   }
 
-  function getAbsenceForDate(date: string) {
-    return absenceData.filter(absenceData => absenceData['date'] === date)
+  function getAbsenceForDate (date: string) {
+    return absenceData.filter(absenceData => absenceData.date === date)
   }
 
-  function checkIfAbsencesDataIsEmpty() {
+  function checkIfAbsencesDataIsEmpty () {
     if (absenceData.length > 0) {
       return (
         <Flex w="full" padding={5}>
@@ -140,7 +140,7 @@ const Student: React.FC<Props> = ({ self }) => {
           {studentAbsences.error != null && (<Heading>Error!</Heading>)}
           {studentAbsences.data != null && (
             getAbsencesDates().map(function (each) {
-              console.log(each);
+              console.log(each)
               return (
                 <Box key={each} w="full" border="1px" borderColor="gray.300" borderRadius="md" boxShadow="2xl" p="6" rounded="md" bg="white" mb={4}>
                   <Text fontSize="22" pl={2}>{each}</Text>
@@ -156,4 +156,3 @@ const Student: React.FC<Props> = ({ self }) => {
 }
 
 export default WithAuth(Student, { roles: [Role.Coordinator] })
-
