@@ -4,6 +4,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -14,6 +15,7 @@ import { Absence } from './Absence'
 import { Excuse } from './Excuse'
 
 @Entity()
+@Index(['firstName', 'lastName'], { unique: true })
 @ObjectType()
 export class Student extends BaseEntity {
     @PrimaryGeneratedColumn('uuid')
