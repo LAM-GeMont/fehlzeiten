@@ -113,6 +113,24 @@ const Student: React.FC<Props> = ({ self }) => {
     return absenceData.filter(absenceData => absenceData['date'] === date)
   }
 
+  function checkIfAbsencesDataIsEmpty() {
+    if (absenceData.length > 0) {
+      return (
+        <Flex w="full" padding={5}>
+          <Text fontSize="24" fontWeight="bold">Fehlzeiten</Text>
+          <Button marginLeft="auto" leftIcon={<AddIcon />} /* onClick={studentCreateModal.onOpen} */>Entschuldigung hinzufügen</Button>
+          <IconButton ml={4} variant="outline" aria-label="Daten neu laden" icon={<RepeatIcon />} onClick={() => { studentAbsences.refetch() }}></IconButton>
+        </Flex>
+      )
+    } else {
+      return (
+        <Flex w="full" padding={5}>
+          <Text fontSize="24" fontWeight="bold">Es wurden noch keine Fehlzeiten erfasst...</Text>
+        </Flex>
+      )
+    }
+  }
+
   return (
     <PageScaffold role={self.role}>
       {console.log(getAbsencesDates())}
@@ -122,11 +140,7 @@ const Student: React.FC<Props> = ({ self }) => {
         <Text fontSize="30" fontWeight="bold">{firstName + ' ' + lastName}</Text>
         <Text fontSize="26">{tutorium}</Text>
         <Flex direction="column" alignItems="center" minW="300px" minH="600px" margin={5}>
-          <Flex w="full" padding={5}>
-            <Text fontSize="24" fontWeight="bold">Fehlzeiten</Text>
-            <Button marginLeft="auto" leftIcon={<AddIcon />} /* onClick={studentCreateModal.onOpen} */>Entschuldigung hinzufügen</Button>
-            <IconButton ml={4} variant="outline" aria-label="Daten neu laden" icon={<RepeatIcon />} onClick={() => { studentAbsences.refetch() }}></IconButton>
-          </Flex>
+          {checkIfAbsencesDataIsEmpty()}
           {studentAbsences.loading && (<Spinner />)}
           {studentAbsences.error != null && (<Heading>Error!</Heading>)}
           {studentAbsences.data != null && (
