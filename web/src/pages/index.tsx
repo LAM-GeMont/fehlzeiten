@@ -5,9 +5,7 @@ import WithAuth, { WithAuthProps } from '../components/withAuth'
 import { LinkBoxHomePage } from '../components/LinkBoxHomePage'
 import React from 'react'
 
-
 const Index: React.FC<WithAuthProps> = ({ self }) => {
-
   const getTeacherLinkBoxes = () => {
     return (
       <>
@@ -52,7 +50,7 @@ const Index: React.FC<WithAuthProps> = ({ self }) => {
 
     if (userRole === 'TEACHER') {
       return (
-        //different layout, buttons are smaller --> maybe it is better???
+        // different layout, buttons are smaller --> maybe it is better???
         <Center>
           <Stack 
             direction={['column', 'row']}
