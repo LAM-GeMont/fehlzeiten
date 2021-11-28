@@ -35,15 +35,6 @@ const validateName = (value: string) => {
   return error
 }
 
-// Check if a tutor was selected
-const validateTutorId = (value: string) => {
-  let error
-  if (!value || value.length === 0) {
-    error = 'Ein Tutor muss ausgewählt werden'
-  }
-  return error
-}
-
 export const CreateTutoriumModal: React.FC<Props> = ({ isOpen, onClose }) => {
   // Creating toast, establishing connections with useCreateTutoriumMutation and gather errors saved in errors
   const toast = useToast()
@@ -122,12 +113,11 @@ export const CreateTutoriumModal: React.FC<Props> = ({ isOpen, onClose }) => {
                 <Box mt={4} />
                 <SearchSelectInputSingle
                   name="tutorId"
-                  label="Name des Tutors"
+                  label="Tutor (optional)"
                   items={teachersData}
                   valueTransformer={t => t.id}
                   textTransformer={t => t.name}
-                  validate={validateTutorId}
-                  placeholder="Wähle einen Lehrer"
+                  placeholder="Kein Lehrer gewählt"
                 />
               </ModalBody>
               <ModalFooter>
