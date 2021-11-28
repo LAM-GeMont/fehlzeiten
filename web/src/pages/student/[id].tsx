@@ -1,12 +1,11 @@
-import { AddIcon, CheckIcon, DeleteIcon, RepeatIcon } from '@chakra-ui/icons'
-import { Box, Button, Flex, Heading, Icon, IconButton, SimpleGrid, Spinner, Text, useDisclosure, useToast } from '@chakra-ui/react'
+import { AddIcon, DeleteIcon, RepeatIcon } from '@chakra-ui/icons'
+import { Box, Button, Flex, Heading, IconButton, SimpleGrid, Spinner, Text, useDisclosure, useToast } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
 import React, { useMemo } from 'react'
-import { FaEdit } from 'react-icons/fa'
 import { PageScaffold } from '../../components/PageScaffold'
 import SortedTable from './SortedTableAbsences'
 import WithAuth, { WithAuthProps } from '../../components/withAuth'
-import { Role, useAbsencesForStudentQuery, useStudentsQuery } from '../../generated/graphql' //mus weggemacht werden
+import { Role, useAbsencesForStudentQuery, useStudentsQuery } from '../../generated/graphql'
 import { toastApolloError } from '../../util'
 import { DeleteAbsenceAlertDialog } from '../../components/DeleteAbsenceAlertDialog'
 
@@ -75,14 +74,6 @@ const Student: React.FC<Props> = ({ self }) => {
     }
   ], [absenceDeleteAlertDialog, self.role])
 
-  let date = absenceData.map(function (v) {
-    return v['date']
-  })
-
-  let exam = absenceData.map(function (v) {
-    return v['exam']
-  })
-
   let firstName = ''
   let lastName = ''
   let tutorium = ''
@@ -113,7 +104,7 @@ const Student: React.FC<Props> = ({ self }) => {
     return unique
   }
 
-  function getAbsenceForDate(date) {
+  function getAbsenceForDate(date: string) {
     return absenceData.filter(absenceData => absenceData['date'] === date)
   }
 
@@ -122,7 +113,7 @@ const Student: React.FC<Props> = ({ self }) => {
       return (
         <Flex w="full" padding={5}>
           <Text fontSize="24" fontWeight="bold">Fehlzeiten</Text>
-          <Button marginLeft="auto" leftIcon={<AddIcon />} /* onClick={studentCreateModal.onOpen} */>Entschuldigung hinzufügen</Button>
+          <Button marginLeft="auto" leftIcon={<AddIcon />} /* onClick={TODO} */>Entschuldigung hinzufügen</Button>
           <IconButton ml={4} variant="outline" aria-label="Daten neu laden" icon={<RepeatIcon />} onClick={() => { studentAbsences.refetch() }}></IconButton>
         </Flex>
       )
