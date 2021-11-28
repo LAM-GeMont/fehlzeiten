@@ -31,18 +31,8 @@ const Index: React.FC<WithAuthProps> = ({ self }) => {
   const getLinkBoxes = (userRole) => {
     if (userRole === 'COORDINATOR') {
       return (
-        <SimpleGrid 
-          minChildWidth={{ base: '125px', sm: '225px', md: '225px', lg: '325px' }}
-          height='auto'
-          spacing={{ base: '16px', sm: '24px', md: '24px', lg: '40px' }}
-          fontSize={{ base: '16px', sm: '24px', md: '24px', lg: '36px' }}
-          wordBreak='break-word'
-        >
-          <LinkBoxHomePage
-            icon={FaChalkboardTeacher}
-            href='/tutorium'
-            text='Tutorium Management'
-          />
+        <SimpleGrid minChildWidth={{ base: '125px', sm: '225px', md: '225px', lg: '325px' }} height='auto' spacing={{ base: '16px', sm: '24px', md: '24px', lg: '40px' }} fontSize={{ base: '16px', sm: '24px', md: '24px', lg: '36px' }} wordBreak='break-word'>
+          <LinkBoxHomePage icon={FaChalkboardTeacher} href='/tutorium' text='Tutorium Management'/>
           {getTeacherLinkBoxes()}
         </SimpleGrid>
       )

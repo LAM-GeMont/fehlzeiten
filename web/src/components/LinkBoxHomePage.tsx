@@ -11,10 +11,7 @@ interface Props {
 
 export const LinkBoxHomePage: React.FC<Props> = (props) => {
   return (
-    <LinkBox
-    bg='#001955' color='white' width='inherit' height='inherit' fontSize='inherit'
-    textAlign='center' borderRadius='25px' 
-    >
+    <LinkBox bg='#001955' color='white' width='inherit' height='inherit' fontSize='inherit' textAlign='center' borderRadius='25px'>
       <Center>
         <Box m={4}>
           <Icon boxSize={{ base: 24, sm: 36, md: 36, lg: 40 }} as={props.icon}></Icon>
