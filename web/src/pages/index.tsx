@@ -42,13 +42,7 @@ const Index: React.FC<WithAuthProps> = ({ self }) => {
       return (
         // different layout, buttons are smaller --> maybe it is better???
         <Center>
-          <Stack 
-            direction={['column', 'row']}
-            spacing={{ base: '16px', sm: '24px', md: '24px', lg: '40px' }}
-            minChildWidth='inherit'
-            height='inherit'
-            fontSize='inherit'
-          >
+          <Stack direction={['column', 'row']} spacing={{ base: '16px', sm: '24px', md: '24px', lg: '40px' }} minChildWidth='inherit' height='inherit' fontSize='inherit'>
             {getTeacherLinkBoxes()}
           </Stack>
         </Center>
