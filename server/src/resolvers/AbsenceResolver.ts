@@ -1,6 +1,7 @@
 import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql'
 import { Absence } from '../entity/Absence'
 import { absencesForStudent, AbsencesForStudentResponse } from './absence/forStudent'
+import { AbsenceDeleteInput, AbsenceDeleteResponse, deleteAbsence } from './absence/delete'
 import { Context } from '../types'
 import {
   AbsencesCreateInput,
@@ -26,5 +27,13 @@ export class AbsenceResolver {
     @Ctx() context: Context
   ) : Promise<AbsencesCreateResponse> {
     return createAbsences(data, context)
+  }
+
+  @Authorized('COORDINATOR')
+  @Mutation(() => AbsenceDeleteResponse)
+  async deleteAbsence (
+    @Arg('data') data: AbsenceDeleteInput
+  ): Promise<AbsenceDeleteResponse> {
+    return deleteAbsence(data)
   }
 }

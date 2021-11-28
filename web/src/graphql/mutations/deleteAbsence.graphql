@@ -1,0 +1,8 @@
+mutation DeleteAbsence($data: AbsenceDeleteInput!) {
+  deleteAbsence(data: $data) {
+    errors {
+      code
+      message
+    }
+  }
+}

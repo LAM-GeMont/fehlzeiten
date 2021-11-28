@@ -1,5 +1,5 @@
 import { AddIcon, CheckIcon, DeleteIcon, RepeatIcon } from '@chakra-ui/icons'
-import { Box, Button, Flex, Heading, Icon, IconButton, SimpleGrid, Spinner, Text, useToast } from '@chakra-ui/react'
+import { Box, Button, Flex, Heading, Icon, IconButton, SimpleGrid, Spinner, Text, useDisclosure, useToast } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
 import React, { useMemo } from 'react'
 import { FaEdit } from 'react-icons/fa'
@@ -8,12 +8,16 @@ import SortedTable from './SortedTableAbsences'
 import WithAuth, { WithAuthProps } from '../../components/withAuth'
 import { Role, useAbsencesForStudentQuery, useStudentsQuery } from '../../generated/graphql' //mus weggemacht werden
 import { toastApolloError } from '../../util'
+import { DeleteAbsenceAlertDialog } from '../../components/DeleteAbsenceAlertDialog'
 
 interface Props extends WithAuthProps { }
 
 const Student: React.FC<Props> = ({ self }) => {
+  const absenceDeleteAlertDialog = useDisclosure()
   const router = useRouter()
   const { id } = router.query
+
+  const [rowId, setRowId] = React.useState('')
 
   const id_string: string = id.toString()
 
@@ -63,15 +67,13 @@ const Student: React.FC<Props> = ({ self }) => {
       Cell: ({ row }) => (
         <Flex justifyContent="center">
           <IconButton isDisabled={self.role === 'TEACHER'} variant="outline" aria-label="Löschen" icon={<DeleteIcon />} onClick={() => {
-            /*setRowId(row.original.id)
-            setRowFirstName(row.original.firstName)
-            setRowLastName(row.original.lastName)
-            studentDeleteAlertDialog.onOpen()*/
+            setRowId(row.original.id)
+            absenceDeleteAlertDialog.onOpen()
           }} />
         </Flex>
       )
     }
-  ], [self.role])
+  ], [absenceDeleteAlertDialog, self.role])
 
   let date = absenceData.map(function (v) {
     return v['date']
@@ -105,6 +107,8 @@ const Student: React.FC<Props> = ({ self }) => {
     })
 
     let unique = [...Array.from(new Set(dates))]
+    unique.sort()
+    unique.reverse()
 
     return unique
   }
@@ -155,6 +159,7 @@ const Student: React.FC<Props> = ({ self }) => {
           )}
         </Flex>
       </SimpleGrid>
+      <DeleteAbsenceAlertDialog isOpen={absenceDeleteAlertDialog.isOpen} onClose={absenceDeleteAlertDialog.onClose} rowId={rowId}/>
     </PageScaffold>
   )
 }
