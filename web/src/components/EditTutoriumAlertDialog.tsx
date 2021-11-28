@@ -95,12 +95,12 @@ export const EditTutoriumAlertDialog: React.FC<Props> = ({ isOpen, onClose, tuto
                 </Field>
                 <Box mt={4} />
                 <SearchSelectInputSingle
-                    name="tutorId"
                     label="Tutor (optional)"
+                    name="tutor"
+                    placeholder="Kein Lehrer gewählt"
                     items={teachersData}
                     valueTransformer={t => t.id}
                     textTransformer={t => t.name}
-                    placeholder="Kein Lehrer gewählt"
                 />
               </ModalBody>
               <ModalFooter>

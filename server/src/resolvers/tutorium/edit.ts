@@ -1,7 +1,7 @@
 import { Field, ID, InputType, ObjectType, registerEnumType } from 'type-graphql'
 import { Tutorium } from '../../entity/Tutorium'
+import { User } from "../../entity/User";
 import { Not } from 'typeorm'
-import {User} from "../../entity/User";
 
 export enum TutoriumEditErrorCode {
     UNKNOWN_ERROR,
@@ -42,7 +42,7 @@ export class TutoriumEditInput {
     name?: string
 
     @Field({ nullable: true })
-    tutorId?: string
+    tutor?: string
 }
 
 export async function editTutorium (data: TutoriumEditInput): Promise<TutoriumEditResponse> {
@@ -69,21 +69,6 @@ export async function editTutorium (data: TutoriumEditInput): Promise<TutoriumEd
             }
         }
 
-        /*
-        if (data.tutor != null) {
-            if (data.tutor.length > 0) {
-                tutorium.tutor = await User.findOne(data.tutor)
-            } else {
-                return {
-                    errors: [{
-                        code: TutoriumEditErrorCode.NAME_TOO_SHORT,
-                        message: 'Tutor name must be at least 1'
-                    }]
-                }
-            }
-        }
-        */
-
         const existingTutoriums = await Tutorium.find({ where: { name: tutorium.name, id: Not(tutorium.id) } })
         console.log(existingTutoriums)
         if (existingTutoriums.length > 0) {
@@ -95,12 +80,12 @@ export async function editTutorium (data: TutoriumEditInput): Promise<TutoriumEd
             }
         }
 
-        if (data.tutorId == null || data.tutorId === '') {
+        if (data.tutor == null || data.tutor === '') {
             tutorium.tutor = null
         }
 
-        if (data.tutorId !== undefined && data.tutorId !== '') {
-            const tutor = await User.findOne(data.tutorId)
+        if (data.tutor !== undefined && data.tutor !== '') {
+            const tutor = await User.findOne(data.tutor)
             if (tutor == null) {
                 return {
                     errors: [{

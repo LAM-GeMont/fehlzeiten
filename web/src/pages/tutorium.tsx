@@ -27,6 +27,7 @@ const TutoriumPage: React.FC<Props> = ({ self }) => {
   const toast = useToast()
   const [rowId, setRowId] = useState('')
   const [rowName, setRowName] = useState('')
+  const [rowtutorId, setRowTutorId] = useState('')
 
   const tutoriumsQuery = useTutoriumsQuery({
     onError: errors => toastApolloError(toast, errors)
@@ -36,6 +37,7 @@ const TutoriumPage: React.FC<Props> = ({ self }) => {
   const editTutorium = useCallback((row) => {
     setRowId(row.original.id)
     setRowName(row.original.name)
+    row.original.tutor ? setRowTutorId(row.original.tutor.id) : setRowTutorId('')
     openEdit()
   }, [openEdit])
 
@@ -77,6 +79,7 @@ const TutoriumPage: React.FC<Props> = ({ self }) => {
       Cell: ({ row }) => (
         <Flex justifyContent="center">
           <IconButton isDisabled={self.role === 'TEACHER'} variant="outline" aria-label="Bearbeiten" icon={<FaEdit />} onClick={ () => editTutorium(row)} />
+          <Box mr={2}></Box>
           <IconButton isDisabled={self.role === 'TEACHER'} variant="outline" aria-label="Löschen" icon={<DeleteIcon />} onClick={ () => deleteTutorium(row)} /> 
         </Flex>
       )
@@ -122,7 +125,7 @@ const TutoriumPage: React.FC<Props> = ({ self }) => {
       </SimpleGrid>
       <CreateTutoriumModal isOpen={tutoriumCreateModal.isOpen} onClose={tutoriumCreateModal.onClose} />
       <DeleteTutoriumAlertDialog isOpen={tutoriumDeleteAlertDialog.isOpen} onClose={tutoriumDeleteAlertDialog.onClose} rowId={rowId} name={rowName} />
-      <EditTutoriumAlertDialog isOpen={tutoriumEditAlertDialog.isOpen} onClose={tutoriumEditAlertDialog.onClose} rowId={rowId} name={rowName} />
+      <EditTutoriumAlertDialog isOpen={tutoriumEditAlertDialog.isOpen} onClose={tutoriumEditAlertDialog.onClose} tutoriumId={rowId} name={rowName} teacherId={rowtutorId} />
     </PageScaffold>
   )
 }
