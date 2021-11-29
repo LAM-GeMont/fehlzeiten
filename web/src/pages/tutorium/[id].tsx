@@ -1,35 +1,36 @@
-import { AddIcon, DeleteIcon, RepeatIcon } from '@chakra-ui/icons'
-import { Box, Button, Flex, Heading, IconButton, SimpleGrid, Spinner, Text, useDisclosure, useToast } from '@chakra-ui/react'
+import { AddIcon, DeleteIcon, RepeatIcon, SearchIcon } from '@chakra-ui/icons'
+import { Spinner, Button, IconButton, useDisclosure, useToast, Text, Box, Input, InputGroup, InputLeftElement, Flex, SimpleGrid} from '@chakra-ui/react'
 import { useRouter } from 'next/router'
 import React, { useMemo } from 'react'
+import { FaEdit } from 'react-icons/fa'
 import { PageScaffold } from '../../components/PageScaffold'
-import SortedTable from './SortedTableStudentsOfTutorium'
+import SortedTable, { useSortedTable } from '../../components/SortedTable'
 import WithAuth, { WithAuthProps } from '../../components/withAuth'
 import { Role, useStudentsQuery } from '../../generated/graphql'
 import { toastApolloError } from '../../util'
+import { DeleteStudentAlertDialog } from '../../components/DeleteStudentAlertDialog' 
+import { CreateStudentModal } from '../../components/CreateStudentModal'
 
 interface Props extends WithAuthProps { }
 
 const Student: React.FC<Props> = ({ self }) => {
-    const absenceDeleteAlertDialog = useDisclosure()
-    const router = useRouter()
-    const { id } = router.query
+    const studentCreateModal = useDisclosure()
+    const studentDeleteAlertDialog = useDisclosure()
+    const toast = useToast()
 
     const [rowId, setRowId] = React.useState('')
+    const [rowFirstName, setRowFirstName] = React.useState('')
+    const [rowLastName, setRowLastName] = React.useState('')
+    const [rowtutoriumId, setRowTutoriumId] = React.useState('')
 
-    const toast = useToast()
+    const router = useRouter()
+    const { id } = router.query    
 
     const studentsQuery = useStudentsQuery({
         onError: errors => toastApolloError(toast, errors)
     })
 
-    const studentAbsences = useAbsencesForStudentQuery({
-        variables: {
-            studentId: id.toString()
-        }
-    })
-
-    const studentsData = useMemo(() => {
+    var allStudentsData = useMemo(() => {
         if (studentsQuery.data?.students != null) {
             return studentsQuery.data.students
         } else {
@@ -37,104 +38,107 @@ const Student: React.FC<Props> = ({ self }) => {
         }
     }, [studentsQuery.data])
 
-    const absenceData = useMemo(() => {
-        if (studentAbsences.data?.absencesForStudent.absences != null) {
-            return studentAbsences.data.absencesForStudent.absences
-        } else {
-            return []
+    
+    var studentData
+    allStudentsData.forEach(student => {
+        if (student.id != id){
+            studentData.add(student)
         }
-    }, [studentAbsences.data])
+    })
 
-    let firstName = ''
-    let lastName = ''
-    let tutorium = ''
-    let tutorId = ''
+    const openCreate = studentCreateModal.onOpen
+    const createStudent = React.useCallback((row) => {
+        setRowId(row.original.id)
+        setRowFirstName(row.original.firstName)
+        setRowLastName(row.original.lastName)
+        row.original.tutorium ? setRowTutoriumId(row.original.tutorium.id) : setRowTutoriumId('')
+        openCreate()
+      }, [openCreate])
+    
+      const openDelete = studentDeleteAlertDialog.onOpen
+      const deleteStudent = React.useCallback((row) => {
+        setRowId(row.original.id)
+        setRowFirstName(row.original.firstName)
+        setRowLastName(row.original.lastName)
+        openDelete()
+      }, [openDelete])
 
-    function getStudent () {
-        studentsData.forEach(e => {
-            if (e.id === id) {
-                firstName = (e.firstName)
-                lastName = (e.lastName)
-                if (e.tutorium !== null) {
-                    tutorium = (e.tutorium.name)
-                    if (e.tutorium.tutor !== null) {
-                        tutorId = (e.tutorium.tutor.id)
-                    }
-                }
-            }
-        })
-    }
 
     const columns = useMemo(() => [
         {
-            Header: 'Stunden',
-            accessor: 'lessonIndex'
+            Header: 'Vorname',
+            accessor: 'firstName'
         },
         {
-            Header: 'eingereicht von',
-            accessor: 'submittedBy.name'
+            Header: 'Nachname',
+            accessor: 'lastName'
         },
         {
-            Header: '',
-            accessor: 'exam'
+            Header: 'Aktionen',
+            accessor: 'exam',
+            Cell: ({ row }) => (
+                <Flex justifyContent="center">
+                  <IconButton isDisabled={self.role === 'TEACHER'} variant="outline" aria-label="Hinzufügen" icon={<FaEdit />} onClick={ () => createStudent(row)} />
+                  <Box mr={2}></Box>
+                  <IconButton isDisabled={self.role === 'TEACHER'} variant="outline" aria-label="Löschen" icon={<DeleteIcon />} onClick={ () => deleteStudent(row)} />
+                </Flex>
+              )
         },
         /* {
           Header: '',
           accessor: 'excused'
         }, */
-        {
-            Header: 'Aktionen',
-            Cell: ({ row }) => (
-                <Flex justifyContent="center">
-                    <IconButton isDisabled={self.role !== Role.Coordinator && row.original.submittedBy !== self.id && tutorId !== self.id} variant="outline" aria-label="Löschen" icon={<DeleteIcon />} onClick={() => {
-                        setRowId(row.original.id)
-                        absenceDeleteAlertDialog.onOpen()
-                    }} />
-                </Flex>
-            )
-        }
-    ], [absenceDeleteAlertDialog, self.id, self.role, tutorId])
+    ], [createStudent, deleteStudent, self.role])
 
-    const dates = []
 
-    function getAbsencesDates () {
-        absenceData.forEach(e => {
-            dates.push(e.date)
-        })
-
-        const unique = [...Array.from(new Set(dates))]
-        unique.sort()
-        unique.reverse()
-
-        return unique
-    }
-
-    function getAbsenceForDate (date: string) {
-        return absenceData.filter(absenceData => absenceData.date === date)
-    }
-
-    function checkIfAbsencesDataIsEmpty () {
-        if (absenceData.length > 0) {
-            return (
-                <Flex w="full" padding={5}>
-                    <Text fontSize="24" fontWeight="bold">Fehlzeiten</Text>
-                    <Button marginLeft="auto" leftIcon={<AddIcon />} /* onClick={TODO} */>Entschuldigung hinzufügen</Button>
-                    <IconButton ml={4} variant="outline" aria-label="Daten neu laden" icon={<RepeatIcon />} onClick={() => { studentAbsences.refetch() }}></IconButton>
-                </Flex>
-            )
+    const data = useMemo(() => {
+        if (studentsQuery.data?.students != null) {
+          return studentsQuery.data.students
         } else {
-            return (
-                <Flex w="full" padding={5}>
-                    <Text fontSize="24" fontWeight="bold">Es wurden noch keine Fehlzeiten erfasst...</Text>
-                </Flex>
-            )
+          return []
         }
-    }
+      }, [studentsQuery.data])
+
+    const sortedTable = useSortedTable({
+        columns,
+        data
+      })
+
 
     return (
         <PageScaffold role={self.role}>
-            {console.log(getAbsencesDates())}
-            {getStudent()}
+          <SimpleGrid>
+            <Flex direction="column" alignItems="center" minW="300px" minH="600px" margin={5}>
+              <Flex w="full" padding={5}>
+                <InputGroup flexShrink={10}>
+                  <InputLeftElement>
+                    <SearchIcon />
+                  </InputLeftElement>
+                  <Input width="xs" value={sortedTable.filter} onChange={e => sortedTable.setFilter(e.target.value)} />
+                </InputGroup>
+                
+                <IconButton ml={4} variant="outline" aria-label="Daten neu laden" icon={<RepeatIcon />} onClick={() => { studentsQuery.refetch() }}></IconButton>
+              </Flex>
+              {(data.length === 0) && (
+                <Box mt={5}>
+                  {(self.role === 'COORDINATOR' && (
+                    <Text>Es wurden noch keine Tutorien erstellt.</Text>
+                  ))}
+                  {(self.role === 'TEACHER' && (
+                    <Text>Ihnen sind noch keine Tutorien zugewiesen.</Text>
+                  ))}
+                </Box>
+              )}
+            </Flex>
+          </SimpleGrid>
+          <CreateStudentModal isOpen={studentCreateModal.isOpen} onClose={studentCreateModal.onClose} />
+          <DeleteStudentAlertDialog isOpen={studentDeleteAlertDialog.isOpen} onClose={studentDeleteAlertDialog.onClose} rowId={rowId} firstName={rowFirstName} lastName={rowLastName} />
+        </PageScaffold>
+      )
+
+    /*
+    return (
+        <PageScaffold role={self.role}>
 
             <SimpleGrid>
                 <Text fontSize="30" fontWeight="bold">{firstName + ' ' + lastName}</Text>
@@ -160,7 +164,7 @@ const Student: React.FC<Props> = ({ self }) => {
             </SimpleGrid>
             <DeleteAbsenceAlertDialog isOpen={absenceDeleteAlertDialog.isOpen} onClose={absenceDeleteAlertDialog.onClose} rowId={rowId} />
         </PageScaffold>
-    )
+    )*/
 }
 
 export default WithAuth(Student, { roles: [Role.Coordinator] })
