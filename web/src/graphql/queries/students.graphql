@@ -8,6 +8,10 @@ query Students {
     tutorium {
       id
       name
+      tutor {
+        id
+        name
+      }
     }
   }
 }

@@ -46,6 +46,24 @@ const Student: React.FC<Props> = ({ self }) => {
     }
   }, [studentAbsences.data])
 
+  let firstName = ''
+  let lastName = ''
+  let tutorium = ''
+  let tutorId = ''
+
+  function getStudent () {
+    studentsData.forEach(e => {
+      if (e.id === id) {
+        firstName = (e.firstName)
+        lastName = (e.lastName)
+        if (e.tutorium !== null) {
+          tutorium = (e.tutorium.name)
+          tutorId = (e.tutorium.tutor.id)
+        }
+      }
+    })
+  }
+
   const columns = useMemo(() => [
     {
       Header: 'Stunden',
@@ -63,30 +81,14 @@ const Student: React.FC<Props> = ({ self }) => {
       Header: 'Aktionen',
       Cell: ({ row }) => (
         <Flex justifyContent="center">
-          <IconButton isDisabled={self.role === 'TEACHER' && row.original.submittedBy === self.name} variant="outline" aria-label="Löschen" icon={<DeleteIcon />} onClick={() => {
+          <IconButton isDisabled={self.role !== Role.Coordinator && row.original.submittedBy !== self.id && tutorId !== self.id} variant="outline" aria-label="Löschen" icon={<DeleteIcon />} onClick={() => {
             setRowId(row.original.id)
             absenceDeleteAlertDialog.onOpen()
           }} />
         </Flex>
       )
     }
-  ], [absenceDeleteAlertDialog, self])
-
-  let firstName = ''
-  let lastName = ''
-  let tutorium = ''
-
-  function getStudent () {
-    studentsData.forEach(e => {
-      if (e.id === id) {
-        firstName = (e.firstName)
-        lastName = (e.lastName)
-        if (e.tutorium !== null) {
-          tutorium = (e.tutorium.name)
-        }
-      }
-    })
-  }
+  ], [absenceDeleteAlertDialog, self.id, self.role, tutorId])
 
   const dates = []
 
