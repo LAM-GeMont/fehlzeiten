@@ -50,7 +50,7 @@ export const PageScaffold: React.FC<Props> = (props) => {
 
   return (
     <Box w="full" pos="relative">
-      <Flex pos="absolute" left={{ base: '0', lg: '24' }} top={0} padding={5}>
+      <Flex pos="absolute" left={{ base: '0', lg: '24' }} top={0} padding={5} right={0}>
         {props.children}
       </Flex>
       <Flex w={24} h="full" boxShadow="md" pos="fixed" left={0} top={0} bg="white" direction="column" alignItems="center" display={{ base: 'none', lg: 'flex' }}>
