@@ -51,11 +51,13 @@ const TutoriumPage: React.FC<Props> = ({ self }) => {
     },
     {
       Header: 'Start',
-      accessor: 'startDate' as keyof TableRow
+      accessor: 'startDate' as keyof TableRow,
+      Cell: ({ value }) => new Date(value).toLocaleDateString()
     },
     {
       Header: 'Ende',
-      accessor: 'endDate' as keyof TableRow
+      accessor: 'endDate' as keyof TableRow,
+      Cell: ({ value }) => new Date(value).toLocaleDateString()
     },
     {
       Header: 'Aktionen',
