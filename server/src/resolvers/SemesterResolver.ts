@@ -5,6 +5,7 @@ import {
   SemesterCreateResponse,
   createSemester
 } from './semester/create'
+import { deleteSemester, SemesterDeleteInput, SemesterDeleteResponse } from './semester/delete'
 
 @Resolver(Semester)
 export class SemesterResolver {
@@ -20,5 +21,13 @@ export class SemesterResolver {
     @Arg('data') data: SemesterCreateInput
   ): Promise<SemesterCreateResponse> {
     return createSemester(data)
+  }
+
+  @Authorized('COORDINATOR')
+  @Mutation(() => SemesterDeleteResponse)
+  async deleteSemester (
+    @Arg('data') data: SemesterDeleteInput
+  ): Promise<SemesterDeleteResponse> {
+    return deleteSemester(data)
   }
 }

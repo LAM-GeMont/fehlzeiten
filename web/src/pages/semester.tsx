@@ -7,8 +7,8 @@ import { AddIcon, DeleteIcon, RepeatIcon, SearchIcon } from '@chakra-ui/icons'
 import SortedTable, { useSortedTable } from '../components/SortedTable'
 import { toastApolloError } from '../util'
 import WithAuth, { WithAuthProps } from '../components/withAuth'
-import { DeleteTutoriumAlertDialog } from '../components/DeleteTutoriumAlertDialog'
 import { CreateSemesterModal } from '../components/CreateSemesterModal'
+import { DeleteSemesterAlertDialog } from '../components/DeleteSemesterAlertDialog'
 
 interface TableRow {
   name: string,
@@ -20,7 +20,7 @@ interface Props extends WithAuthProps {}
 
 const TutoriumPage: React.FC<Props> = ({ self }) => {
   const semesterCreateModal = useDisclosure()
-  const tutoriumDeleteAlertDialog = useDisclosure()
+  const semesterDeleteAlertDialog = useDisclosure()
   const toast = useToast()
   const [rowId, setRowId] = useState('')
   const [rowName, setRowName] = useState('')
@@ -29,8 +29,8 @@ const TutoriumPage: React.FC<Props> = ({ self }) => {
     onError: errors => toastApolloError(toast, errors)
   })
 
-  const openDelete = tutoriumDeleteAlertDialog.onOpen
-  const deleteTutorium = useCallback((row) => {
+  const openDelete = semesterDeleteAlertDialog.onOpen
+  const deleteSemester = useCallback((row) => {
     setRowId(row.original.id)
     setRowName(row.original.name)
     openDelete()
@@ -61,11 +61,11 @@ const TutoriumPage: React.FC<Props> = ({ self }) => {
       Header: 'Aktionen',
       Cell: ({ row }) => (
         <Flex justifyContent="center">
-          <IconButton variant="outline" aria-label="Löschen" icon={<DeleteIcon />} onClick={ () => deleteTutorium(row)} />
+          <IconButton variant="outline" aria-label="Löschen" icon={<DeleteIcon />} onClick={ () => deleteSemester(row)} />
         </Flex>
       )
     }
-  ], [deleteTutorium, self.role])
+  ], [deleteSemester, self.role])
 
   const sortedTable = useSortedTable({
     columns,
@@ -105,7 +105,7 @@ const TutoriumPage: React.FC<Props> = ({ self }) => {
         </Flex>
       </SimpleGrid>
       <CreateSemesterModal isOpen={semesterCreateModal.isOpen} onClose={semesterCreateModal.onClose} />
-      <DeleteTutoriumAlertDialog isOpen={tutoriumDeleteAlertDialog.isOpen} onClose={tutoriumDeleteAlertDialog.onClose} rowId={rowId} name={rowName} />
+      <DeleteSemesterAlertDialog isOpen={semesterDeleteAlertDialog.isOpen} onClose={semesterDeleteAlertDialog.onClose} semesterId={rowId} name={rowName} />
     </PageScaffold>
   )
 }
