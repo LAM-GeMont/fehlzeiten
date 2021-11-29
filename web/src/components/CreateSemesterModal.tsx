@@ -15,7 +15,7 @@ import {
 } from '@chakra-ui/react'
 import { Field, Form, Formik } from 'formik'
 import { SemesterCreateErrorCode, useCreateSemesterMutation } from '../generated/graphql'
-import {formatDateISO, handleStartEndDateChange, toastApolloError} from '../util'
+import { formatDateISO, handleStartEndDateChange, toastApolloError } from '../util'
 
 import React from 'react'
 
@@ -90,7 +90,7 @@ export const CreateSemesterModal: React.FC<Props> = ({ isOpen, onClose }) => {
               <ModalBody>
                 <Field name="name" validate={validateName}>
                   {({ field, form }) => (
-                    <FormControl isRequired isInvalid={form.errors.name && form.touched.name}>
+                    <FormControl isRequired isInvalid={form.errors.name && form.touched.name} mb={6}>
                       <FormLabel htmlFor="name">Name der Zeitspanne</FormLabel>
                       <Input {...field} id="name" placeholder="Name" autoFocus={true}/>
                       <FormErrorMessage>{form.errors.name}</FormErrorMessage>
@@ -99,7 +99,7 @@ export const CreateSemesterModal: React.FC<Props> = ({ isOpen, onClose }) => {
                 </Field>
                 <Field name="startDate">
                   {({ field, form }) => (
-                    <FormControl isRequired isInvalid={form.errors.startDate && form.touched.startDate}>
+                    <FormControl isRequired isInvalid={form.errors.startDate && form.touched.startDate} mb={6}>
                       <FormLabel htmlFor="startDate">Startdatum</FormLabel>
                       <Input
                         {...field}

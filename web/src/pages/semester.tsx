@@ -65,7 +65,7 @@ const TutoriumPage: React.FC<Props> = ({ self }) => {
         </Flex>
       )
     }
-  ], [deleteSemester, self.role])
+  ], [deleteSemester])
 
   const sortedTable = useSortedTable({
     columns,
