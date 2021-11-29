@@ -4,11 +4,13 @@ import React, { useCallback, useMemo, useState } from 'react'
 import { PageScaffold } from '../components/PageScaffold'
 import { Role, useTutoriumsQuery } from '../generated/graphql'
 import { AddIcon, DeleteIcon, RepeatIcon, SearchIcon } from '@chakra-ui/icons'
+import { FaEdit } from 'react-icons/fa'
 import { CreateTutoriumModal } from '../components/CreateTutoriumModal'
 import SortedTable, { useSortedTable } from '../components/SortedTable'
 import { toastApolloError } from '../util'
 import WithAuth, { WithAuthProps } from '../components/withAuth'
 import { DeleteTutoriumAlertDialog } from '../components/DeleteTutoriumAlertDialog'
+import { EditTutoriumModal } from '../components/EditTutoriumModal'
 
 interface TableRow {
   name: string,
@@ -20,14 +22,24 @@ interface Props extends WithAuthProps {}
 
 const TutoriumPage: React.FC<Props> = ({ self }) => {
   const tutoriumCreateModal = useDisclosure()
+  const tutoriumEditAlertDialog = useDisclosure()
   const tutoriumDeleteAlertDialog = useDisclosure()
   const toast = useToast()
   const [rowId, setRowId] = useState('')
   const [rowName, setRowName] = useState('')
+  const [rowtutorId, setRowTutorId] = useState('')
 
   const tutoriumsQuery = useTutoriumsQuery({
     onError: errors => toastApolloError(toast, errors)
   })
+
+  const openEdit = tutoriumEditAlertDialog.onOpen
+  const editTutorium = useCallback((row) => {
+    setRowId(row.original.id)
+    setRowName(row.original.name)
+    row.original.tutor ? setRowTutorId(row.original.tutor.id) : setRowTutorId('')
+    openEdit()
+  }, [openEdit])
 
   const openDelete = tutoriumDeleteAlertDialog.onOpen
   const deleteTutorium = useCallback((row) => {
@@ -66,11 +78,13 @@ const TutoriumPage: React.FC<Props> = ({ self }) => {
       Header: 'Aktionen',
       Cell: ({ row }) => (
         <Flex justifyContent="center">
+          <IconButton isDisabled={self.role === 'TEACHER'} variant="outline" aria-label="Bearbeiten" icon={<FaEdit />} onClick={ () => editTutorium(row)} />
+          <Box mr={2}></Box>
           <IconButton isDisabled={self.role === 'TEACHER'} variant="outline" aria-label="Löschen" icon={<DeleteIcon />} onClick={ () => deleteTutorium(row)} />
         </Flex>
       )
     }
-  ], [deleteTutorium, self.role])
+  ], [deleteTutorium, editTutorium, self.role])
 
   const sortedTable = useSortedTable({
     columns,
@@ -111,6 +125,7 @@ const TutoriumPage: React.FC<Props> = ({ self }) => {
       </SimpleGrid>
       <CreateTutoriumModal isOpen={tutoriumCreateModal.isOpen} onClose={tutoriumCreateModal.onClose} />
       <DeleteTutoriumAlertDialog isOpen={tutoriumDeleteAlertDialog.isOpen} onClose={tutoriumDeleteAlertDialog.onClose} rowId={rowId} name={rowName} />
+      <EditTutoriumModal isOpen={tutoriumEditAlertDialog.isOpen} onClose={tutoriumEditAlertDialog.onClose} tutoriumId={rowId} name={rowName} teacherId={rowtutorId} />
     </PageScaffold>
   )
 }

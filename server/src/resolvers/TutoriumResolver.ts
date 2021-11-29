@@ -1,7 +1,8 @@
 import { Tutorium } from '../entity/Tutorium'
 import { Arg, Authorized, Ctx, FieldResolver, Mutation, Query, Resolver, ResolverInterface, Root } from 'type-graphql'
 import { createTutorium, TutoriumCreateInput, TutoriumCreateResponse } from './tutorium/create'
-import { TutoriumDeleteInput, TutoriumDeleteResponse, deleteTutorium } from './tutorium/delete'
+import { editTutorium, TutoriumEditInput, TutoriumEditResponse } from './tutorium/edit'
+import { deleteTutorium, TutoriumDeleteInput, TutoriumDeleteResponse } from './tutorium/delete'
 import { Context } from 'vm'
 import { Student } from '../entity/Student'
 
@@ -37,6 +38,14 @@ export class TutoriumResolver implements ResolverInterface<Tutorium> {
     @Arg('data') data: TutoriumCreateInput
   ) : Promise<TutoriumCreateResponse> {
     return createTutorium(data)
+  }
+
+  @Authorized('COORDINATOR')
+  @Mutation(() => TutoriumEditResponse)
+  async editTutorium (
+      @Arg('data') data: TutoriumEditInput
+  ): Promise<TutoriumEditResponse> {
+    return editTutorium(data)
   }
 
   @Authorized('COORDINATOR')
