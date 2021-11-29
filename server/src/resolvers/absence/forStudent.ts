@@ -31,8 +31,12 @@ export class AbsencesForStudentResponse {
   errors?: AbsencesForStudentError[]
 }
 
-export async function absencesForStudent (studentId: string, context: Context) : Promise<AbsencesForStudentResponse> {
+export async function absencesForStudent (studentId: string, { caller }: Context) : Promise<AbsencesForStudentResponse> {
   try {
+    if (caller == null) {
+      throw new Error('Function was used without @Authorized directive')
+    }
+
     const student = await Student.findOne(studentId, { relations: ['absences', 'tutorium'] })
     if (student == null) {
       return {
@@ -43,7 +47,7 @@ export async function absencesForStudent (studentId: string, context: Context) :
     }
 
     // Allow coordinators and the students tutor to access all absences
-    if (context.req.user.role === Role.COORDINATOR || student.tutorium?.tutorId === context.req.user.id) {
+    if (caller.role === Role.COORDINATOR || student.tutorium?.tutorId === caller.id) {
       return {
         absences: student.absences
       }
@@ -51,7 +55,7 @@ export async function absencesForStudent (studentId: string, context: Context) :
 
     // Other users see only the absences submitted by themselves
     return {
-      absences: student.absences.filter(absence => absence.submittedById === context.req.user.id)
+      absences: student.absences.filter(absence => caller != null && absence.submittedById === caller.id)
     }
   } catch (error) {
     return {
