@@ -30,8 +30,8 @@ export const DeleteSemesterAlertDialog: React.FC<Props> = ({ isOpen, onClose, se
     <AlertDialog isOpen={isOpen} onClose={onClose} leastDestructiveRef={undefined} isCentered>
       <AlertDialogOverlay/>
       <AlertDialogContent>
-        <AlertDialogHeader>Tutorium löschen</AlertDialogHeader>
-        <AlertDialogBody>Sind Sie sich sicher, dass sie das Tutorium {name} löschen möchten? Diese Aktion kann nicht
+        <AlertDialogHeader>Zeitspanne löschen</AlertDialogHeader>
+        <AlertDialogBody>Sind Sie sich sicher, dass Sie die Zeitspanne {name} löschen möchten? Diese Aktion kann nicht
           rückgängig gemacht werden.</AlertDialogBody>
         <AlertDialogFooter>
           <Button mr={3} variant="ghost" onClick={onClose}>Abbrechen</Button>

@@ -18,7 +18,7 @@ interface TableRow {
 
 interface Props extends WithAuthProps {}
 
-const TutoriumPage: React.FC<Props> = ({ self }) => {
+const SemesterPage: React.FC<Props> = ({ self }) => {
   const semesterCreateModal = useDisclosure()
   const semesterDeleteAlertDialog = useDisclosure()
   const toast = useToast()
@@ -112,4 +112,4 @@ const TutoriumPage: React.FC<Props> = ({ self }) => {
   )
 }
 
-export default WithAuth(TutoriumPage, { roles: [Role.Coordinator] })
+export default WithAuth(SemesterPage, { roles: [Role.Coordinator] })
