@@ -58,7 +58,9 @@ const Student: React.FC<Props> = ({ self }) => {
         lastName = (e.lastName)
         if (e.tutorium !== null) {
           tutorium = (e.tutorium.name)
-          tutorId = (e.tutorium.tutor.id)
+          if (e.tutorium.tutor !== null) {
+            tutorId = (e.tutorium.tutor.id)
+          }
         }
       }
     })
@@ -92,7 +94,7 @@ const Student: React.FC<Props> = ({ self }) => {
 
   const dates = []
 
-  function getAbsencesDates () {
+  function getAbsencesDates() {
     absenceData.forEach(e => {
       dates.push(e.date)
     })
@@ -104,11 +106,11 @@ const Student: React.FC<Props> = ({ self }) => {
     return unique
   }
 
-  function getAbsenceForDate (date: string) {
+  function getAbsenceForDate(date: string) {
     return absenceData.filter(absenceData => absenceData.date === date)
   }
 
-  function checkIfAbsencesDataIsEmpty () {
+  function checkIfAbsencesDataIsEmpty() {
     if (absenceData.length > 0) {
       return (
         <Flex w="full" padding={5}>
@@ -153,7 +155,7 @@ const Student: React.FC<Props> = ({ self }) => {
           )}
         </Flex>
       </SimpleGrid>
-      <DeleteAbsenceAlertDialog isOpen={absenceDeleteAlertDialog.isOpen} onClose={absenceDeleteAlertDialog.onClose} rowId={rowId}/>
+      <DeleteAbsenceAlertDialog isOpen={absenceDeleteAlertDialog.isOpen} onClose={absenceDeleteAlertDialog.onClose} rowId={rowId} />
     </PageScaffold>
   )
 }
