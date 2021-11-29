@@ -151,7 +151,7 @@ const Student: React.FC<Props> = ({ self }) => {
               const day = each.substring(8, 10)
               console.log(each)
               return (
-                <Box key={each} w="full" border="1px" borderColor="gray.300" borderRadius="md" boxShadow="2xl" p="6" rounded="md" bg="white" mb={4}>
+                <Box key={each} w="full" border="1px" borderColor="gray.300" borderRadius="md" boxShadow="lg" p="6" rounded="md" bg="white" mb={4}>
                   <Text fontSize="22" pl={2}>{day}.{month}.{year}</Text>
                   <SortedTable columns={columns} data={getAbsenceForDate(each)} />
                 </Box>)
