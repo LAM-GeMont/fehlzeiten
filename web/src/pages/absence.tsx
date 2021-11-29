@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { PageScaffold } from '../components/PageScaffold'
 import WithAuth, { WithAuthProps } from '../components/withAuth'
 import {
@@ -11,18 +11,20 @@ import {
   FormErrorMessage,
   FormLabel,
   Input,
-  Switch,
+  Switch, useDisclosure,
   useToast
 } from '@chakra-ui/react'
 import { Field, Form, Formik } from 'formik'
 import { formatDateISO, toastApolloError } from '../util'
 import { AbsenceCreateErrorCode, useCreateAbsencesMutation, useStudentsQuery } from '../generated/graphql'
 import { SearchSelectInputMultiple } from '../components/SearchSelectInput'
+import { AbsenceUpgradeAlertDialog } from '../components/AbsenceUpgradeAlertDialog'
 
 interface Props extends WithAuthProps {
 }
 
 const AbsencePage: React.FC<Props> = ({ self }) => {
+  const absenceUpgradeAlertDialog = useDisclosure()
   const initialDate = formatDateISO(new Date())
   const lessonIndexes = []
   for (let i = 1; i <= 10; i++) {
@@ -34,6 +36,7 @@ const AbsencePage: React.FC<Props> = ({ self }) => {
   const [createAbsences] = useCreateAbsencesMutation({
     onError: errors => toastApolloError(toast, errors)
   })
+  const [overwriteOnDuplicate, setOverwriteOnDuplicate] = useState(false)
 
   return (
     <PageScaffold role={self.role}>
@@ -46,19 +49,28 @@ const AbsencePage: React.FC<Props> = ({ self }) => {
         }}
         onSubmit={async (values, actions) => {
           actions.setSubmitting(true)
+          console.log({
+            date: values.date,
+            studentIds: values.students,
+            lessonIndexes: values.lesson.map(v => parseInt(v)),
+            exam: values.exam,
+            overwriteOnDuplicate
+          })
           const res = await createAbsences({
             variables: {
               data: {
                 date: values.date,
                 studentIds: values.students,
                 lessonIndexes: values.lesson.map(v => parseInt(v)),
-                exam: values.exam
+                exam: values.exam,
+                overwriteOnDuplicate
               }
             }
           })
           actions.setSubmitting(false)
           if (res.data) {
             let existingAbsences = 0
+            const potentialUpgrades = []
             if (res.data.createAbsences.errors) {
               res.data.createAbsences.errors.forEach(error => {
                 switch (error.code) {
@@ -67,6 +79,9 @@ const AbsencePage: React.FC<Props> = ({ self }) => {
                     break
                   case AbsenceCreateErrorCode.AbsenceAlreadyExists:
                     existingAbsences++
+                    break
+                  case AbsenceCreateErrorCode.AbsencePotentialUpgrade:
+                    potentialUpgrades.push(error)
                     break
                   default:
                     toast({
@@ -79,11 +94,23 @@ const AbsencePage: React.FC<Props> = ({ self }) => {
                 }
               })
             }
+            if (potentialUpgrades.length > 0) {
+              setOverwriteOnDuplicate(true)
+              absenceUpgradeAlertDialog.onOpen()
+            } else {
+              setOverwriteOnDuplicate(false)
+              actions.resetForm()
+            }
             if (res.data.createAbsences.absences || existingAbsences > 0) {
-              const count = (res.data.createAbsences.absences?.length || 0) + existingAbsences
-              const title = count > 1 ? `${count} Fehlzeiten erfolgreich eingetragen.` : 'Eine Fehlzeit erfolgreich eingetragen'
+              const count = res.data.createAbsences.absences?.length || 0
+              const title = count !== 1 ? `${count} Fehlzeiten erfolgreich eingetragen.` : 'Eine Fehlzeit erfolgreich eingetragen'
+              let description
+              if (existingAbsences > 0) {
+                description = existingAbsences !== 1 ? `${existingAbsences} Fehlzeiten existierten bereits.` : 'Eine Fehlzeit existierte bereits.'
+              }
               toast({
                 title,
+                description,
                 status: 'success',
                 isClosable: true
               })
@@ -92,7 +119,7 @@ const AbsencePage: React.FC<Props> = ({ self }) => {
         }}
       >
         {(props) => (
-          <Form>
+          <Form id="absence-creation">
             <Field name="date">
               {({ field, form }) => (
                 <FormControl isInvalid={form.errors.date && form.touched.date} mb={6}>
@@ -148,6 +175,7 @@ const AbsencePage: React.FC<Props> = ({ self }) => {
             />
             <Box mb={4} />
             <Button colorScheme="primary" type="submit" isLoading={props.isSubmitting}>Weiter</Button>
+            <AbsenceUpgradeAlertDialog isOpen={absenceUpgradeAlertDialog.isOpen} onClose={absenceUpgradeAlertDialog.onClose} />
           </Form>
         )}
       </Formik>

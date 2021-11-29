@@ -7,7 +7,8 @@ export enum AbsenceCreateErrorCode {
   UNKNOWN_ERROR,
   INVALID_STUDENT_ID,
   INVALID_DATE,
-  ABSENCE_ALREADY_EXISTS
+  ABSENCE_ALREADY_EXISTS,
+  ABSENCE_POTENTIAL_UPGRADE
 }
 
 registerEnumType(AbsenceCreateErrorCode, {
@@ -24,6 +25,15 @@ export class AbsencesCreateError {
 
   @Field(() => ID, { nullable: true })
   studentId?: string
+
+  @Field(() => ID, { nullable: true })
+  studentName?: string
+
+  @Field(() => Int, { nullable: true })
+  lessonIndex?: number
+
+  @Field({ nullable: true })
+  date?: string
 }
 
 @ObjectType()
@@ -48,6 +58,9 @@ export class AbsencesCreateInput {
 
   @Field()
   exam: boolean
+
+  @Field()
+  overwriteOnDuplicate: boolean
 }
 
 export async function createAbsences (args: AbsencesCreateInput, context: Context) : Promise<AbsencesCreateResponse> {
@@ -63,6 +76,7 @@ export async function createAbsences (args: AbsencesCreateInput, context: Contex
     }
     const absences: Absence[] = []
     const errors: AbsencesCreateError[] = []
+    const potentialExamUpgrade = []
     for (const studentId of args.studentIds) {
       const student = await Student.findOne(studentId)
       if (student == null) {
@@ -83,17 +97,46 @@ export async function createAbsences (args: AbsencesCreateInput, context: Contex
           absences.push(absence)
         } catch (error) {
           if (error.message.includes('UNIQUE')) {
-            errors.push({
-              code: AbsenceCreateErrorCode.ABSENCE_ALREADY_EXISTS,
-              message: error.message,
-              studentId: student.id
-            })
+            if (args.overwriteOnDuplicate) {
+              await Absence.update({ studentId: student.id, lessonIndex, date: args.date }, { exam: true })
+            } else {
+              if (args.exam) {
+                potentialExamUpgrade.push({ error, studentId: student.id, lessonIndex, date: args.date })
+              } else {
+                errors.push({
+                  code: AbsenceCreateErrorCode.ABSENCE_ALREADY_EXISTS,
+                  message: error.message,
+                  studentId: student.id
+                })
+              }
+            }
           } else {
             errors.push({
               code: AbsenceCreateErrorCode.UNKNOWN_ERROR,
               message: error.message
             })
           }
+        }
+      }
+    }
+    if (potentialExamUpgrade.length > 0) {
+      console.log(potentialExamUpgrade)
+      const absences = await Absence.find({
+        where: potentialExamUpgrade.map(v => { return { studentId: v.studentId, date: v.date, lessonIndex: v.lessonIndex } })
+      })
+      for (const absence of absences) {
+        if (absence.exam) {
+          errors.push({
+            code: AbsenceCreateErrorCode.ABSENCE_ALREADY_EXISTS,
+            studentId: absence.studentId
+          })
+        } else {
+          errors.push({
+            code: AbsenceCreateErrorCode.ABSENCE_POTENTIAL_UPGRADE,
+            studentId: absence.studentId,
+            lessonIndex: absence.lessonIndex,
+            date: absence.date
+          })
         }
       }
     }
