@@ -36,7 +36,9 @@ export async function studentsForTutorium (tutoriumId: string, { caller }: Conte
       throw new Error('Function was used without @Authorized directive')
     }
 
-    const tutorium = await Tutorium.findOne({ where: { id: tutoriumId } })
+    console.log('test')
+
+    const tutorium = await Tutorium.findOne(tutoriumId, { relations: ['students'] })
     if (tutorium == null) {
       return {
         errors: [{
@@ -45,6 +47,9 @@ export async function studentsForTutorium (tutoriumId: string, { caller }: Conte
         }]
       }
     }
+
+    console.log('test 2')
+    console.log(tutorium.students)
 
     return {
       students: tutorium.students

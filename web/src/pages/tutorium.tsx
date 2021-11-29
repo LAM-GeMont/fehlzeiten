@@ -1,4 +1,4 @@
-import { Flex, Heading, SimpleGrid } from '@chakra-ui/layout'
+import { Flex, Heading, Link, SimpleGrid } from '@chakra-ui/layout'
 import { Spinner, Button, IconButton, useDisclosure, useToast, Text, Box, Input, InputGroup, InputLeftElement } from '@chakra-ui/react'
 import React, { useCallback, useMemo, useState } from 'react'
 import { PageScaffold } from '../components/PageScaffold'
@@ -59,7 +59,12 @@ const TutoriumPage: React.FC<Props> = ({ self }) => {
   const columns = useMemo(() => [
     {
       Header: 'Kursname',
-      accessor: 'name' as keyof TableRow
+      accessor: 'name' as keyof TableRow,
+      Cell: ({ row }) => (
+        <Link href={`/tutorium/${row.original.id}`}>
+          <Text>{`${row.original.name}`}</Text>
+        </Link>
+      )
     },
     {
       Header: 'Tutorname',

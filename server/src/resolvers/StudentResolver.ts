@@ -51,7 +51,7 @@ export class StudentResolver implements ResolverInterface<Student> {
   }
 
   @Authorized()
-  @Query(() => [StudentsForTutoriumResponse])
+  @Query(() => StudentsForTutoriumResponse)
   async studentsForTutorium (
     @Arg('tutoriumId') tutoriumId: string,
     @Ctx() context: Context
