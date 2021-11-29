@@ -17,10 +17,9 @@ import { Session } from './entity/Session.js'
 import { StudentResolver } from './resolvers/StudentResolver.js'
 import { Student } from './entity/Student.js'
 import passport from 'passport'
-import OAuth2Strategy from 'passport-oauth2'
 import fs from 'fs'
 import https from 'https'
-import axios from 'axios'
+import { deserializeUser, oauthStrategy, serializeUser } from './oauth'
 
 env.config({
   path: path.resolve(process.cwd(), '..', '.env'),
@@ -54,10 +53,6 @@ env.config({
 
   // OAUTH 2
 
-  if (process.env.CLIENT_ID === undefined || process.env.CLIENT_SECRET === undefined) {
-    throw new Error('CLIENT_ID AND/OR CLIENT_SECRET ARE NOT SET')
-  }
-
   const key = fs.readFileSync(path.join(__dirname, '/cert/localhost-key.pem'))
   const cert = fs.readFileSync(path.join(__dirname, '/cert/localhost.pem'))
 
@@ -66,75 +61,11 @@ env.config({
   app.use(passport.initialize())
   app.use(passport.session())
 
-  const oauthStrategy = new OAuth2Strategy({
-    authorizationURL: 'https://gemont.de/iserv/oauth/v2/auth',
-    tokenURL: 'https://gemont.de/iserv/oauth/v2/token',
-    clientID: process.env.CLIENT_ID!,
-    clientSecret: process.env.CLIENT_SECRET!,
-    callbackURL: 'https://localhost:4000/api/callback',
-    scope: ['profile', 'email', 'openid', 'roles', 'groups', 'uuid']
-  }, async (_accessToken: string, _refreshToken: string, params: any, profile: any, done: any) => {
-    await axios.get('https://gemont.de/iserv/public/oauth/userinfo', {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${params.access_token}`
-      }
-    }).then((result: any) => {
-      profile = result.data
-    }).catch((e) => {
-      console.error('Could not get profile data')
-      console.error(e.message)
-    })
-
-    const roles = new Set()
-
-    for (const i in profile.roles) {
-      roles.add(profile.roles[i].id)
-    }
-
-    return done(null, profile)
-  }
-  )
   passport.use('oauth2', oauthStrategy)
 
-  passport.serializeUser(async (user: any, done: any) => {
-    const u = await User.findOne({
-      where: {
-        name: user.preferred_username
-      }
-    })
+  passport.serializeUser(async (user: any, done: any) => serializeUser(user, done))
 
-    if (u != null) {
-      if (u.iservUUID === user.uuid) {
-        done(null, u.id)
-      } else {
-        done(null, null)
-      }
-    } else {
-      const newUser = new User()
-      newUser.name = user.preferred_username
-      newUser.role = Role.TEACHER
-      newUser.iservUUID = user.uuid
-      newUser.save()
-        .then(() => {
-          done(null, newUser.id)
-        })
-    }
-  })
-
-  passport.deserializeUser(async (id: string, done: any) => {
-    const user = await User.findOne({
-      where: {
-        id: id
-      }
-    })
-
-    if (user != null) {
-      done(null, user.id) // Get user from DB
-    } else {
-      done(null, null)
-    }
-  })
+  passport.deserializeUser(async (id: string, done: any) => deserializeUser(id, done))
 
   app.get('/api/login', passport.authenticate('oauth2'))
 
@@ -144,6 +75,8 @@ env.config({
 
     res.redirect('http://localhost:3000')
   })
+
+  // END OAUTH 2
 
   const apollo = new ApolloServer({
     schema: await buildSchema({
