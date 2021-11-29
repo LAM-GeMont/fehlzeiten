@@ -1,7 +1,7 @@
 import { Student } from '../../entity/Student'
 import { Context } from '../../types'
 import { Field, ObjectType, registerEnumType } from 'type-graphql'
-import { Tutorium } from 'src/entity/Tutorium'
+import { Tutorium } from '../../entity/Tutorium'
 
 export enum StudentsForTutoriumErrorCode {
   UNKNOWN_ERROR,
@@ -22,7 +22,7 @@ export class StudentsForTutoriumError {
 }
 
 @ObjectType()
-export class StudentForTutoriumResposne {
+export class StudentsForTutoriumResponse {
   @Field(() => [Student], { nullable: true })
   students?: Student[]
 
@@ -30,7 +30,7 @@ export class StudentForTutoriumResposne {
   errors?: StudentsForTutoriumError[]
 }
 
-export async function studentForTutorium (tutoriumId: string, { caller }: Context) : Promise<StudentForTutoriumResposne> {
+export async function studentsForTutorium (tutoriumId: string, { caller }: Context) : Promise<StudentsForTutoriumResponse> {
   try {
     if (caller == null) {
       throw new Error('Function was used without @Authorized directive')

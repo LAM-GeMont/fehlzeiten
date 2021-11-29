@@ -7,6 +7,7 @@ import { Context } from '../types'
 import { Absence } from '../entity/Absence'
 import { Excuse } from '../entity/Excuse'
 import { Role } from '../entity/User'
+import { studentsForTutorium, StudentsForTutoriumResponse } from './student/forTutorium'
 
 @Resolver(Student)
 export class StudentResolver implements ResolverInterface<Student> {
@@ -47,6 +48,15 @@ export class StudentResolver implements ResolverInterface<Student> {
     }
 
     return Excuse.find({ where: { studentId: student.id } })
+  }
+
+  @Authorized()
+  @Query(() => [StudentsForTutoriumResponse])
+  async studentsForTutorium (
+    @Arg('tutoriumId') tutoriumId: string,
+    @Ctx() context: Context
+  ) {
+    return studentsForTutorium(tutoriumId, context)
   }
 
   @Authorized()
