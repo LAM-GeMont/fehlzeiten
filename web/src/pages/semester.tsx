@@ -2,15 +2,13 @@ import { Flex, Heading, SimpleGrid } from '@chakra-ui/layout'
 import { Spinner, Button, IconButton, useDisclosure, useToast, Text, Box, Input, InputGroup, InputLeftElement } from '@chakra-ui/react'
 import React, { useCallback, useMemo, useState } from 'react'
 import { PageScaffold } from '../components/PageScaffold'
-import { Role, useTutoriumsQuery } from '../generated/graphql'
+import { Role, useSemestersQuery } from '../generated/graphql'
 import { AddIcon, DeleteIcon, RepeatIcon, SearchIcon } from '@chakra-ui/icons'
-import { FaEdit } from 'react-icons/fa'
-import { CreateTutoriumModal } from '../components/CreateTutoriumModal'
 import SortedTable, { useSortedTable } from '../components/SortedTable'
 import { toastApolloError } from '../util'
 import WithAuth, { WithAuthProps } from '../components/withAuth'
 import { DeleteTutoriumAlertDialog } from '../components/DeleteTutoriumAlertDialog'
-import { EditTutoriumModal } from '../components/EditTutoriumModal'
+import { CreateSemesterModal } from '../components/CreateSemesterModal'
 
 interface TableRow {
   name: string,
@@ -21,25 +19,15 @@ interface TableRow {
 interface Props extends WithAuthProps {}
 
 const TutoriumPage: React.FC<Props> = ({ self }) => {
-  const tutoriumCreateModal = useDisclosure()
-  const tutoriumEditAlertDialog = useDisclosure()
+  const semesterCreateModal = useDisclosure()
   const tutoriumDeleteAlertDialog = useDisclosure()
   const toast = useToast()
   const [rowId, setRowId] = useState('')
   const [rowName, setRowName] = useState('')
-  const [rowtutorId, setRowTutorId] = useState('')
 
-  const tutoriumsQuery = useTutoriumsQuery({
+  const semestersQuery = useSemestersQuery({
     onError: errors => toastApolloError(toast, errors)
   })
-
-  const openEdit = tutoriumEditAlertDialog.onOpen
-  const editTutorium = useCallback((row) => {
-    setRowId(row.original.id)
-    setRowName(row.original.name)
-    row.original.tutor ? setRowTutorId(row.original.tutor.id) : setRowTutorId('')
-    openEdit()
-  }, [openEdit])
 
   const openDelete = tutoriumDeleteAlertDialog.onOpen
   const deleteTutorium = useCallback((row) => {
@@ -49,46 +37,40 @@ const TutoriumPage: React.FC<Props> = ({ self }) => {
   }, [openDelete])
 
   const data = useMemo(() => {
-    if (tutoriumsQuery.data?.tutoriums != null) {
-      return tutoriumsQuery.data.tutoriums
+    if (semestersQuery.data?.semesters != null) {
+      return semestersQuery.data.semesters
     } else {
       return []
     }
-  }, [tutoriumsQuery.data])
+  }, [semestersQuery.data])
 
   const columns = useMemo(() => [
     {
-      Header: 'Kursname',
+      Header: 'Name',
       accessor: 'name' as keyof TableRow
     },
     {
-      Header: 'Tutorname',
-      accessor: 'tutor.name' as keyof TableRow
+      Header: 'Start',
+      accessor: 'startDate' as keyof TableRow
     },
     {
-      Header: 'ID',
-      accessor: 'id' as keyof TableRow
-    },
-    {
-      Header: 'Erstellt am',
-      accessor: 'createdAt' as keyof TableRow,
-      Cell: ({ value }) => new Date(value).toLocaleDateString()
+      Header: 'Ende',
+      accessor: 'endDate' as keyof TableRow
     },
     {
       Header: 'Aktionen',
       Cell: ({ row }) => (
         <Flex justifyContent="center">
-          <IconButton isDisabled={self.role === 'TEACHER'} variant="outline" aria-label="Bearbeiten" icon={<FaEdit />} onClick={ () => editTutorium(row)} mr={2} />
-          <IconButton isDisabled={self.role === 'TEACHER'} variant="outline" aria-label="Löschen" icon={<DeleteIcon />} onClick={ () => deleteTutorium(row)} />
+          <IconButton variant="outline" aria-label="Löschen" icon={<DeleteIcon />} onClick={ () => deleteTutorium(row)} />
         </Flex>
       )
     }
-  ], [deleteTutorium, editTutorium, self.role])
+  ], [deleteTutorium, self.role])
 
   const sortedTable = useSortedTable({
     columns,
     data,
-    filterKeys: ['name', 'tutor.name']
+    filterKeys: ['name', 'startDate', 'endDate']
   })
 
   return (
@@ -102,12 +84,12 @@ const TutoriumPage: React.FC<Props> = ({ self }) => {
               </InputLeftElement>
               <Input width="xs" value={sortedTable.filter} onChange={e => sortedTable.setFilter(e.target.value)} />
             </InputGroup>
-            <Button marginLeft="auto" leftIcon={<AddIcon />} onClick={tutoriumCreateModal.onOpen}>Tutorium hinzufügen</Button>
-            <IconButton ml={4} variant="outline" aria-label="Daten neu laden" icon={<RepeatIcon />} onClick={() => { tutoriumsQuery.refetch() }}></IconButton>
+            <Button marginLeft="auto" leftIcon={<AddIcon />} onClick={semesterCreateModal.onOpen}>Zeitspanne hinzufügen</Button>
+            <IconButton ml={4} variant="outline" aria-label="Daten neu laden" icon={<RepeatIcon />} onClick={() => { semestersQuery.refetch() }}></IconButton>
           </Flex>
-          {tutoriumsQuery.loading && (<Spinner />)}
-          {tutoriumsQuery.error != null && (<Heading>Error!</Heading>)}
-          {tutoriumsQuery.data != null && (
+          {semestersQuery.loading && (<Spinner />)}
+          {semestersQuery.error != null && (<Heading>Error!</Heading>)}
+          {semestersQuery.data != null && (
             <SortedTable table={sortedTable.table} tableFilter={sortedTable.tableFilter}/>
           )}
           {(data.length === 0) && (
@@ -122,9 +104,8 @@ const TutoriumPage: React.FC<Props> = ({ self }) => {
           )}
         </Flex>
       </SimpleGrid>
-      <CreateTutoriumModal isOpen={tutoriumCreateModal.isOpen} onClose={tutoriumCreateModal.onClose} />
+      <CreateSemesterModal isOpen={semesterCreateModal.isOpen} onClose={semesterCreateModal.onClose} />
       <DeleteTutoriumAlertDialog isOpen={tutoriumDeleteAlertDialog.isOpen} onClose={tutoriumDeleteAlertDialog.onClose} rowId={rowId} name={rowName} />
-      <EditTutoriumModal isOpen={tutoriumEditAlertDialog.isOpen} onClose={tutoriumEditAlertDialog.onClose} tutoriumId={rowId} name={rowName} teacherId={rowtutorId} />
     </PageScaffold>
   )
 }

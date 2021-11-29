@@ -30,7 +30,7 @@ export class Semester extends BaseEntity {
   @Field()
   endDate: string
 
-  @Column()
+  @Column({ unique: true })
   @Field()
   name: string
 }
