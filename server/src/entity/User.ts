@@ -32,7 +32,7 @@ export class User extends BaseEntity {
     @Field()
     name: string
 
-    @Column()
+    @Column({ nullable: true})
     password: string
 
     @Column('int')
@@ -42,6 +42,10 @@ export class User extends BaseEntity {
     @OneToMany(() => Tutorium, tutorium => tutorium.tutor)
     @Field(() => [Tutorium])
     tutoriums: Tutorium[]
+
+    @Column({ nullable: true })
+    @Field()
+    iservUUID: string
 
     static fromContext (context: Context) {
       if (context.req.session.userId == null) {

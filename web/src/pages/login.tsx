@@ -65,7 +65,7 @@ const Login: React.FC<LoginProps> = ({}) => {
                         })
 
                         if (res.data?.loginUser.user != null && res.data?.loginUser.errors == null) {
-                            router.push("/")
+                            await router.push("/")
                         } else {
                             actions.setErrors({
                                 name: "Falsches Passwort oder unbekannter Benutzer",
