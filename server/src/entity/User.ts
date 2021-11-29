@@ -1,4 +1,3 @@
-import { Context } from '../types'
 import { ID, ObjectType, Field, registerEnumType } from 'type-graphql'
 import { BaseEntity, Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
 import { Tutorium } from './Tutorium'
@@ -52,13 +51,6 @@ export class User extends BaseEntity {
     @OneToMany(() => Excuse, excuse => excuse.submittedBy)
     @Field(() => [Excuse])
     submittedExcuses: Excuse[]
-
-    static fromContext (context: Context) {
-      if (context.req.session.userId == null) {
-        return undefined
-      }
-      return User.findOne(context.req.session.userId)
-    }
 
     isCoordinator () {
       return this.role === Role.COORDINATOR

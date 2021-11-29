@@ -1,11 +1,44 @@
 import { User } from '../entity/User'
-import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql'
+import { Arg, Authorized, Ctx, FieldResolver, Mutation, Query, Resolver, ResolverInterface, Root } from 'type-graphql'
 import { registerUser, UserRegisterInput, UserRegisterResponse } from './user/register'
 import { Context } from '../types'
 import { loginUser, UserLoginResponse, UserLoginInput } from './user/login'
+import { Tutorium } from '../entity/Tutorium'
+import { Absence } from '../entity/Absence'
+import { Excuse } from '../entity/Excuse'
 
 @Resolver(User)
-export class UserResolver {
+export class UserResolver implements ResolverInterface<User> {
+  @Authorized()
+  @FieldResolver()
+  async tutoriums (@Root() user: User) {
+    return Tutorium.find({ where: { tutorId: user.id } })
+  }
+
+  @Authorized()
+  @FieldResolver()
+  async submittedAbsences (@Root() user: User, @Ctx() { caller }: Context) {
+    if (caller == null) { return [] }
+
+    if (caller.id !== user.id) {
+      return []
+    }
+
+    return Absence.find({ where: { submittedById: user.id } })
+  }
+
+  @Authorized()
+  @FieldResolver()
+  async submittedExcuses (@Root() user: User, @Ctx() { caller }: Context) {
+    if (caller == null) { return [] }
+
+    if (caller.id !== user.id) {
+      return []
+    }
+
+    return Excuse.find({ where: { submittedById: user.id } })
+  }
+
   @Authorized()
   @Query(() => [User])
   async users () {
@@ -15,9 +48,9 @@ export class UserResolver {
   @Authorized()
   @Query(() => User, { nullable: true })
   async self (
-    @Ctx() context: Context
+    @Ctx() { caller }: Context
   ) {
-    return context.req.user
+    return caller
   }
 
   @Authorized('COORDINATOR')
