@@ -98,7 +98,7 @@ const Student: React.FC<Props> = ({ self }) => {
 
   const dates = []
 
-  function getAbsencesDates() {
+  function getAbsencesDates () {
     absenceData.forEach(e => {
       dates.push(e.date)
     })
@@ -110,11 +110,11 @@ const Student: React.FC<Props> = ({ self }) => {
     return unique
   }
 
-  function getAbsenceForDate(date: string) {
+  function getAbsenceForDate (date: string) {
     return absenceData.filter(absenceData => absenceData.date === date)
   }
 
-  function checkIfAbsencesDataIsEmpty() {
+  function checkIfAbsencesDataIsEmpty () {
     if (absenceData.length > 0) {
       return (
         <Flex w="full" padding={5}>
