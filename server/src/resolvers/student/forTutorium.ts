@@ -1,0 +1,60 @@
+import { Student } from '../../entity/Student'
+import { Context } from '../../types'
+import { Field, ObjectType, registerEnumType } from 'type-graphql'
+import { Tutorium } from 'src/entity/Tutorium'
+
+export enum StudentsForTutoriumErrorCode {
+  UNKNOWN_ERROR,
+  INVALID_TUTORIUM_ID,
+}
+
+registerEnumType(StudentsForTutoriumErrorCode, {
+  name: 'StudentsForTutoriumErrorCode'
+})
+
+@ObjectType()
+export class StudentsForTutoriumError {
+  @Field(() => StudentsForTutoriumErrorCode)
+  code: StudentsForTutoriumErrorCode
+
+  @Field({ nullable: true })
+  message?: string
+}
+
+@ObjectType()
+export class StudentForTutoriumResposne {
+  @Field(() => [Student], { nullable: true })
+  students?: Student[]
+
+  @Field(() => [StudentsForTutoriumError], { nullable: true })
+  errors?: StudentsForTutoriumError[]
+}
+
+export async function studentForTutorium (tutoriumId: string, { caller }: Context) : Promise<StudentForTutoriumResposne> {
+  try {
+    if (caller == null) {
+      throw new Error('Function was used without @Authorized directive')
+    }
+
+    const tutorium = await Tutorium.findOne({ where: { id: tutoriumId } })
+    if (tutorium == null) {
+      return {
+        errors: [{
+          code: StudentsForTutoriumErrorCode.INVALID_TUTORIUM_ID,
+          message: 'The given id does not match any Tutorium in the database.'
+        }]
+      }
+    }
+
+    return {
+      students: tutorium.students
+    }
+  } catch (error) {
+    return {
+      errors: [{
+        code: StudentsForTutoriumErrorCode.UNKNOWN_ERROR,
+        message: error.message
+      }]
+    }
+  }
+}
