@@ -140,6 +140,11 @@ const AbsencePage: React.FC<Props> = ({ self }) => {
               textTransformer={t => `${t.lastName}, ${t.firstName}`}
               valueTransformer={t => t.id}
               placeholder={'Keine Schüler gewählt'}
+              validate={values => {
+                if (values.length < 1) {
+                  return 'Bitte mindestens eine Schüler auswählen.'
+                }
+              }}
             />
             <Box mb={4} />
             <Button colorScheme="primary" type="submit" isLoading={props.isSubmitting}>Weiter</Button>
