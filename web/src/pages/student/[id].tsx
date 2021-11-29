@@ -18,8 +18,6 @@ const Student: React.FC<Props> = ({ self }) => {
 
   const [rowId, setRowId] = React.useState('')
 
-  const idString: string = id.toString()
-
   const toast = useToast()
 
   const studentsQuery = useStudentsQuery({
@@ -28,7 +26,7 @@ const Student: React.FC<Props> = ({ self }) => {
 
   const studentAbsences = useAbsencesForStudentQuery({
     variables: {
-      studentId: idString
+      studentId: id.toString()
     }
   })
 
@@ -54,8 +52,8 @@ const Student: React.FC<Props> = ({ self }) => {
       accessor: 'lessonIndex'
     },
     {
-      Header: 'ID',
-      accessor: 'id'
+      Header: 'eingereicht von',
+      accessor: 'submittedBy.name'
     },
     {
       Header: '',
@@ -65,14 +63,14 @@ const Student: React.FC<Props> = ({ self }) => {
       Header: 'Aktionen',
       Cell: ({ row }) => (
         <Flex justifyContent="center">
-          <IconButton isDisabled={self.role === 'TEACHER'} variant="outline" aria-label="Löschen" icon={<DeleteIcon />} onClick={() => {
+          <IconButton isDisabled={self.role === 'TEACHER' && row.original.submittedBy === self.name} variant="outline" aria-label="Löschen" icon={<DeleteIcon />} onClick={() => {
             setRowId(row.original.id)
             absenceDeleteAlertDialog.onOpen()
           }} />
         </Flex>
       )
     }
-  ], [absenceDeleteAlertDialog, self.role])
+  ], [absenceDeleteAlertDialog, self])
 
   let firstName = ''
   let lastName = ''
@@ -80,7 +78,7 @@ const Student: React.FC<Props> = ({ self }) => {
 
   function getStudent () {
     studentsData.forEach(e => {
-      if (e.id === idString) {
+      if (e.id === id) {
         firstName = (e.firstName)
         lastName = (e.lastName)
         if (e.tutorium !== null) {
@@ -140,10 +138,13 @@ const Student: React.FC<Props> = ({ self }) => {
           {studentAbsences.error != null && (<Heading>Error!</Heading>)}
           {studentAbsences.data != null && (
             getAbsencesDates().map(function (each) {
+              const year = each.substring(0, 4)
+              const month = each.substring(5, 7)
+              const day = each.substring(8, 10)
               console.log(each)
               return (
                 <Box key={each} w="full" border="1px" borderColor="gray.300" borderRadius="md" boxShadow="2xl" p="6" rounded="md" bg="white" mb={4}>
-                  <Text fontSize="22" pl={2}>{each}</Text>
+                  <Text fontSize="22" pl={2}>{day}.{month}.{year}</Text>
                   <SortedTable columns={columns} data={getAbsenceForDate(each)} />
                 </Box>)
             })
