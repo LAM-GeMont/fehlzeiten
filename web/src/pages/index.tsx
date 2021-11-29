@@ -1,9 +1,8 @@
-import { Heading } from '@chakra-ui/react'
+import React from 'react'
 import { PageScaffold } from '../components/PageScaffold'
 import WithAuth, { WithAuthProps } from '../components/withAuth'
 
-const Index: React.FC<WithAuthProps> = ({self}) => {
-
+const Index: React.FC<WithAuthProps> = ({ self }) => {
   return (
     <PageScaffold role={self.role}>
 

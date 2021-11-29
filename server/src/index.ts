@@ -6,25 +6,29 @@ import { createConnection, getRepository } from 'typeorm'
 import cors from 'cors'
 import { TutoriumResolver } from './resolvers/TutoriumResolver.js'
 import { Tutorium } from './entity/Tutorium.js'
-import { Role, User } from './entity/User.js'
+import { User } from './entity/User.js'
 import { UserResolver } from './resolvers/UserResolver.js'
 import session from 'express-session'
-import { __PROD__, COOKIE_NAME } from './constants'
+import { COOKIE_NAME, __PROD__ } from './constants'
 import { TypeormStore } from 'connect-typeorm/out'
 import env from 'dotenv-safe'
 import path from 'path'
 import { Session } from './entity/Session.js'
 import { StudentResolver } from './resolvers/StudentResolver.js'
 import { Student } from './entity/Student.js'
+import { Absence } from './entity/Absence.js'
+import { AbsenceResolver } from './resolvers/AbsenceResolver.js'
+import { authChecker } from './auth.js'
+import { Excuse } from './entity/Excuse'
+import { ExcuseResolver } from './resolvers/ExcuseResolver'
+import { createAbsenceLoader, createExcuseLoader, createStudentLoader, createTutoriumLoader, createUserLoader } from './loaders'
+import { Context } from './types.js'
 import passport from 'passport'
 import fs from 'fs'
 import https from 'https'
 import { deserializeUser, oauthStrategy, serializeUser } from './oauth'
 
-env.config({
-  path: path.resolve(process.cwd(), '..', '.env'),
-  example: path.resolve(process.cwd(), '..', '.env.example')
-});
+env.config({ path: path.resolve(process.cwd(), '..', '.env'), example: path.resolve(process.cwd(), '..', '.env.example') });
 
 (async () => {
   await createConnection({
@@ -32,7 +36,7 @@ env.config({
     database: './db.db',
     synchronize: true,
     logging: true,
-    entities: [Tutorium, User, Session, Student]
+    entities: [Absence, Excuse, Session, Student, Tutorium, User]
   })
 
   const app = express()
@@ -78,15 +82,28 @@ env.config({
 
   // END OAUTH 2
 
+  const loaders = {
+    absence: createAbsenceLoader(),
+    excuse: createExcuseLoader(),
+    student: createStudentLoader(),
+    tutorium: createTutoriumLoader(),
+    user: createUserLoader()
+  }
+
   const apollo = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [TutoriumResolver, UserResolver, StudentResolver],
-      validate: false
+      resolvers: [AbsenceResolver, ExcuseResolver, StudentResolver, TutoriumResolver, UserResolver],
+      validate: false,
+      authChecker: authChecker
     }),
-    context: ({ req, res }) => ({
-      req,
-      res
-    })
+    context: async ({ req, res }): Promise<Context> => {
+      return {
+        req,
+        res,
+        caller: req.session.userId != null ? await loaders.user.load(req.session.userId) : undefined,
+        loaders
+      }
+    }
   })
 
   await apollo.start()

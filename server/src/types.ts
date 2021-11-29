@@ -1,9 +1,23 @@
 import { Request, Response } from 'express'
 import { Session } from 'express-session'
+import { Tutorium } from './entity/Tutorium'
+import { User } from './entity/User'
+import DataLoader from 'dataloader'
+import { Absence } from './entity/Absence'
+import { Student } from './entity/Student'
+import { Excuse } from './entity/Excuse'
 
 export type Context = {
-  req: Request & { session: Session };
+  req: Request & { session: Session }
   res: Response
+  caller?: User
+  loaders: {
+    absence: DataLoader<string, Absence>,
+    excuse: DataLoader<string, Excuse>,
+    student: DataLoader<string, Student>,
+    tutorium: DataLoader<string, Tutorium>,
+    user: DataLoader<string, User>
+  }
 }
 
 declare module 'express-session' {
