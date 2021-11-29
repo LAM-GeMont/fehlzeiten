@@ -22,7 +22,7 @@ const validateName = (value: string) => {
   return error
 }
 
-export const EditTutoriumAlertDialog: React.FC<Props> = ({ isOpen, onClose, tutoriumId, name, teacherId }) => {
+export const EditTutoriumModal: React.FC<Props> = ({ isOpen, onClose, tutoriumId, name, teacherId }) => {
   const toast = useToast()
   const [edit] = useEditTutoriumMutation({
     onError: errors => toastApolloError(toast, errors)

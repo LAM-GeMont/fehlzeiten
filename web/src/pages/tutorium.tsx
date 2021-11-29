@@ -10,7 +10,7 @@ import SortedTable, { useSortedTable } from '../components/SortedTable'
 import { toastApolloError } from '../util'
 import WithAuth, { WithAuthProps } from '../components/withAuth'
 import { DeleteTutoriumAlertDialog } from '../components/DeleteTutoriumAlertDialog'
-import { EditTutoriumAlertDialog } from '../components/EditTutoriumAlertDialog'
+import { EditTutoriumModal } from '../components/EditTutoriumModal'
 
 interface TableRow {
   name: string,
@@ -125,7 +125,7 @@ const TutoriumPage: React.FC<Props> = ({ self }) => {
       </SimpleGrid>
       <CreateTutoriumModal isOpen={tutoriumCreateModal.isOpen} onClose={tutoriumCreateModal.onClose} />
       <DeleteTutoriumAlertDialog isOpen={tutoriumDeleteAlertDialog.isOpen} onClose={tutoriumDeleteAlertDialog.onClose} rowId={rowId} name={rowName} />
-      <EditTutoriumAlertDialog isOpen={tutoriumEditAlertDialog.isOpen} onClose={tutoriumEditAlertDialog.onClose} tutoriumId={rowId} name={rowName} teacherId={rowtutorId} />
+      <EditTutoriumModal isOpen={tutoriumEditAlertDialog.isOpen} onClose={tutoriumEditAlertDialog.onClose} tutoriumId={rowId} name={rowName} teacherId={rowtutorId} />
     </PageScaffold>
   )
 }
