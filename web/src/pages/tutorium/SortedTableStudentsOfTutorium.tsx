@@ -20,8 +20,6 @@ const Tr = chakra(
     }
 )
 
-const studentsOfTutorium = await Student.find({ where: { tutorium.id: student.tutorium.id} })
-
 
 
 function checkIfExam (id: string, value: boolean) {

@@ -1,20 +1,24 @@
 import { AddIcon, DeleteIcon, RepeatIcon, SearchIcon } from '@chakra-ui/icons'
-import { Spinner, Button, IconButton, useDisclosure, useToast, Text, Box, Input, InputGroup, InputLeftElement, Flex, SimpleGrid} from '@chakra-ui/react'
+import { Spinner, Button, IconButton, useDisclosure, useToast, Text, Box, Input, InputGroup, InputLeftElement, Flex, SimpleGrid, Heading} from '@chakra-ui/react'
 import { useRouter } from 'next/router'
 import React, { useMemo } from 'react'
 import { FaEdit } from 'react-icons/fa'
 import { PageScaffold } from '../../components/PageScaffold'
 import SortedTable, { useSortedTable } from '../../components/SortedTable'
+import SortedTableStudentsOfTutorium from './SortedTableStudentsOfTutorium'
 import WithAuth, { WithAuthProps } from '../../components/withAuth'
-import { Role, useStudentsQuery } from '../../generated/graphql'
+import { Role, useStudentsQuery, useTutoriumsQuery } from '../../generated/graphql'
 import { toastApolloError } from '../../util'
 import { DeleteStudentAlertDialog } from '../../components/DeleteStudentAlertDialog' 
-import { CreateStudentModal } from '../../components/CreateStudentModal'
+import { EditStudentModal } from '../../components/EditStudentModal'
+
+import {Tutorium} from "../../../../server/src/entity/Tutorium";
+import {StudentType} from "../../../../server/src/entity/Student";
 
 interface Props extends WithAuthProps { }
 
 const Student: React.FC<Props> = ({ self }) => {
-    const studentCreateModal = useDisclosure()
+    const studentEditModal = useDisclosure()
     const studentDeleteAlertDialog = useDisclosure()
     const toast = useToast()
 
@@ -30,7 +34,7 @@ const Student: React.FC<Props> = ({ self }) => {
         onError: errors => toastApolloError(toast, errors)
     })
 
-    var allStudentsData = useMemo(() => {
+    const allStudentsData = useMemo(() => {
         if (studentsQuery.data?.students != null) {
             return studentsQuery.data.students
         } else {
@@ -39,21 +43,42 @@ const Student: React.FC<Props> = ({ self }) => {
     }, [studentsQuery.data])
 
     
-    var studentData
+    let studentData: StudentType[] = []
     allStudentsData.forEach(student => {
-        if (student.id != id){
-            studentData.add(student)
+        if (student.tutorium.id == id){
+            studentData.push(student)
         }
     })
 
-    const openCreate = studentCreateModal.onOpen
-    const createStudent = React.useCallback((row) => {
+    const tutoriumsQuery = useTutoriumsQuery({
+        onError: errors => toastApolloError(toast, errors)
+    })
+
+    const allTutoriumsData = useMemo(() => {
+        if (tutoriumsQuery.data?.tutoriums != null) {
+            return tutoriumsQuery.data.tutoriums
+        } else {
+            return []
+        }
+    }, [tutoriumsQuery.data])
+
+    var tutorName = "" 
+    var tutoriumName = ""
+    allTutoriumsData.forEach(tutorium =>{
+        if(tutorium.id == id){
+             tutorName = tutorium.tutor.name
+             tutoriumName = tutorium.name
+        }
+    })
+
+    const openEdit = studentEditModal.onOpen
+    const editStudent = React.useCallback((row) => {
         setRowId(row.original.id)
         setRowFirstName(row.original.firstName)
         setRowLastName(row.original.lastName)
         row.original.tutorium ? setRowTutoriumId(row.original.tutorium.id) : setRowTutoriumId('')
-        openCreate()
-      }, [openCreate])
+        openEdit()
+      }, [openEdit])
     
       const openDelete = studentDeleteAlertDialog.onOpen
       const deleteStudent = React.useCallback((row) => {
@@ -78,7 +103,7 @@ const Student: React.FC<Props> = ({ self }) => {
             accessor: 'exam',
             Cell: ({ row }) => (
                 <Flex justifyContent="center">
-                  <IconButton isDisabled={self.role === 'TEACHER'} variant="outline" aria-label="Hinzufügen" icon={<FaEdit />} onClick={ () => createStudent(row)} />
+                  <IconButton isDisabled={self.role === 'TEACHER'} variant="outline" aria-label="Bearbeiten" icon={<FaEdit />} onClick={ () => editStudent(row)} />
                   <Box mr={2}></Box>
                   <IconButton isDisabled={self.role === 'TEACHER'} variant="outline" aria-label="Löschen" icon={<DeleteIcon />} onClick={ () => deleteStudent(row)} />
                 </Flex>
@@ -88,7 +113,7 @@ const Student: React.FC<Props> = ({ self }) => {
           Header: '',
           accessor: 'excused'
         }, */
-    ], [createStudent, deleteStudent, self.role])
+    ], [editStudent, deleteStudent, self.role])
 
 
     const data = useMemo(() => {
@@ -119,19 +144,17 @@ const Student: React.FC<Props> = ({ self }) => {
                 
                 <IconButton ml={4} variant="outline" aria-label="Daten neu laden" icon={<RepeatIcon />} onClick={() => { studentsQuery.refetch() }}></IconButton>
               </Flex>
-              {(data.length === 0) && (
-                <Box mt={5}>
-                  {(self.role === 'COORDINATOR' && (
-                    <Text>Es wurden noch keine Tutorien erstellt.</Text>
-                  ))}
-                  {(self.role === 'TEACHER' && (
-                    <Text>Ihnen sind noch keine Tutorien zugewiesen.</Text>
-                  ))}
-                </Box>
-              )}
+              {studentsQuery.loading && (<Spinner />)}
+                    {studentsQuery.error != null && (<Heading>Error!</Heading>)}
+                    {studentsQuery.data != null && (
+                      <Box w="full" border="1px" borderColor="gray.300" borderRadius="md" boxShadow="lg" p="6" rounded="md" bg="white" mb={4}>
+                        <Text fontSize="22" pl={2}>Tutorium: {tutoriumName} | Tutor: {tutorName}</Text> 
+                        <SortedTableStudentsOfTutorium columns={columns} data={studentData} />
+                      </Box>
+                    )}
             </Flex>
           </SimpleGrid>
-          <CreateStudentModal isOpen={studentCreateModal.isOpen} onClose={studentCreateModal.onClose} />
+          <EditStudentModal isOpen={studentEditModal.isOpen} onClose={studentEditModal.onClose} studentId={rowId} firstName={rowFirstName} lastName={rowLastName} tutoriumId={rowtutoriumId} />
           <DeleteStudentAlertDialog isOpen={studentDeleteAlertDialog.isOpen} onClose={studentDeleteAlertDialog.onClose} rowId={rowId} firstName={rowFirstName} lastName={rowLastName} />
         </PageScaffold>
       )
