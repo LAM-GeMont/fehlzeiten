@@ -1,5 +1,5 @@
 import { AuthChecker } from 'type-graphql'
-import { Role, User } from './entity/User'
+import { Role } from './entity/User'
 import { Context } from './types'
 
 /**
@@ -9,14 +9,9 @@ import { Context } from './types'
  * as the `roles` argument.
  */
 export const authChecker: AuthChecker<Context> = async ({ context }, roles) => {
-  // get the calling user from the context, i.e., check if it even exists
-  const caller = await User.fromContext(context)
-  if (caller == null) {
+  if (context.caller == null) {
     return false
   }
-
-  // attach user to context
-  context.req.user = caller
 
   // user does exist, now check user's roles
 
@@ -26,6 +21,6 @@ export const authChecker: AuthChecker<Context> = async ({ context }, roles) => {
   }
 
   // roles were specified in the decorator, so compare the user's roles to those roles
-  const userRoleAsString = Role[caller.role]
+  const userRoleAsString = Role[context.caller.role]
   return roles.includes(userRoleAsString)
 }

@@ -3,7 +3,9 @@ import {
   BaseEntity,
   Column,
   CreateDateColumn,
-  Entity, Index, ManyToOne,
+  Entity,
+  Index,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm'

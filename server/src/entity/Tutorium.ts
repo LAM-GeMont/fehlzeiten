@@ -30,5 +30,6 @@ export class Tutorium extends BaseEntity {
     tutor?: User
 
     @OneToMany(() => Student, student => student.tutorium)
+    @Field(() => [Student])
     students: Student[]
 }
