@@ -5,7 +5,6 @@ import { Student } from '../../entity/Student'
 
 export enum AbsenceCreateErrorCode {
   UNKNOWN_ERROR,
-  UNAUTHORIZED,
   INVALID_STUDENT_ID,
   INVALID_DATE,
   ABSENCE_ALREADY_EXISTS
@@ -51,7 +50,7 @@ export class AbsencesCreateInput {
   exam: boolean
 }
 
-export async function createAbsences (args: AbsencesCreateInput, context: Context) : Promise<AbsencesCreateResponse> {
+export async function createAbsences (args: AbsencesCreateInput, { caller }: Context) : Promise<AbsencesCreateResponse> {
   try {
     const isoDateRegex = /\d{4}-\d{2}-\d{2}/
     const canBeParsedAsDate = isNaN(Date.parse(args.date))
@@ -78,7 +77,7 @@ export async function createAbsences (args: AbsencesCreateInput, context: Contex
         absence.lessonIndex = lessonIndex
         absence.date = args.date
         absence.exam = args.exam
-        absence.submittedBy = context.req.user
+        absence.submittedBy = caller
         try {
           await absence.save()
           absences.push(absence)

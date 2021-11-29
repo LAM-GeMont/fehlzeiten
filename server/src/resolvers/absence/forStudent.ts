@@ -7,7 +7,6 @@ import { Context } from '../../types'
 export enum AbsencesForStudentErrorCode {
   UNKNOWN_ERROR,
   INVALID_STUDENT_ID,
-  UNAUTHORIZED
 }
 
 registerEnumType(AbsencesForStudentErrorCode, {
@@ -32,44 +31,32 @@ export class AbsencesForStudentResponse {
   errors?: AbsencesForStudentError[]
 }
 
-export async function absencesForStudent (studentId: string, context: Context) : Promise<AbsencesForStudentResponse> {
+export async function absencesForStudent (studentId: string, { caller }: Context) : Promise<AbsencesForStudentResponse> {
   try {
-    if (context.req.user.role === Role.COORDINATOR) {
-      const student = await Student.findOne(studentId, { relations: ['absences'] })
-      if (student == null) {
-        return {
-          errors: [{
-            code: AbsencesForStudentErrorCode.INVALID_STUDENT_ID
-          }]
-        }
+    if (caller == null) {
+      throw new Error('Function was used without @Authorized directive')
+    }
+
+    const student = await Student.findOne(studentId, { relations: ['absences', 'tutorium'] })
+    if (student == null) {
+      return {
+        errors: [{
+          code: AbsencesForStudentErrorCode.INVALID_STUDENT_ID
+        }]
       }
+    }
+
+    // Allow coordinators and the students tutor to access all absences
+    if (caller.role === Role.COORDINATOR || student.tutorium?.tutorId === caller.id) {
       return {
         absences: student.absences
       }
     }
-    const absences = await Absence.find({
-      join: {
-        alias: 'absence',
-        leftJoinAndSelect: {
-          student: 'absence.student',
-          user: 'absence.submittedBy'
-        }
-      },
-      where: (qb: any) => {
-        qb.where('user.id = :id', { id: context.req.user.id }).andWhere('student.id = :studentId', { studentId })
-      }
-    })
-    if (absences.length < 1) {
-      const student = await Student.findOne(studentId)
-      if (student == null) {
-        return {
-          errors: [{
-            code: AbsencesForStudentErrorCode.INVALID_STUDENT_ID
-          }]
-        }
-      }
+
+    // Other users see only the absences submitted by themselves
+    return {
+      absences: student.absences.filter(absence => caller != null && absence.submittedById === caller.id)
     }
-    return { absences }
   } catch (error) {
     return {
       errors: [{

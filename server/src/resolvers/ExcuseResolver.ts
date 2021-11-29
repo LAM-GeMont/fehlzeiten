@@ -1,4 +1,4 @@
-import { Arg, Authorized, Ctx, Mutation, Resolver } from 'type-graphql'
+import { Arg, Authorized, Ctx, FieldResolver, Mutation, Resolver, ResolverInterface, Root } from 'type-graphql'
 import { Excuse } from '../entity/Excuse'
 import { Context } from '../types'
 import {
@@ -8,7 +8,22 @@ import {
 } from './excuse/create'
 
 @Resolver(Excuse)
-export class ExcuseResolver {
+export class ExcuseResolver implements ResolverInterface<Excuse> {
+  @Authorized()
+  @FieldResolver()
+  async student (@Root() excuse: Excuse, @Ctx() { loaders }: Context) {
+    return loaders.student.load(excuse.studentId)
+  }
+
+  @Authorized()
+  @FieldResolver()
+  async submittedBy (@Root() excuse: Excuse, @Ctx() { loaders }: Context) {
+    if (excuse.submittedById == null) {
+      return undefined
+    }
+    return loaders.user.load(excuse.submittedById)
+  }
+
   @Authorized()
   @Mutation(() => ExcuseCreateResponse)
   async createExcuse (

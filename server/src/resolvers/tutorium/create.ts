@@ -1,11 +1,9 @@
 import { Tutorium } from '../../entity/Tutorium'
 import { Field, InputType, ObjectType, registerEnumType } from 'type-graphql'
-import { Context } from '../../types'
 import { User } from '../../entity/User'
 
 export enum TutoriumCreateErrorCode {
   UNKNOWN_ERROR,
-  UNAUTHORIZED,
   NAME_TOO_SHORT,
   TUTOR_NOT_VALID,
   DUPLICATE_NAME
@@ -38,21 +36,12 @@ export class TutoriumCreateInput {
   @Field()
   name: string
 
-  @Field()
-  tutorId: string
+  @Field({ nullable: true })
+  tutorId?: string
 }
 
-export async function createTutorium (args: TutoriumCreateInput, context: Context) : Promise<TutoriumCreateResponse> {
+export async function createTutorium (args: TutoriumCreateInput) : Promise<TutoriumCreateResponse> {
   try {
-    const caller = await User.fromContext(context)
-    if (caller == null || !caller.isCoordinator) {
-      return {
-        errors: [{
-          code: TutoriumCreateErrorCode.UNAUTHORIZED
-        }]
-      }
-    }
-
     if (args.name.length < 1) {
       return {
         errors: [{
@@ -64,16 +53,20 @@ export async function createTutorium (args: TutoriumCreateInput, context: Contex
 
     const tutorium = new Tutorium()
     tutorium.name = args.name
-    const tutor = await User.findOne(args.tutorId)
 
-    if (tutor == null) {
-      return {
-        errors: [{
-          code: TutoriumCreateErrorCode.TUTOR_NOT_VALID,
-          message: 'The provided Tutor is not valid'
-        }]
+    if (args.tutorId != null && args.tutorId !== '') {
+      const tutor = await User.findOne(args.tutorId)
+
+      if (tutor == null) {
+        return {
+          errors: [
+            {
+              code: TutoriumCreateErrorCode.TUTOR_NOT_VALID,
+              message: 'The provided Tutor is not valid'
+            }
+          ]
+        }
       }
-    } else {
       tutorium.tutor = tutor
     }
 
