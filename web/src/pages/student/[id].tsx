@@ -79,6 +79,10 @@ const Student: React.FC<Props> = ({ self }) => {
       Header: '',
       accessor: 'exam'
     },
+    /* {
+      Header: '',
+      accessor: 'excused'
+    }, */
     {
       Header: 'Aktionen',
       Cell: ({ row }) => (

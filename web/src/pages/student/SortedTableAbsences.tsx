@@ -18,14 +18,22 @@ const Tr = chakra(
   }
 )
 
-function checkIfExam (props: any) {
-  if (typeof props === 'boolean' && props) {
+function checkIfExam (id: string, value: boolean) {
+  if (id === 'exam' && value) {
     return (
         <Box borderRadius="md" bg="blue.400" color="white" w='full' p={3} pt={1} h={8} textAlign="center">
           Klausur
         </Box>
     )
   }
+  // Uncommend when excused is implemented
+  /* if (id === 'excused' && value) {
+    return (
+        <Box borderRadius="md" bg="green.400" color="white" w='full' p={3} pt={1} h={8} textAlign="center">
+          Entschuldigt
+        </Box>
+    )
+  } */
 }
 
 const SortedTable: React.FC<SortedTableProps> = ({ columns, data }) => {
@@ -91,7 +99,7 @@ const SortedTable: React.FC<SortedTableProps> = ({ columns, data }) => {
                 {row.cells.map((cell) => (
                   // eslint-disable-next-line react/jsx-key
                   <Td {...cell.getCellProps()}>
-                    {checkIfExam(cell.value)}
+                    {checkIfExam(cell.column.id, cell.value)}
                     {cell.render('Cell')}
                   </Td>
                 ))}
