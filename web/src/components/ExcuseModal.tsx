@@ -20,7 +20,7 @@ import {
   Tabs
 } from '@chakra-ui/react'
 import { Field, Form, Formik } from 'formik'
-import { formatDateISO } from '../util'
+import { formatDateISO, handleStartEndDateChange } from '../util'
 import { Box, Flex } from '@chakra-ui/layout'
 import {
   Student,
@@ -32,25 +32,6 @@ interface Props {
   isOpen: boolean,
   onClose: () => void,
   student: Student
-}
-
-function handleStartEndDateChange (event, field, form) {
-  let targetValue = event.target.value
-  if (targetValue === '') {
-    targetValue = formatDateISO(new Date())
-  }
-  form.setFieldValue(field.name, targetValue)
-  if (event.type === 'blur') {
-    if (event.target.id === 'startDate') {
-      if (targetValue > form.values.endDate) {
-        form.setFieldValue('endDate', targetValue)
-      }
-    } else {
-      if (targetValue < form.values.startDate) {
-        form.setFieldValue('startDate', targetValue)
-      }
-    }
-  }
 }
 
 const ExcuseModal: React.FC<Props> = ({ isOpen, onClose, student }) => {

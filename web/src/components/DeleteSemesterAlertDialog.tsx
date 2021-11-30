@@ -9,20 +9,20 @@ import {
   useToast
 } from '@chakra-ui/react'
 import React from 'react'
-import { useDeleteTutoriumMutation } from '../generated/graphql'
+import { useDeleteSemesterMutation } from '../generated/graphql'
 import { toastApolloError } from '../util'
 
 interface Props {
   isOpen: boolean,
   onClose: () => void,
-  rowId: string,
+  semesterId: string,
   name: string
 }
 
-export const DeleteTutoriumAlertDialog: React.FC<Props> = ({ isOpen, onClose, rowId, name }) => {
+export const DeleteSemesterAlertDialog: React.FC<Props> = ({ isOpen, onClose, semesterId, name }) => {
   const toast = useToast()
 
-  const [remove] = useDeleteTutoriumMutation({
+  const [remove] = useDeleteSemesterMutation({
     onError: errors => toastApolloError(toast, errors)
   })
 
@@ -30,21 +30,21 @@ export const DeleteTutoriumAlertDialog: React.FC<Props> = ({ isOpen, onClose, ro
     <AlertDialog isOpen={isOpen} onClose={onClose} leastDestructiveRef={undefined} isCentered>
       <AlertDialogOverlay/>
       <AlertDialogContent>
-        <AlertDialogHeader>Tutorium löschen</AlertDialogHeader>
-        <AlertDialogBody>Sind Sie sich sicher, dass Sie das Tutorium {name} löschen möchten? Diese Aktion kann nicht
+        <AlertDialogHeader>Zeitspanne löschen</AlertDialogHeader>
+        <AlertDialogBody>Sind Sie sich sicher, dass Sie die Zeitspanne {name} löschen möchten? Diese Aktion kann nicht
           rückgängig gemacht werden.</AlertDialogBody>
         <AlertDialogFooter>
           <Button mr={3} variant="ghost" onClick={onClose}>Abbrechen</Button>
           <Button colorScheme="red" type="submit" onClick={async () => {
             const res = await remove({
-              variables: { deleteTutoriumData: { id: rowId } },
+              variables: { data: { id: semesterId } },
               refetchQueries: 'all'
             })
-            const errors = res.data.deleteTutorium.errors
+            const errors = res.data.deleteSemester.errors
             if (errors) {
               errors.forEach(error => {
                 toast({
-                  title: 'Fehler beim löschen des Tutoriums',
+                  title: 'Fehler beim löschen der Zeitspanne',
                   description: error.message == null ? error.code : `${error.code}: ${error.message}`,
                   isClosable: true,
                   status: 'error'
@@ -52,8 +52,8 @@ export const DeleteTutoriumAlertDialog: React.FC<Props> = ({ isOpen, onClose, ro
               })
             } else {
               toast({
-                title: 'Tutorium gelöscht',
-                description: 'Das Tutorium wurde erfolgreich gelöscht',
+                title: 'Zeitspanne gelöscht',
+                description: 'Die Zeitspanne wurde erfolgreich gelöscht.',
                 isClosable: true,
                 status: 'success'
               })

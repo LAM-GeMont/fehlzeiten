@@ -35,3 +35,22 @@ export const formatDateISO = (date: Date) => {
   const year = d.getFullYear()
   return [year, month, day].join('-')
 }
+
+export const handleStartEndDateChange = (event, field, form) => {
+  let targetValue = event.target.value
+  if (targetValue === '') {
+    targetValue = formatDateISO(new Date())
+  }
+  form.setFieldValue(field.name, targetValue)
+  if (event.type === 'blur') {
+    if (event.target.id === 'startDate') {
+      if (targetValue > form.values.endDate) {
+        form.setFieldValue('endDate', targetValue)
+      }
+    } else {
+      if (targetValue < form.values.startDate) {
+        form.setFieldValue('startDate', targetValue)
+      }
+    }
+  }
+}
