@@ -92,16 +92,11 @@ const SemesterPage: React.FC<Props> = ({ self }) => {
           {semestersQuery.loading && (<Spinner />)}
           {semestersQuery.error != null && (<Heading>Error!</Heading>)}
           {semestersQuery.data != null && (
-            <SortedTable table={sortedTable.table} tableFilter={sortedTable.tableFilter}/>
+            <SortedTable { ...sortedTable.tableProps }/>
           )}
           {(data.length === 0) && (
             <Box mt={5}>
-              {(self.role === 'COORDINATOR' && (
-                <Text>Es wurden noch keine Tutorien erstellt.</Text>
-              ))}
-              {(self.role === 'TEACHER' && (
-                <Text>Ihnen sind noch keine Tutorien zugewiesen.</Text>
-              ))}
+              <Text>Es wurden noch keine Zeitspannen erstellt.</Text>
             </Box>
           )}
         </Flex>
