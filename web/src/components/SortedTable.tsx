@@ -46,8 +46,12 @@ export const useSortedTable = ({ columns, data, initialFilter = '', filterKeys }
   })
 
   return {
-    table,
-    tableFilter: table.state.globalFilter,
+    tableProps: {
+      table,
+      tableFilter: table.state.globalFilter,
+      columns,
+      data
+    },
     filter,
     setFilter: (f) => { setFilter(f); debouncedSetTableFilter(f) },
     filterKeys
