@@ -40,6 +40,15 @@ export class UserResolver implements ResolverInterface<User> {
   }
 
   @Authorized()
+  @Query(() => User, { nullable: true })
+  async user (
+    @Arg('id') id: string,
+    @Ctx() { loaders }: Context
+  ) {
+    return loaders.user.load(id)
+  }
+
+  @Authorized()
   @Query(() => [User])
   async users () {
     return await User.find()
