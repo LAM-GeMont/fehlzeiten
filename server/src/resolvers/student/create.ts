@@ -54,16 +54,6 @@ export async function createStudent (args: StudentCreateInput) : Promise<Student
       }
     }
 
-    const existingStudents = await Student.find({ where: { lastName: args.lastName, firstName: args.firstName } })
-    if (existingStudents.length > 0) {
-      return {
-        errors: [{
-          code: StudentCreateErrorCode.DUPLICATE_NAME,
-          message: `A student with the name ${args.firstName} ${args.lastName} already exists`
-        }]
-      }
-    }
-
     const student = new Student()
     student.firstName = args.firstName
     student.lastName = args.lastName
@@ -86,6 +76,14 @@ export async function createStudent (args: StudentCreateInput) : Promise<Student
       student
     }
   } catch (error) {
+    if (error.message.includes('UNIQUE')) {
+      return {
+        errors: [{
+          code: StudentCreateErrorCode.DUPLICATE_NAME,
+          message: error.message
+        }]
+      }
+    }
     return {
       errors: [{
         code: StudentCreateErrorCode.UNKNOWN_ERROR,

@@ -20,7 +20,7 @@ import {
   Tabs, useToast
 } from '@chakra-ui/react'
 import { Field, Form, Formik } from 'formik'
-import { formatDateISO, toastApolloError } from '../util'
+import { formatDateISO, handleStartEndDateChange, toastApolloError } from '../util'
 import { Box, Flex } from '@chakra-ui/layout'
 import {
   Student,
@@ -32,25 +32,6 @@ interface Props {
   isOpen: boolean,
   onClose: () => void,
   student: Student
-}
-
-function handleStartEndDateChange (event, field, form) {
-  let targetValue = event.target.value
-  if (event.target.value === '') {
-    targetValue = formatDateISO(new Date())
-  }
-  form.setFieldValue(field.name, targetValue)
-  if (event.type === 'blur' || event.target.value === '') {
-    if (event.target.id === 'startDate') {
-      if (targetValue > form.values.endDate) {
-        form.setFieldValue('endDate', targetValue)
-      }
-    } else {
-      if (targetValue < form.values.startDate) {
-        form.setFieldValue('startDate', targetValue)
-      }
-    }
-  }
 }
 
 function handleSubmitFeedback (createExcuse, toast) {

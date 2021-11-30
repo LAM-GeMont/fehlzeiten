@@ -1,7 +1,6 @@
 import { Field, ID, InputType, ObjectType, registerEnumType } from 'type-graphql'
 import { Student } from '../../entity/Student'
 import { Tutorium } from '../../entity/Tutorium'
-import { Not } from 'typeorm'
 
 export enum StudentEditErrorCode {
     UNKNOWN_ERROR,
@@ -85,17 +84,6 @@ export async function editStudent (data: StudentEditInput): Promise<StudentEditR
       }
     }
 
-    const existingStudents = await Student.find({ where: { lastName: student.lastName, firstName: student.firstName, id: Not(student.id) } })
-    console.log(existingStudents)
-    if (existingStudents.length > 0) {
-      return {
-        errors: [{
-          code: StudentEditErrorCode.DUPLICATE_NAME,
-          message: `A student with the name ${student.firstName} ${student.lastName} already exists`
-        }]
-      }
-    }
-
     if (data.tutorium == null || data.tutorium === '') {
       student.tutorium = null
     }
@@ -118,6 +106,14 @@ export async function editStudent (data: StudentEditInput): Promise<StudentEditR
       student
     }
   } catch (error) {
+    if (error.message.includes('UNIQUE')) {
+      return {
+        errors: [{
+          code: StudentEditErrorCode.DUPLICATE_NAME,
+          message: error.message
+        }]
+      }
+    }
     return {
       errors: [{
         code: StudentEditErrorCode.UNKNOWN_ERROR,
