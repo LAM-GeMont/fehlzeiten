@@ -6,7 +6,7 @@ import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import { Role } from '../generated/graphql'
 import { IconType } from 'react-icons'
-import {Text} from "@chakra-ui/react";
+import { Text } from '@chakra-ui/react'
 
 interface Props {
   role: Role
@@ -79,7 +79,7 @@ export const PageScaffold: React.FC<Props> = (props) => {
         </Box>
       </Flex>
       <Box h="16" boxShadow="4px 0 6px -1px rgba(0, 0, 0, 0.1),2px 0 4px -1px rgba(0, 0, 0, 0.06)" pos="fixed" left={0} bottom={0} width="100vw" bg="white" display={{ base: 'flex', lg: 'none' }} overflowX="scroll" userSelect="none">
-        <Flex direction="row" alignItems="center" justifyContent="space-evenly" maxWidth="100%">
+        <Flex direction="row" alignItems="center" justifyContent="space-evenly" flexShrink={0} minWidth="100%">
           {links.filter(({ roles }) => roles.includes(props.role)).map(({ icon, url, title }, key) => (
             <Box key={key} margin={2} mb={0} w={16} _hover={{ color: 'primary.200' }} color={router.pathname === url ? 'primary.200' : '#000000'} flexShrink={0}>
               <NextLink href={url}>
