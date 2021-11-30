@@ -21,7 +21,7 @@ import { AbsenceResolver } from './resolvers/AbsenceResolver.js'
 import { authChecker } from './auth.js'
 import { Excuse } from './entity/Excuse'
 import { ExcuseResolver } from './resolvers/ExcuseResolver'
-import { createAbsenceLoader, createExcuseLoader, createStudentLoader, createTutoriumLoader, createUserLoader } from './loaders'
+import { createAbsenceLoader, createExcuseLoader, createSemesterLoader, createStudentLoader, createTutoriumLoader, createUserLoader } from './loaders'
 import { Context } from './types.js'
 import { SemesterResolver } from './resolvers/SemesterResolver'
 import { Semester } from './entity/Semester'
@@ -58,7 +58,8 @@ env.config({ path: path.resolve(process.cwd(), '..', '.env'), example: path.reso
     excuse: createExcuseLoader(),
     student: createStudentLoader(),
     tutorium: createTutoriumLoader(),
-    user: createUserLoader()
+    user: createUserLoader(),
+    semester: createSemesterLoader()
   }
 
   const apollo = new ApolloServer({
