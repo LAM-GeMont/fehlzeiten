@@ -38,7 +38,7 @@ export const formatDateISO = (date: Date) => {
 
 export const handleStartEndDateChange = (event, field, form) => {
   let targetValue = event.target.value
-  if (targetValue === '') {
+  if (event.target.value === '') {
     targetValue = formatDateISO(new Date())
   }
   form.setFieldValue(field.name, targetValue)
