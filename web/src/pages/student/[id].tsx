@@ -3,7 +3,7 @@ import { Box, Button, Flex, Heading, IconButton, SimpleGrid, Spinner, Text, useD
 import { useRouter } from 'next/router'
 import React, { useMemo } from 'react'
 import { PageScaffold } from '../../components/PageScaffold'
-import SortedTable from './SortedTableAbsences'
+import SortedTable from '../../components/SortedTableAbsences'
 import WithAuth, { WithAuthProps } from '../../components/withAuth'
 import { Role, useAbsencesForStudentQuery } from '../../generated/graphql'
 import { toastApolloError } from '../../util'
@@ -98,7 +98,7 @@ const Student: React.FC<Props> = ({ self }) => {
               <Flex w="full" padding={5}>
                 <Text fontSize="24" fontWeight="bold">Fehlzeiten</Text>
                 <Button marginLeft="auto" leftIcon={<AddIcon />} /* onClick={TODO} */>Entschuldigung hinzufügen</Button>
-                <IconButton ml={4} variant="outline" aria-label="Daten neu laden" icon={<RepeatIcon />} onClick={() => { studentQuery.refetch() }}></IconButton>
+                <IconButton ml={4} variant="outline" aria-label="Daten neu laden" icon={<RepeatIcon />} onClick={() => { studentQuery.refetch() }} />
               </Flex>
               {dates.map(date => {
                 return (
