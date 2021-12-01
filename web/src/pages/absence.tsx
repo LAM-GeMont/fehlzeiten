@@ -143,9 +143,34 @@ const AbsencePage: React.FC<Props> = ({ self }) => {
               {({ field, form }) => (
                 <FormControl isInvalid={form.errors.lesson && form.touched.lesson} mb={6}>
                   <FormLabel>Unterrichtsstunden</FormLabel>
+                  <style>
+                    {`#absence-creation .chakra-checkbox__control {
+                      display: none;
+                    }
+                    #absence-creation .chakra-checkbox__label {
+                      margin-left: 0;
+                      width: 100%;
+                    }
+                    #absence-creation .chakra-checkbox__input:checked ~ .chakra-checkbox__label .chakra-button {
+                      background: var(--chakra-colors-blue-500);
+                      color: #ffffff;
+                    }`}
+                  </style>
                   <CheckboxGroup>
                     <Flex direction="column">
-                      {lessonIndexes.map(v => <Checkbox {...field} key={v} value={v.toString()}>{v}. Stunde</Checkbox>)}
+                      {lessonIndexes.map(v =>
+                        <Checkbox
+                          {...field}
+                          key={v}
+                          value={v.toString()}
+                          width="100%" mb={1}
+                        >
+                          <Box
+                            as={Button}
+                            width="100%"
+                            onClick={(e) => e.currentTarget.closest('.chakra-checkbox__label').click() }
+                          >{v}. Stunde</Box></Checkbox>
+                      )}
                     </Flex>
                   </CheckboxGroup>
                   <FormErrorMessage>{form.errors.lesson}</FormErrorMessage>
