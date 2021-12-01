@@ -1,0 +1,14 @@
+query Tutorium($tutoriumId: String!) {
+    tutorium(id: $tutoriumId) {
+        id
+        name
+        tutor {
+            name
+        }
+        students {
+            id
+            firstName
+            lastName
+        }
+    }
+}
