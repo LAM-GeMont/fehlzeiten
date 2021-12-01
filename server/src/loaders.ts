@@ -19,9 +19,23 @@ function CreateBatchFn<T extends BaseEntity & { id: string }> (findByIds: (ids: 
   }
 }
 
+const StudentExcusesBatchFn = async (studentIds: readonly string[]) => {
+  const excuses = await Excuse.find({ where: studentIds.map(id => ({ studentId: id })) })
+  const excusesByStudentIds: Record<string, Excuse[]> = {}
+  excuses.forEach((excuse: Excuse) => {
+    if (excusesByStudentIds[excuse.studentId] == null) {
+      excusesByStudentIds[excuse.studentId] = []
+    }
+    excusesByStudentIds[excuse.studentId].push(excuse)
+  })
+
+  return studentIds.map((id) => excusesByStudentIds[id])
+}
+
 export const createAbsenceLoader = () => new DataLoader(CreateBatchFn<Absence>((ids) => Absence.findByIds(ids)))
 export const createExcuseLoader = () => new DataLoader(CreateBatchFn<Excuse>((ids) => Excuse.findByIds(ids)))
 export const createStudentLoader = () => new DataLoader(CreateBatchFn<Student>((ids) => Student.findByIds(ids)))
 export const createTutoriumLoader = () => new DataLoader(CreateBatchFn<Tutorium>((ids) => Tutorium.findByIds(ids)))
 export const createUserLoader = () => new DataLoader(CreateBatchFn<User>((ids) => User.findByIds(ids)))
 export const createSemesterLoader = () => new DataLoader(CreateBatchFn<Semester>((ids) => Semester.findByIds(ids)))
+export const createStudentExcuseLoader = () => new DataLoader(StudentExcusesBatchFn)

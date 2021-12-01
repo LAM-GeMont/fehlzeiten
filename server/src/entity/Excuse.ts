@@ -50,7 +50,7 @@ export class Excuse extends BaseEntity {
         }
       }
     })
-    @Field(() => [Int])
+    @Field(() => [Int], { nullable: true })
     lessons?: number[]
 
     @Column()
@@ -59,6 +59,10 @@ export class Excuse extends BaseEntity {
     @ManyToOne(() => Student, student => student.excuses, { nullable: false, onDelete: 'CASCADE' })
     @Field(() => Student)
     student: Student
+
+    @Column({ default: false })
+    @Field()
+    validForExam: boolean
 
     @Column({ nullable: true })
     submittedById?: string

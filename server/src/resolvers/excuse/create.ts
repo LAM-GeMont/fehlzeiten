@@ -2,6 +2,7 @@ import { Excuse } from '../../entity/Excuse'
 import { Field, ID, InputType, Int, ObjectType, registerEnumType } from 'type-graphql'
 import { Context } from '../../types'
 import { Student } from '../../entity/Student'
+import { Role } from '../../entity/User'
 
 export enum ExcuseCreateErrorCode {
   UNKNOWN_ERROR,
@@ -98,6 +99,7 @@ export async function createExcuse (args: ExcuseCreateInput, { caller }: Context
     excuse.student = student
     excuse.lessons = args.lessons
     excuse.submittedBy = caller
+    excuse.validForExam = caller?.role === Role.COORDINATOR
     await excuse.save()
     return { excuse }
   } catch (error) {
