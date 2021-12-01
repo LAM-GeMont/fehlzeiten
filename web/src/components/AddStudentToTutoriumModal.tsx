@@ -103,7 +103,7 @@ export const AddStudentToTutoriumModal: React.FC<Props> = ({ isOpen, onClose, fi
                                     label="Schüler (optional)"
                                     items={studentsData}
                                     valueTransformer={t => t.id}
-                                    textTransformer={t => t.firstName + " " + t.lastName}
+                                    textTransformer={t => t.firstName + ' ' + t.lastName}
                                     placeholder="Kein Schüler gewählt"
                                 />
                             </ModalBody>
