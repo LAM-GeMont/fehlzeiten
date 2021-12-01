@@ -62,18 +62,20 @@ export const PageScaffold: React.FC<Props> = (props) => {
       </Flex>
       <Flex w={24} h="100vh" boxShadow="md" pos="fixed" left={0} top={0} bg="white" direction="column" alignItems="center" display={{ base: 'none', lg: 'flex' }}>
         {links.filter(({ roles }) => roles.includes(props.role)).map(({ icon, url, title }, key) => (
-          <Box key={key} margin={4} _hover={{ color: 'primary.200' }} borderBottom="2px solid" borderBottomColor={router.pathname === url ? 'primary.100' : 'transparent'} >
+          <Box key={key} margin={4} _hover={{ color: 'primary.200' }}  color={router.pathname === url ? 'primary.500' : '#000000'} >
             <NextLink href={url}>
-              <Link title={title}>
-                <Icon w={10} h={10} as={icon} />
+              <Link title={title} display="flex" flexDir="column" alignItems="center" _hover={{ textDecoration: 'none' }}>
+                <Icon w={8} h={8} as={icon}/>
+                <Text fontSize={14}>{title}</Text>
               </Link>
             </NextLink>
           </Box>
         ))}
         <Box key="logout" margin={4} mt="auto" _hover={{ color: 'primary.200' }}>
           <NextLink href={'/logout'}>
-            <Link title={'Logout'}>
-              <Icon w={10} h={10} as={FaSignOutAlt} />
+            <Link title={'Logout'} display="flex" flexDir="column" alignItems="center" _hover={{ textDecoration: 'none' }}>
+              <Icon w={8} h={8} as={FaSignOutAlt} />
+              <Text fontSize={14}>Logout</Text>
             </Link>
           </NextLink>
         </Box>
@@ -81,7 +83,7 @@ export const PageScaffold: React.FC<Props> = (props) => {
       <Box h="16" boxShadow="4px 0 6px -1px rgba(0, 0, 0, 0.1),2px 0 4px -1px rgba(0, 0, 0, 0.06)" pos="fixed" left={0} bottom={0} width="100vw" bg="white" display={{ base: 'flex', lg: 'none' }} overflowX="scroll" userSelect="none">
         <Flex direction="row" alignItems="center" justifyContent="space-evenly" flexShrink={0} minWidth="100%">
           {links.filter(({ roles }) => roles.includes(props.role)).map(({ icon, url, title }, key) => (
-            <Box key={key} margin={2} mb={0} w={16} _hover={{ color: 'primary.200' }} color={router.pathname === url ? 'primary.200' : '#000000'} flexShrink={0}>
+            <Box key={key} margin={2} mb={0} w={16} _hover={{ color: 'primary.200' }} color={router.pathname === url ? 'primary.500' : '#000000'} flexShrink={0}>
               <NextLink href={url}>
                 <Link title={title} display="flex" flexDir="column" alignItems="center" _hover={{ textDecoration: 'none' }}>
                   <Icon w={7} h={7} as={icon} mb={1} />
