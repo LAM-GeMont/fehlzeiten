@@ -1,5 +1,5 @@
 import Icon from '@chakra-ui/icon'
-import { Box, Link, Center } from '@chakra-ui/layout'
+import { Box, Link, Center, Divider, Text } from '@chakra-ui/layout'
 import { IconType } from 'react-icons'
 import NextLink from 'next/link'
 import React from 'react'
@@ -18,6 +18,8 @@ export const LinkBoxHomePage: React.FC<Props> = (props) => {
           <NextLink href={props.url}>
             <Link title={props.text}>
               <Icon boxSize={{ base: 10, sm: 20, md: 20, lg: 24 }} as={props.icon}></Icon>
+              <Divider orientation='horizontal' borderStyle='unset'/>
+              <Text>{props.text}</Text>
             </Link>
           </NextLink>
         </Box>
