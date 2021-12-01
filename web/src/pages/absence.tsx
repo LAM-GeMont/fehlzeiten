@@ -168,7 +168,7 @@ const AbsencePage: React.FC<Props> = ({ self }) => {
                           <Box
                             as={Button}
                             width="100%"
-                            onClick={(e) => e.currentTarget.closest('.chakra-checkbox__label').click() }
+                            onClick={(e) => (e.currentTarget.closest('.chakra-checkbox__label') as HTMLLabelElement).click() }
                           >{v}. Stunde</Box></Checkbox>
                       )}
                     </Flex>

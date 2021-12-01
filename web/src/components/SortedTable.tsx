@@ -42,7 +42,7 @@ export const useSortedTable = ({ columns, data, initialFilter = '', filterKeys }
   }, useGlobalFilter, useSortBy)
 
   const debouncedSetTableFilter = useConstant(() => {
-    return AwesomeDebouncePromise((f) => table.setGlobalFilter(f), 200)
+    return AwesomeDebouncePromise((f: any) => table.setGlobalFilter(f), 200)
   })
 
   return {
