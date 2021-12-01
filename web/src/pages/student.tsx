@@ -105,7 +105,7 @@ const StudentPage: React.FC<Props> = ({ self }) => {
                     {studentsQuery.loading && (<Spinner />)}
                     {studentsQuery.error != null && (<Heading>Error!</Heading>)}
                     {studentsQuery.data != null && (
-                        <SortedTable table={sortedTable.table} tableFilter={sortedTable.tableFilter}/>
+                      <SortedTable { ...sortedTable.tableProps } />
                     )}
                 </Flex>
             </SimpleGrid>

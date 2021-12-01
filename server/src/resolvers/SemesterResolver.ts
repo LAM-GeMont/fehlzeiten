@@ -1,4 +1,5 @@
-import { Arg, Authorized, Mutation, Query, Resolver } from 'type-graphql'
+import { Context } from '../types'
+import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql'
 import { Semester } from '../entity/Semester'
 import {
   SemesterCreateInput,
@@ -9,6 +10,15 @@ import { deleteSemester, SemesterDeleteInput, SemesterDeleteResponse } from './s
 
 @Resolver(Semester)
 export class SemesterResolver {
+  @Authorized()
+  @Query(() => Semester, { nullable: true })
+  async semester (
+    @Arg('id') id: string,
+    @Ctx() { loaders }: Context
+  ) {
+    return loaders.semester.load(id)
+  }
+
   @Authorized()
   @Query(() => [Semester])
   async semesters () {

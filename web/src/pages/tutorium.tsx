@@ -108,7 +108,7 @@ const TutoriumPage: React.FC<Props> = ({ self }) => {
           {tutoriumsQuery.loading && (<Spinner />)}
           {tutoriumsQuery.error != null && (<Heading>Error!</Heading>)}
           {tutoriumsQuery.data != null && (
-            <SortedTable table={sortedTable.table} tableFilter={sortedTable.tableFilter}/>
+            <SortedTable { ...sortedTable.tableProps } />
           )}
           {(data.length === 0) && (
             <Box mt={5}>

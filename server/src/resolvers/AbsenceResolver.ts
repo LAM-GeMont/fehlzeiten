@@ -1,6 +1,5 @@
 import { Arg, Authorized, Ctx, FieldResolver, Mutation, Query, Resolver, ResolverInterface, Root } from 'type-graphql'
 import { Absence } from '../entity/Absence'
-import { absencesForStudent, AbsencesForStudentResponse } from './absence/forStudent'
 import { AbsenceDeleteInput, AbsenceDeleteResponse, deleteAbsence } from './absence/delete'
 import { Context } from '../types'
 import {
@@ -27,12 +26,12 @@ export class AbsenceResolver implements ResolverInterface<Absence> {
   }
 
   @Authorized()
-  @Query(() => AbsencesForStudentResponse)
-  async absencesForStudent (
-    @Arg('studentId') studentId: string,
-    @Ctx() context: Context
+  @Query(() => Absence, { nullable: true })
+  async absence (
+    @Arg('id') id: string,
+    @Ctx() { loaders }: Context
   ) {
-    return absencesForStudent(studentId, context)
+    return loaders.absence.load(id)
   }
 
   @Authorized()
