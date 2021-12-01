@@ -62,7 +62,7 @@ export const PageScaffold: React.FC<Props> = (props) => {
       </Flex>
       <Flex w={24} h="100vh" boxShadow="md" pos="fixed" left={0} top={0} bg="white" direction="column" alignItems="center" display={{ base: 'none', lg: 'flex' }}>
         {links.filter(({ roles }) => roles.includes(props.role)).map(({ icon, url, title }, key) => (
-          <Box key={key} margin={4} _hover={{ color: 'primary.200' }}  color={router.pathname === url ? 'primary.500' : '#000000'} >
+          <Box key={key} margin={4} _hover={{ color: 'primary.200' }} color={router.pathname === url ? 'primary.500' : '#000000'} >
             <NextLink href={url}>
               <Link title={title} display="flex" flexDir="column" alignItems="center" _hover={{ textDecoration: 'none' }}>
                 <Icon w={8} h={8} as={icon}/>
