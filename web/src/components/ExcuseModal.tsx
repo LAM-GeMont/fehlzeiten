@@ -166,7 +166,9 @@ const ExcuseModal: React.FC<Props> = ({ isOpen, onClose, student }) => {
                     }
                   })
                   actions.setSubmitting(false)
-                  console.log(res)
+                  if (res.data) {
+                    handleSubmitFeedback(res.data.createExcuse, toast)
+                  }
                 }}
               >
                 {(props) => (
