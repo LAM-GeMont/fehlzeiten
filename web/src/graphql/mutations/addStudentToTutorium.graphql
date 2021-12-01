@@ -1,0 +1,8 @@
+mutation AddStudentToTutorium($addStudentToTutoriumData: AddStudentToTutoriumInput!) {
+    addStudentToTutorium(data: $addStudentToTutoriumData) {
+        errors {
+            message
+            code
+        }
+    }
+}

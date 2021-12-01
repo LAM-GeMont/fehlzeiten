@@ -4,6 +4,7 @@ import { createTutorium, TutoriumCreateInput, TutoriumCreateResponse } from './t
 import { editTutorium, TutoriumEditInput, TutoriumEditResponse } from './tutorium/edit'
 import { deleteTutorium, TutoriumDeleteInput, TutoriumDeleteResponse } from './tutorium/delete'
 import { deleteStudentFromTutorium, DeleteStudentFromTutoriumInput, DeleteStudentFromTutoriumResponse } from './tutorium/deleteStudentFromTutorium'
+import { addStudentToTutorium, AddStudentToTutoriumInput, AddStudentToTutoriumResponse } from './tutorium/addStudentToTutorium'
 import { Context } from 'vm'
 import { Student } from '../entity/Student'
 
@@ -63,5 +64,13 @@ export class TutoriumResolver implements ResolverInterface<Tutorium> {
       @Arg('data') data: DeleteStudentFromTutoriumInput
   ): Promise<DeleteStudentFromTutoriumResponse> {
     return deleteStudentFromTutorium(data)
+  }
+
+  @Authorized('COORDINATOR')
+  @Mutation(() => AddStudentToTutoriumResponse)
+  async addStudentToTutorium (
+      @Arg('data') data: AddStudentToTutoriumInput
+  ): Promise<AddStudentToTutoriumResponse> {
+    return addStudentToTutorium(data)
   }
 }
