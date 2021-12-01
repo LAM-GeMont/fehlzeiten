@@ -4,12 +4,13 @@ import { registerEnumType, ObjectType, Field, InputType, ID } from 'type-graphql
 
 export enum AddStudentToTutoriumErrorCode {
     UNKNOWN_ERROR,
+    STUDENT_ALREADY_ADDED,
     STUDENT_NOT_FOUND,
     TUTORIUM_NOT_FOUND,
 }
 
 registerEnumType(AddStudentToTutoriumErrorCode, {
-    name: 'AddStudentToTutoriumErrorCode'
+  name: 'AddStudentToTutoriumErrorCode'
 })
 
 @ObjectType()
@@ -36,47 +37,58 @@ export class AddStudentToTutoriumInput {
     id: string
 
     @Field(() => ID!)
-    tutorium?: string 
+    tutorium?: string
 }
 
 export async function addStudentToTutorium (data: AddStudentToTutoriumInput): Promise<AddStudentToTutoriumResponse> {
-    try {
-        const student = await Student.findOne(data.id)
-        if (student == null) {
-            return {
-                errors: [
-                    {
-                        code: AddStudentToTutoriumErrorCode.STUDENT_NOT_FOUND
-                    }
-                ]
-            }
-        }
-        const tutorium = await Tutorium.findOne(data.tutorium)
-        if (tutorium == null) {
-            return {
-                errors: [
-                    {
-                        code: AddStudentToTutoriumErrorCode.TUTORIUM_NOT_FOUND
-                    }
-                ]
-            }
-        }
-
-        student.tutorium = tutorium
-
-        await student.save()
-
-        return {
-            student
-        }
-    } catch (error) {
-        return {
-            errors: [
-                {
-                    code: AddStudentToTutoriumErrorCode.UNKNOWN_ERROR,
-                    message: error.message
-                }
-            ]
-        }
+  try {
+    const student = await Student.findOne(data.id)
+    if (student === null || student === undefined) {
+      return {
+        errors: [
+          {
+            code: AddStudentToTutoriumErrorCode.STUDENT_NOT_FOUND
+          }
+        ]
+      }
     }
+    const tutorium = await Tutorium.findOne(data.tutorium)
+    if (tutorium === null || tutorium === undefined) {
+      return {
+        errors: [
+          {
+            code: AddStudentToTutoriumErrorCode.TUTORIUM_NOT_FOUND
+          }
+        ]
+      }
+    }
+
+    // never triggered, because 'student.tutorium' is always undefined?!?!
+    if (student.tutorium?.id === data.tutorium) {
+      return {
+        errors: [
+          {
+            code: AddStudentToTutoriumErrorCode.STUDENT_ALREADY_ADDED
+          }
+        ]
+      }
+    }
+
+    student.tutorium = tutorium
+
+    await student.save()
+
+    return {
+      student
+    }
+  } catch (error) {
+    return {
+      errors: [
+        {
+          code: AddStudentToTutoriumErrorCode.UNKNOWN_ERROR,
+          message: error.message
+        }
+      ]
+    }
+  }
 }

@@ -41,7 +41,7 @@ const StudentsOfTutoriumPage: React.FC<Props> = ({ self }) => {
     }
   }, [studentsQuery.data])
 
-  let studentData: Student[] = []
+  const studentData: Student[] = []
   allStudentsData.forEach(student => {
     if (student.tutorium != null) {
       if (student.tutorium.id === id) {
@@ -130,7 +130,7 @@ const StudentsOfTutoriumPage: React.FC<Props> = ({ self }) => {
                     )}
             </Flex>
           </SimpleGrid>
-          <AddStudentToTutoriumModal isOpen={addStudentToTutoriumModal.isOpen} onClose={addStudentToTutoriumModal.onClose} studentId={rowId} firstName={rowFirstName} lastName={rowLastName} tutoriumId={tutoriumId} />
+          <AddStudentToTutoriumModal isOpen={addStudentToTutoriumModal.isOpen} onClose={addStudentToTutoriumModal.onClose} firstName={rowFirstName} lastName={rowLastName} tutoriumId={tutoriumId} />
           <EditStudentModal isOpen={studentEditModal.isOpen} onClose={studentEditModal.onClose} studentId={rowId} firstName={rowFirstName} lastName={rowLastName} tutoriumId={rowtutoriumId} />
           <DeleteStudentFromTutoriumModal isOpen={deleteStudentFromTutoriumModal.isOpen} onClose={deleteStudentFromTutoriumModal.onClose} rowId={rowId} firstName={rowFirstName} lastName={rowLastName} tutoriumName={tutoriumName} />
         </PageScaffold>

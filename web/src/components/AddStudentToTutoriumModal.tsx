@@ -1,13 +1,13 @@
 import {
-    Button,
-    Modal,
-    ModalBody,
-    ModalCloseButton,
-    ModalContent,
-    ModalFooter,
-    ModalHeader,
-    ModalOverlay,
-    useToast
+  Button,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  useToast
 } from '@chakra-ui/react'
 import { Form, Formik } from 'formik'
 import { AddStudentToTutoriumErrorCode, useAddStudentToTutoriumMutation, useStudentsQuery } from '../generated/graphql'
@@ -25,69 +25,76 @@ interface Props {
     tutoriumId: string
 }
 
-export const AddStudentToTutoriumModal: React.FC<Props> = ({ isOpen, onClose, studentId, firstName, lastName, tutoriumId }) => {
-    // Creating toast, establishing connections with useCreateTutoriumMutation and gather errors saved in errors
-    const toast = useToast()
-    const [add] = useAddStudentToTutoriumMutation({
-        onError: errors => toastApolloError(toast, errors)
-    })
+export const AddStudentToTutoriumModal: React.FC<Props> = ({ isOpen, onClose, firstName, lastName, tutoriumId }) => {
+  // Creating toast, establishing connections with useCreateTutoriumMutation and gather errors saved in errors
+  const toast = useToast()
+  const [add] = useAddStudentToTutoriumMutation({
+    onError: errors => toastApolloError(toast, errors)
+  })
 
-    // Creating teacher query for later gathering of teacher data
-    const studentsQuery = useStudentsQuery({
-        onError: errors => toastApolloError(toast, errors)
-    })
+  // Creating teacher query for later gathering of teacher data
+  const studentsQuery = useStudentsQuery({
+    onError: errors => toastApolloError(toast, errors)
+  })
 
-    // Gather teacherData from memo
-    const studentsData = useMemo(() => {
-        if (studentsQuery.data?.students != null) {
-            return studentsQuery.data.students
-        } else {
-            return []
-        }
-    }, [studentsQuery.data])
+  // Gather teacherData from memo
+  const studentsData = useMemo(() => {
+    if (studentsQuery.data?.students != null) {
+      return studentsQuery.data.students
+    } else {
+      return []
+    }
+  }, [studentsQuery.data])
 
-    // Returning Modal for Tutorium Creation
-    return (
+  // Returning Modal for Tutorium Creation
+  return (
         <Modal isOpen={isOpen} onClose={onClose}>
             <ModalOverlay/>
             <ModalContent>
                 <Formik
                     initialValues={{
-                        id: '',
-                        tutorium: tutoriumId,
+                      id: '',
+                      tutorium: tutoriumId
                     }}
                     onSubmit={async (values, actions) => {
-                        const res = await add({
-                            variables: { addStudentToTutoriumData: values },
-                            refetchQueries: 'active'
-                        })
-                        const errors = res.data?.addStudentToTutorium.errors
-                        if (errors) {
-                            errors.forEach(error => {
-                                if (error.code === AddStudentToTutoriumErrorCode.StudentNotFound) {
-                                    actions.setFieldError('name', 'Schüler konnte nicht gefunden werden')
-                                } else {
-                                    if (error.code === AddStudentToTutoriumErrorCode.TutoriumNotFound) {
-                                        actions.setFieldError('name', 'Tutorium konnte nicht gefunden werden')
-                                    } else {
-                                        toast({
-                                            title: 'Fehler bei der Erstellung',
-                                            description: error.message == null ? error.code : `${error.code}: ${error.message}`,
-                                            status: 'error',
-                                            isClosable: true
-                                        })
-                                    }
-                                }
-                            })
-                        } else if (res.data.addStudentToTutorium.student) {
-                            toast({
-                                title: `Der Student ${res.data.addStudentToTutorium.student.firstName} ${res.data.addStudentToTutorium.student.lastName} hinzugefügt`,
-                                description: `Der Student ${res.data.addStudentToTutorium.student.firstName} ${res.data.addStudentToTutorium.student.lastName} wurde dem Tutorium ${res.data.addStudentToTutorium.student.tutorium.name} erfolgreich hinzugefügt`,
-                                status: 'success',
+                      const res = await add({
+                        variables: { addStudentToTutoriumData: values },
+                        refetchQueries: 'active'
+                      })
+                      const errors = res.data?.addStudentToTutorium.errors
+                      if (errors) {
+                        errors.forEach(error => {
+                          switch (error.code) {
+                            case AddStudentToTutoriumErrorCode.StudentNotFound:
+                              actions.setFieldError('name', 'Schüler konnte nicht gefunden werden')
+                              break
+
+                            case AddStudentToTutoriumErrorCode.TutoriumNotFound:
+                              actions.setFieldError('name', 'Tutorium konnte nicht gefunden werden')
+                              break
+
+                            case AddStudentToTutoriumErrorCode.StudentAlreadyAdded:
+                              actions.setFieldError('name', 'Schüler ist bereits dem Tutorium zugeordnet')
+                              break
+
+                            default:
+                              toast({
+                                title: 'Fehler bei der Erstellung',
+                                description: error.message == null ? error.code : `${error.code}: ${error.message}`,
+                                status: 'error',
                                 isClosable: true
-                            })
-                            onClose()
-                        }
+                              })
+                          }
+                        })
+                      } else if (res.data.addStudentToTutorium.student) {
+                        toast({
+                          title: `Der Student ${firstName} ${lastName} hinzugefügt`,
+                          description: `Der Student ${firstName} ${lastName} wurde dem Tutorium ${res.data.addStudentToTutorium.student.tutorium.name} erfolgreich hinzugefügt`,
+                          status: 'success',
+                          isClosable: true
+                        })
+                        onClose()
+                      }
                     }}
                 >
                     {(props) => (
@@ -113,5 +120,5 @@ export const AddStudentToTutoriumModal: React.FC<Props> = ({ isOpen, onClose, st
                 </Formik>
             </ModalContent>
         </Modal>
-    )
+  )
 }
