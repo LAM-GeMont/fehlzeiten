@@ -9,7 +9,7 @@ import {
   useToast
 } from '@chakra-ui/react'
 import React from 'react'
-import { useDeleteStudentFromTutoriumMutation } from '../generated/graphql'
+import { useEditStudentMutation } from '../generated/graphql'
 import { toastApolloError } from '../util'
 
 interface Props {
@@ -24,7 +24,7 @@ interface Props {
 export const DeleteStudentFromTutoriumModal: React.FC<Props> = ({ isOpen, onClose, rowId, tutoriumName, firstName, lastName }) => {
   const toast = useToast()
 
-  const [remove] = useDeleteStudentFromTutoriumMutation({
+  const [remove] = useEditStudentMutation({
     onError: errors => toastApolloError(toast, errors)
   })
 
@@ -39,10 +39,10 @@ export const DeleteStudentFromTutoriumModal: React.FC<Props> = ({ isOpen, onClos
                     <Button mr={3} variant="ghost" onClick={onClose}>Abbrechen</Button>
                     <Button colorScheme="red" type="submit" onClick={async () => {
                       const res = await remove({
-                        variables: { deleteStudentFromTutoriumData: { id: rowId } },
+                        variables: { editStudentData: { id: rowId } },
                         refetchQueries: 'all'
                       })
-                      const errors = res.data.deleteStudentFromTutorium.errors
+                      const errors = res.data.editStudent.errors
                       if (errors) {
                         errors.forEach(error => {
                           toast({

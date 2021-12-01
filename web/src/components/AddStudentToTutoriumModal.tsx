@@ -10,7 +10,7 @@ import {
   useToast
 } from '@chakra-ui/react'
 import { Form, Formik } from 'formik'
-import { AddStudentToTutoriumErrorCode, useAddStudentToTutoriumMutation, useStudentsQuery } from '../generated/graphql'
+import { StudentEditErrorCode, useEditStudentMutation, useStudentsQuery } from '../generated/graphql'
 import { toastApolloError } from '../util'
 
 import React, { useMemo } from 'react'
@@ -28,7 +28,7 @@ interface Props {
 export const AddStudentToTutoriumModal: React.FC<Props> = ({ isOpen, onClose, firstName, lastName, tutoriumId }) => {
   // Creating toast, establishing connections with useCreateTutoriumMutation and gather errors saved in errors
   const toast = useToast()
-  const [add] = useAddStudentToTutoriumMutation({
+  const [add] = useEditStudentMutation({
     onError: errors => toastApolloError(toast, errors)
   })
 
@@ -58,23 +58,19 @@ export const AddStudentToTutoriumModal: React.FC<Props> = ({ isOpen, onClose, fi
                     }}
                     onSubmit={async (values, actions) => {
                       const res = await add({
-                        variables: { addStudentToTutoriumData: values },
+                        variables: { editStudentData: values },
                         refetchQueries: 'active'
                       })
-                      const errors = res.data?.addStudentToTutorium.errors
+                      const errors = res.data?.editStudent.errors
                       if (errors) {
                         errors.forEach(error => {
                           switch (error.code) {
-                            case AddStudentToTutoriumErrorCode.StudentNotFound:
+                            case StudentEditErrorCode.NotFound:
                               actions.setFieldError('name', 'Schüler konnte nicht gefunden werden')
                               break
 
-                            case AddStudentToTutoriumErrorCode.TutoriumNotFound:
+                            case StudentEditErrorCode.TutoriumNotFound:
                               actions.setFieldError('name', 'Tutorium konnte nicht gefunden werden')
-                              break
-
-                            case AddStudentToTutoriumErrorCode.StudentAlreadyAdded:
-                              actions.setFieldError('name', 'Schüler ist bereits dem Tutorium zugeordnet')
                               break
 
                             default:
@@ -86,10 +82,10 @@ export const AddStudentToTutoriumModal: React.FC<Props> = ({ isOpen, onClose, fi
                               })
                           }
                         })
-                      } else if (res.data.addStudentToTutorium.student) {
+                      } else if (res.data.editStudent.student) {
                         toast({
                           title: `Der Student ${firstName} ${lastName} hinzugefügt`,
-                          description: `Der Student ${firstName} ${lastName} wurde dem Tutorium ${res.data.addStudentToTutorium.student.tutorium.name} erfolgreich hinzugefügt`,
+                          description: `Der Student ${firstName} ${lastName} wurde dem Tutorium ${res.data.editStudent.student.tutorium.name} erfolgreich hinzugefügt`,
                           status: 'success',
                           isClosable: true
                         })
@@ -107,7 +103,7 @@ export const AddStudentToTutoriumModal: React.FC<Props> = ({ isOpen, onClose, fi
                                     label="Schüler (optional)"
                                     items={studentsData}
                                     valueTransformer={t => t.id}
-                                    textTransformer={t => t.firstName + t.lastName}
+                                    textTransformer={t => t.firstName + " " + t.lastName}
                                     placeholder="Kein Schüler gewählt"
                                 />
                             </ModalBody>
