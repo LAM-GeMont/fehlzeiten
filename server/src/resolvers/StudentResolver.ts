@@ -50,6 +50,15 @@ export class StudentResolver implements ResolverInterface<Student> {
   }
 
   @Authorized()
+  @Query(() => Student, { nullable: true })
+  async student (
+    @Arg('id') id: string,
+    @Ctx() { loaders }: Context
+  ) {
+    return loaders.student.load(id)
+  }
+
+  @Authorized()
   @Query(() => [Student])
   async students () {
     return await Student.find()

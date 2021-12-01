@@ -17,10 +17,10 @@ import {
   TabList,
   TabPanel,
   TabPanels,
-  Tabs
+  Tabs, useToast
 } from '@chakra-ui/react'
 import { Field, Form, Formik } from 'formik'
-import { formatDateISO } from '../util'
+import { formatDateISO, handleStartEndDateChange, toastApolloError } from '../util'
 import { Box, Flex } from '@chakra-ui/layout'
 import {
   Student,
@@ -34,22 +34,23 @@ interface Props {
   student: Student
 }
 
-function handleStartEndDateChange (event, field, form) {
-  let targetValue = event.target.value
-  if (targetValue === '') {
-    targetValue = formatDateISO(new Date())
+function handleSubmitFeedback (createExcuse, toast) {
+  if (createExcuse.errors) {
+    createExcuse.errors.forEach(error => {
+      toast({
+        title: 'Fehler bei der Erstellung',
+        description: error.message == null ? error.code : `${error.code}: ${error.message}`,
+        status: 'error',
+        isClosable: true
+      })
+    })
   }
-  form.setFieldValue(field.name, targetValue)
-  if (event.type === 'blur') {
-    if (event.target.id === 'startDate') {
-      if (targetValue > form.values.endDate) {
-        form.setFieldValue('endDate', targetValue)
-      }
-    } else {
-      if (targetValue < form.values.startDate) {
-        form.setFieldValue('startDate', targetValue)
-      }
-    }
+  if (createExcuse.excuse) {
+    toast({
+      title: 'Entschuldigung erfolgreich eingetragen',
+      status: 'success',
+      isClosable: true
+    })
   }
 }
 
@@ -59,9 +60,14 @@ const ExcuseModal: React.FC<Props> = ({ isOpen, onClose, student }) => {
   for (let i = 1; i <= 10; i++) {
     lessonIndexes.push(i)
   }
+  const toast = useToast()
 
-  const [createExcuseLessons] = useCreateExcuseLessonsMutation()
-  const [createExcuseDays] = useCreateExcuseDaysMutation()
+  const [createExcuseLessons] = useCreateExcuseLessonsMutation({
+    onError: errors => toastApolloError(toast, errors)
+  })
+  const [createExcuseDays] = useCreateExcuseDaysMutation({
+    onError: errors => toastApolloError(toast, errors)
+  })
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -95,7 +101,9 @@ const ExcuseModal: React.FC<Props> = ({ isOpen, onClose, student }) => {
                     }
                   })
                   actions.setSubmitting(false)
-                  console.log(res)
+                  if (res.data) {
+                    handleSubmitFeedback(res.data.createExcuse, toast)
+                  }
                 }}
               >
                 {(props) => (
@@ -104,12 +112,22 @@ const ExcuseModal: React.FC<Props> = ({ isOpen, onClose, student }) => {
                       {({ field, form }) => (
                         <FormControl isInvalid={form.errors.date && form.touched.date} mb={6}>
                           <FormLabel htmlFor="date">Tag der Fehlzeit</FormLabel>
-                          <Input {...field} id="date" type="date"/>
+                          <Input {...field} id="date" type="date" onChange={(event) => {
+                            let targetValue = event.target.value
+                            if (event.target.value === '') {
+                              targetValue = formatDateISO(new Date())
+                            }
+                            form.setFieldValue(field.name, targetValue)
+                          }}/>
                           <FormErrorMessage>{form.errors.date}</FormErrorMessage>
                         </FormControl>
                       )}
                     </Field>
-                    <Field name="lesson">
+                    <Field name="lesson" validate={values => {
+                      if (values.length < 1) {
+                        return 'Bitte mindestens eine Unterrichtsstunde auswählen.'
+                      }
+                    }}>
                       {({ field, form }) => (
                         <FormControl isInvalid={form.errors.lesson && form.touched.lesson} mb={6}>
                           <FormLabel>Unterrichtsstunden</FormLabel>

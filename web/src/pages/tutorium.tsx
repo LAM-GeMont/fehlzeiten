@@ -83,8 +83,7 @@ const TutoriumPage: React.FC<Props> = ({ self }) => {
       Header: 'Aktionen',
       Cell: ({ row }) => (
         <Flex justifyContent="center">
-          <IconButton isDisabled={self.role === 'TEACHER'} variant="outline" aria-label="Bearbeiten" icon={<FaEdit />} onClick={ () => editTutorium(row)} />
-          <Box mr={2}></Box>
+          <IconButton isDisabled={self.role === 'TEACHER'} variant="outline" aria-label="Bearbeiten" icon={<FaEdit />} onClick={ () => editTutorium(row)} mr={2} />
           <IconButton isDisabled={self.role === 'TEACHER'} variant="outline" aria-label="Löschen" icon={<DeleteIcon />} onClick={ () => deleteTutorium(row)} />
         </Flex>
       )
@@ -114,7 +113,7 @@ const TutoriumPage: React.FC<Props> = ({ self }) => {
           {tutoriumsQuery.loading && (<Spinner />)}
           {tutoriumsQuery.error != null && (<Heading>Error!</Heading>)}
           {tutoriumsQuery.data != null && (
-            <SortedTable table={sortedTable.table} tableFilter={sortedTable.tableFilter}/>
+            <SortedTable { ...sortedTable.tableProps } />
           )}
           {(data.length === 0) && (
             <Box mt={5}>

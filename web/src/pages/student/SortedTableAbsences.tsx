@@ -1,11 +1,13 @@
 import { TriangleDownIcon, TriangleUpIcon } from '@chakra-ui/icons'
-import { chakra, shouldForwardProp, Table, Tbody, Td, Th, Thead } from '@chakra-ui/react'
+import { Box, chakra, shouldForwardProp, Table, Tbody, Td, Th, Thead } from '@chakra-ui/react'
 import { AnimatePresence, motion } from 'framer-motion'
-import React, { useEffect, useState } from 'react'
-import { Row, useGlobalFilter, useSortBy, useTable, TableInstance } from 'react-table'
-import fuzzysort from 'fuzzysort'
-import AwesomeDebouncePromise from 'awesome-debounce-promise'
-import useConstant from 'use-constant'
+import React from 'react'
+import { useSortBy, useTable } from 'react-table'
+
+interface SortedTableProps {
+  columns: any,
+  data: any
+}
 
 const Tr = chakra(
   motion.tr,
@@ -16,50 +18,27 @@ const Tr = chakra(
   }
 )
 
-interface UseSortedTableProps {
-  columns: any
-  data: any
-  initialFilter?: string
-  filterKeys?: string[]
-}
-
-const filterFunction = function (this, rows: Row[], columnIds: string[], filterValue: string) {
-  if (!filterValue) { return rows }
-  const modifiedRows = rows.map(row => ({ originalRow: row, ...Object.fromEntries(Object.entries(row.values).filter(([, value]) => typeof value === 'string')) }))
-  const res = fuzzysort.go(filterValue, modifiedRows, { keys: this.filterKeys != null ? this.filterKeys : columnIds, allowTypo: false })
-  return res.map(result => result.obj.originalRow)
-}
-
-export const useSortedTable = ({ columns, data, initialFilter = '', filterKeys }: UseSortedTableProps) => {
-  const [filter, setFilter] = useState(initialFilter)
-
-  const table: TableInstance = useTable({
-    columns,
-    data,
-    autoResetSortBy: false,
-    autoResetGlobalFilter: true,
-    globalFilter: filterFunction.bind({ filterKeys })
-  }, useGlobalFilter, useSortBy)
-
-  const debouncedSetTableFilter = useConstant(() => {
-    return AwesomeDebouncePromise((f) => table.setGlobalFilter(f), 200)
-  })
-
-  return {
-    tableProps: {
-      table,
-      tableFilter: table.state.globalFilter,
-      columns,
-      data,
-      sort: table.state.sortBy
-    },
-    filter,
-    setFilter: (f) => { setFilter(f); debouncedSetTableFilter(f) },
-    filterKeys
+function checkIfExam (id: string, value: boolean) {
+  if (id === 'exam' && value) {
+    return (
+        <Box borderRadius="md" bg="blue.400" color="white" w='full' p={3} pt={1} h={8} textAlign="center">
+          Klausur
+        </Box>
+    )
   }
+  // Uncommend when excused is implemented
+  /* if (id === 'excused' && value) {
+    return (
+        <Box borderRadius="md" bg="green.400" color="white" w='full' p={3} pt={1} h={8} textAlign="center">
+          Entschuldigt
+        </Box>
+    )
+  } */
 }
 
-const SortedTable: React.FC<{table: TableInstance, tableFilter: string}> = ({ table, tableFilter }) => {
+const SortedTable: React.FC<SortedTableProps> = ({ columns, data }) => {
+  const table = useTable({ columns, data, autoResetSortBy: false }, useSortBy)
+
   const {
     getTableProps,
     getTableBodyProps,
@@ -67,8 +46,6 @@ const SortedTable: React.FC<{table: TableInstance, tableFilter: string}> = ({ ta
     rows,
     prepareRow
   } = table
-
-  useEffect(() => { table.setGlobalFilter(tableFilter) })
 
   return (
     <Table {...getTableProps()}>
@@ -122,6 +99,7 @@ const SortedTable: React.FC<{table: TableInstance, tableFilter: string}> = ({ ta
                 {row.cells.map((cell) => (
                   // eslint-disable-next-line react/jsx-key
                   <Td {...cell.getCellProps()}>
+                    {checkIfExam(cell.column.id, cell.value)}
                     {cell.render('Cell')}
                   </Td>
                 ))}
@@ -135,4 +113,4 @@ const SortedTable: React.FC<{table: TableInstance, tableFilter: string}> = ({ ta
   )
 }
 
-export default React.memo(SortedTable)
+export default SortedTable

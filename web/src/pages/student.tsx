@@ -1,6 +1,6 @@
 import { useDisclosure } from '@chakra-ui/hooks'
 import { AddIcon, DeleteIcon, RepeatIcon, SearchIcon } from '@chakra-ui/icons'
-import { Box, Spinner, Button, Flex, IconButton, SimpleGrid, useToast, Heading, Input, InputGroup, InputLeftElement } from '@chakra-ui/react'
+import { Box, Text, Spinner, Button, Flex, IconButton, SimpleGrid, useToast, Heading, Link, Input, InputGroup, InputLeftElement } from '@chakra-ui/react'
 import React, { useCallback, useMemo, useState } from 'react'
 import { FaEdit } from 'react-icons/fa'
 import { CreateStudentModal } from '../components/CreateStudentModal'
@@ -56,7 +56,12 @@ const StudentPage: React.FC<Props> = ({ self }) => {
   const columns = useMemo(() => [
     {
       Header: 'Vorname',
-      accessor: 'firstName'
+      accessor: 'firstName',
+      Cell: ({ row }) => (
+        <Link href={`/student/${row.original.id}`}>
+          <Text>{`${row.original.firstName}`}</Text>
+        </Link>
+      )
     },
     {
       Header: 'Nachname',
@@ -100,7 +105,7 @@ const StudentPage: React.FC<Props> = ({ self }) => {
                     {studentsQuery.loading && (<Spinner />)}
                     {studentsQuery.error != null && (<Heading>Error!</Heading>)}
                     {studentsQuery.data != null && (
-                        <SortedTable table={sortedTable.table} tableFilter={sortedTable.tableFilter}/>
+                      <SortedTable { ...sortedTable.tableProps } />
                     )}
                 </Flex>
             </SimpleGrid>

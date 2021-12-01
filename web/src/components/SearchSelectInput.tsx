@@ -59,7 +59,7 @@ export function SearchSelectInputSingle<T> (props: SearchSelectInputProps<T> & F
 
 export function SearchSelectInputMultiple<T> (props: SearchSelectInputProps<T> & FieldHookConfig<Array<String>>): JSX.Element {
   const { items, textTransformer, valueTransformer, placeholder = 'Keine Objekt gewählt', label, name } = props
-  const [, meta, helpers] = useField(props.name)
+  const [, meta, helpers] = useField(props)
 
   const objectByValue = (v: string) => items.find(item => valueTransformer(item) === v)
 
@@ -69,7 +69,7 @@ export function SearchSelectInputMultiple<T> (props: SearchSelectInputProps<T> &
   }
 
   const searchSelectModal = useSearchSelectModal<T>({
-    value: meta.value != null && Array.isArray(meta.value) ? meta.value : [],
+    value: meta.value != null && Array.isArray(meta.value) ? meta.value as string[] : [],
     items,
     textTransformer,
     valueTransformer,

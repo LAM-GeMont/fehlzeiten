@@ -1,0 +1,25 @@
+query AbsencesForStudent($studentId: String!) {
+  student(id: $studentId) {
+    firstName
+    lastName
+    tutorium {
+      name
+      tutor {
+        id
+      }
+    }
+    absences {
+      id
+      createdAt
+      updatedAt
+      lessonIndex
+      date
+      exam
+      submittedBy {
+        id
+        name
+        role
+      }
+    }
+  }
+}

@@ -5,6 +5,7 @@ import { Absence } from './entity/Absence'
 import { Excuse } from './entity/Excuse'
 import { Student } from './entity/Student'
 import { User } from './entity/User'
+import { Semester } from './entity/Semester'
 
 function CreateBatchFn<T extends BaseEntity & { id: string }> (findByIds: (ids: string[]) => Promise<T[]>): BatchLoadFn<string, T> {
   return async (ids: readonly string[]) => {
@@ -13,12 +14,6 @@ function CreateBatchFn<T extends BaseEntity & { id: string }> (findByIds: (ids: 
     objects.forEach((t: T) => {
       objectsByIds[t.id] = t
     })
-
-    console.log()
-    console.log()
-    console.log('Loaded', ids.length, 'Tutoriums')
-    console.log()
-    console.log()
 
     return ids.map((id) => objectsByIds[id])
   }
@@ -29,3 +24,4 @@ export const createExcuseLoader = () => new DataLoader(CreateBatchFn<Excuse>((id
 export const createStudentLoader = () => new DataLoader(CreateBatchFn<Student>((ids) => Student.findByIds(ids)))
 export const createTutoriumLoader = () => new DataLoader(CreateBatchFn<Tutorium>((ids) => Tutorium.findByIds(ids)))
 export const createUserLoader = () => new DataLoader(CreateBatchFn<User>((ids) => User.findByIds(ids)))
+export const createSemesterLoader = () => new DataLoader(CreateBatchFn<Semester>((ids) => Semester.findByIds(ids)))

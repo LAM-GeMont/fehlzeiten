@@ -27,6 +27,15 @@ export class TutoriumResolver implements ResolverInterface<Tutorium> {
   }
 
   @Authorized()
+  @Query(() => Tutorium, { nullable: true })
+  async tutorium (
+    @Arg('id') id: string,
+    @Ctx() { loaders }: Context
+  ) {
+    return loaders.tutorium.load(id)
+  }
+
+  @Authorized()
   @Query(() => [Tutorium])
   async tutoriums () {
     return await Tutorium.find()
