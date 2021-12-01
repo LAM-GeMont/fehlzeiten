@@ -23,11 +23,11 @@ export class AddStudentToTutoriumError {
 
 @ObjectType()
 export class AddStudentToTutoriumResponse {
-    @Field(() => [AddStudentToTutoriumError], { nullable: true })
-    errors?: AddStudentToTutoriumError[]
+    @Field(() => Student, { nullable: true })
+    student?: Student
 
     @Field(() => [AddStudentToTutoriumError], { nullable: true })
-    students?: AddStudentToTutoriumError[]
+    errors?: AddStudentToTutoriumError[]
 }
 
 @InputType()
@@ -36,7 +36,7 @@ export class AddStudentToTutoriumInput {
     id: string
 
     @Field(() => ID!)
-    tutorium?: string
+    tutorium?: string 
 }
 
 export async function addStudentToTutorium (data: AddStudentToTutoriumInput): Promise<AddStudentToTutoriumResponse> {

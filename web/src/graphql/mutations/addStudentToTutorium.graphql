@@ -4,5 +4,15 @@ mutation AddStudentToTutorium($addStudentToTutoriumData: AddStudentToTutoriumInp
             message
             code
         }
+        student {
+            id
+            createdAt
+            firstName
+            lastName
+            tutorium {
+                id
+                name
+            }
+        }
     }
 }

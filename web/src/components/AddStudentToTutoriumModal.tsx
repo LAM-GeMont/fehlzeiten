@@ -25,7 +25,7 @@ interface Props {
     tutoriumId: string
 }
 
-export const AddStudentToTutorium: React.FC<Props> = ({ isOpen, onClose, studentId, firstName, lastName, tutoriumId }) => {
+export const AddStudentToTutoriumModal: React.FC<Props> = ({ isOpen, onClose, studentId, firstName, lastName, tutoriumId }) => {
     // Creating toast, establishing connections with useCreateTutoriumMutation and gather errors saved in errors
     const toast = useToast()
     const [add] = useAddStudentToTutoriumMutation({
@@ -54,7 +54,7 @@ export const AddStudentToTutorium: React.FC<Props> = ({ isOpen, onClose, student
                 <Formik
                     initialValues={{
                         id: '',
-                        tutorId: ''
+                        tutorium: tutoriumId,
                     }}
                     onSubmit={async (values, actions) => {
                         const res = await add({
@@ -81,8 +81,8 @@ export const AddStudentToTutorium: React.FC<Props> = ({ isOpen, onClose, student
                             })
                         } else if (res.data.addStudentToTutorium.student) {
                             toast({
-                                title: `Tutorium ${res.data.createTutorium.tutorium.name} hinzugefügt`,
-                                description: `Das Tutorium ${res.data.createTutorium.tutorium.name} wurde erfolgreich erstellt`,
+                                title: `Der Student ${res.data.addStudentToTutorium.student.firstName} ${res.data.addStudentToTutorium.student.lastName} hinzugefügt`,
+                                description: `Der Student ${res.data.addStudentToTutorium.student.firstName} ${res.data.addStudentToTutorium.student.lastName} wurde dem Tutorium ${res.data.addStudentToTutorium.student.tutorium.name} erfolgreich hinzugefügt`,
                                 status: 'success',
                                 isClosable: true
                             })
@@ -96,12 +96,12 @@ export const AddStudentToTutorium: React.FC<Props> = ({ isOpen, onClose, student
                             <ModalCloseButton/>
                             <ModalBody>
                                 <SearchSelectInputSingle
-                                    name="tutorId"
-                                    label="Tutor (optional)"
-                                    items={teachersData}
+                                    name="id"
+                                    label="Schüler (optional)"
+                                    items={studentsData}
                                     valueTransformer={t => t.id}
-                                    textTransformer={t => t.name}
-                                    placeholder="Kein Lehrer gewählt"
+                                    textTransformer={t => t.firstName + t.lastName}
+                                    placeholder="Kein Schüler gewählt"
                                 />
                             </ModalBody>
                             <ModalFooter>

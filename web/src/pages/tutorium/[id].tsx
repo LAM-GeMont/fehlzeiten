@@ -12,7 +12,6 @@ import { DeleteStudentFromTutoriumModal } from '../../components/DeleteStudentFr
 import { EditStudentModal } from '../../components/EditStudentModal'
 import { AddStudentToTutoriumModal } from '../../components/AddStudentToTutoriumModal'
 import { Student } from '../../../../server/src/entity/Student'
-import {addStudentToTutorium} from "../../../../server/src/resolvers/tutorium/addStudentToTutorium";
 
 interface Props extends WithAuthProps { }
 
@@ -42,7 +41,7 @@ const StudentsOfTutoriumPage: React.FC<Props> = ({ self }) => {
     }
   }, [studentsQuery.data])
 
-  const studentData: Student[] = []
+  let studentData: Student[] = []
   allStudentsData.forEach(student => {
     if (student.tutorium != null) {
       if (student.tutorium.id === id) {
@@ -65,10 +64,12 @@ const StudentsOfTutoriumPage: React.FC<Props> = ({ self }) => {
 
   let tutorName = ''
   let tutoriumName = ''
+  let tutoriumId = ''
   allTutoriumsData.forEach(tutorium => {
     if (tutorium.id === id) {
       tutorName = tutorium.tutor.name
       tutoriumName = tutorium.name
+      tutoriumId = tutorium.id
     }
   })
 
@@ -129,7 +130,7 @@ const StudentsOfTutoriumPage: React.FC<Props> = ({ self }) => {
                     )}
             </Flex>
           </SimpleGrid>
-          <AddStudentToTutoriumModal isOpen={addStudentToTutoriumModal.isOpen} onClose={addStudentToTutoriumModal.onClose} studentId={rowId} firstName={rowFirstName} lastName={rowLastName} tutoriumId={rowtutoriumId} />
+          <AddStudentToTutoriumModal isOpen={addStudentToTutoriumModal.isOpen} onClose={addStudentToTutoriumModal.onClose} studentId={rowId} firstName={rowFirstName} lastName={rowLastName} tutoriumId={tutoriumId} />
           <EditStudentModal isOpen={studentEditModal.isOpen} onClose={studentEditModal.onClose} studentId={rowId} firstName={rowFirstName} lastName={rowLastName} tutoriumId={rowtutoriumId} />
           <DeleteStudentFromTutoriumModal isOpen={deleteStudentFromTutoriumModal.isOpen} onClose={deleteStudentFromTutoriumModal.onClose} rowId={rowId} firstName={rowFirstName} lastName={rowLastName} tutoriumName={tutoriumName} />
         </PageScaffold>
