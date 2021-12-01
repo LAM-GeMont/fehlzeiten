@@ -23,7 +23,6 @@ import { Field, Form, Formik } from 'formik'
 import { formatDateISO, handleStartEndDateChange, toastApolloError } from '../util'
 import { Box, Flex } from '@chakra-ui/layout'
 import {
-  Student,
   useCreateExcuseDaysMutation,
   useCreateExcuseLessonsMutation
 } from '../generated/graphql'
@@ -31,7 +30,7 @@ import {
 interface Props {
   isOpen: boolean,
   onClose: () => void,
-  student: Student
+  studentId: string
 }
 
 function handleSubmitFeedback (createExcuse, toast) {
@@ -54,7 +53,7 @@ function handleSubmitFeedback (createExcuse, toast) {
   }
 }
 
-const ExcuseModal: React.FC<Props> = ({ isOpen, onClose, student }) => {
+const ExcuseModal: React.FC<Props> = ({ isOpen, onClose, studentId }) => {
   const initialDate = formatDateISO(new Date())
   const lessonIndexes = []
   for (let i = 1; i <= 10; i++) {
@@ -95,7 +94,7 @@ const ExcuseModal: React.FC<Props> = ({ isOpen, onClose, student }) => {
                       data: {
                         startDate: values.date,
                         endDate: values.date,
-                        studentId: student.id,
+                        studentId: studentId,
                         lessons: values.lesson.map(v => parseInt(v))
                       }
                     }
@@ -161,7 +160,7 @@ const ExcuseModal: React.FC<Props> = ({ isOpen, onClose, student }) => {
                       data: {
                         startDate: values.startDate,
                         endDate: values.endDate,
-                        studentId: student.id
+                        studentId: studentId
                       }
                     }
                   })
