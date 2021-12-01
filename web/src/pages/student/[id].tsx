@@ -1,6 +1,7 @@
-import { AddIcon, DeleteIcon, RepeatIcon } from '@chakra-ui/icons'
-import { Select, Box, Button, Flex, Heading, IconButton, SimpleGrid, Spinner, Text, useDisclosure, useToast, Center, AlertIcon } from '@chakra-ui/react'
+import { AddIcon, ArrowBackIcon, DeleteIcon, RepeatIcon } from '@chakra-ui/icons'
+import { Link, Select, Box, Button, Flex, Heading, IconButton, SimpleGrid, Spinner, Text, useDisclosure, useToast, Center, AlertIcon } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
+import NextLink from 'next/link'
 import React, { useMemo } from 'react'
 import { PageScaffold } from '../../components/PageScaffold'
 import SortedTable from './SortedTableAbsences'
@@ -112,6 +113,14 @@ const Student: React.FC<Props> = ({ self }) => {
   return (
     <PageScaffold role={self.role}>
       <SimpleGrid>
+        <NextLink href='/student'>
+          <Link >
+            <Flex alignItems="center">
+              <ArrowBackIcon/>
+              <Text>Zurück zur Übersicht</Text>
+            </Flex>
+          </Link>
+        </NextLink>
         <Text fontSize="30" fontWeight="bold">{student.firstName + ' ' + student.lastName}</Text>
         <Text fontSize="26">{student.tutorium?.name}</Text>
         <Flex direction="column" alignItems="center" minW="300px" minH="600px" margin={5}>
@@ -127,7 +136,7 @@ const Student: React.FC<Props> = ({ self }) => {
                 <Button ml="auto" leftIcon={<AddIcon />} onClick={() => { excuseModal.onOpen() }}>Entschuldigung hinzufügen</Button>
                 <IconButton ml={4} variant="outline" aria-label="Daten neu laden" icon={<RepeatIcon />} onClick={() => { studentQuery.refetch() }}></IconButton>
               </Flex>
-              <Select pb={5} variant='outline' placeholder='Semester auswählen' value={selectedSemester} multiple={false} onChange={handleChange}>
+              <Select variant='outline' placeholder='Semester auswählen' value={selectedSemester} onChange={handleChange}>
                 {semesters.map(semester => {
                   return (
                     <option value={[semester.startDate, semester.endDate]} key={semester.id}>{semester.name}</option>
@@ -137,7 +146,7 @@ const Student: React.FC<Props> = ({ self }) => {
               {console.log(selectedSemester)}
               {dates.filter(inSemesterRange).map(date => {
                 return (
-                  <Box key={date} w="full" border="1px" borderColor="gray.300" borderRadius="md" boxShadow="lg" p="6" rounded="md" bg="white" mb={4}>
+                  <Box mt={5} key={date} w="full" border="1px" borderColor="gray.300" borderRadius="md" boxShadow="lg" p="6" rounded="md" bg="white" mb={4}>
                     <Text fontSize="22" pl={2}>{new Date(date).toLocaleDateString()}</Text>
                     <SortedTable columns={columns} data={absences.filter(absence => absence.date === date)} />
                   </Box>)
