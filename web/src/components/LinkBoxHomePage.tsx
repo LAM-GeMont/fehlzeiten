@@ -3,7 +3,6 @@ import { Box, Link, Center, Divider, Text } from '@chakra-ui/layout'
 import { IconType } from 'react-icons'
 import NextLink from 'next/link'
 import React from 'react'
-import { textDecoration } from '@chakra-ui/styled-system'
 
 interface Props {
     icon: IconType,
@@ -17,7 +16,7 @@ export const LinkBoxHomePage: React.FC<Props> = (props) => {
       <Center>
         <Box m={3}>
           <NextLink href={props.url}>
-            <Link title={props.text} _hover={{ textDecoration: 'none'}}>
+            <Link title={props.text} _hover={{ textDecoration: 'none' }}>
               <Icon boxSize={{ base: 10, sm: 20, md: 20, lg: 24 }} as={props.icon}></Icon>
               <Divider orientation='horizontal' borderStyle='unset'/>
               <Text mt={1}>{props.text}</Text>
