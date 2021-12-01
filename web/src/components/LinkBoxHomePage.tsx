@@ -19,7 +19,7 @@ export const LinkBoxHomePage: React.FC<Props> = (props) => {
             <Link title={props.text}>
               <Icon boxSize={{ base: 10, sm: 20, md: 20, lg: 24 }} as={props.icon}></Icon>
               <Divider orientation='horizontal' borderStyle='unset'/>
-              <Text>{props.text}</Text>
+              <Text mt={1}>{props.text}</Text>
             </Link>
           </NextLink>
         </Box>
