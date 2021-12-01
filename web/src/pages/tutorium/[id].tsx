@@ -9,17 +9,15 @@ import SortedTableStudentsOfTutorium from './SortedTableStudentsOfTutorium'
 import WithAuth, { WithAuthProps } from '../../components/withAuth'
 import { Role, useStudentsQuery, useTutoriumsQuery } from '../../generated/graphql'
 import { toastApolloError } from '../../util'
-import { DeleteStudentAlertDialog } from '../../components/DeleteStudentAlertDialog' 
+import { DeleteStudentFromTutoriumModal } from '../../components/DeleteStudentFromTutoriumModal'
 import { EditStudentModal } from '../../components/EditStudentModal'
-
-import {Tutorium} from "../../../../server/src/entity/Tutorium";
 import {StudentType} from "../../../../server/src/entity/Student";
 
 interface Props extends WithAuthProps { }
 
 const Student: React.FC<Props> = ({ self }) => {
     const studentEditModal = useDisclosure()
-    const studentDeleteAlertDialog = useDisclosure()
+    const deleteStudentFromTutoriumModal = useDisclosure()
     const toast = useToast()
 
     const [rowId, setRowId] = React.useState('')
@@ -80,8 +78,8 @@ const Student: React.FC<Props> = ({ self }) => {
         openEdit()
       }, [openEdit])
     
-      const openDelete = studentDeleteAlertDialog.onOpen
-      const deleteStudent = React.useCallback((row) => {
+      const openDelete = deleteStudentFromTutoriumModal.onOpen
+      const deleteStudentFromTutorium = React.useCallback((row) => {
         setRowId(row.original.id)
         setRowFirstName(row.original.firstName)
         setRowLastName(row.original.lastName)
@@ -105,7 +103,7 @@ const Student: React.FC<Props> = ({ self }) => {
                 <Flex justifyContent="center">
                   <IconButton isDisabled={self.role === 'TEACHER'} variant="outline" aria-label="Bearbeiten" icon={<FaEdit />} onClick={ () => editStudent(row)} />
                   <Box mr={2}></Box>
-                  <IconButton isDisabled={self.role === 'TEACHER'} variant="outline" aria-label="Löschen" icon={<DeleteIcon />} onClick={ () => deleteStudent(row)} />
+                  <IconButton isDisabled={self.role === 'TEACHER'} variant="outline" aria-label="Löschen" icon={<DeleteIcon />} onClick={ () => deleteStudentFromTutorium(row)} />
                 </Flex>
               )
         },
@@ -113,7 +111,7 @@ const Student: React.FC<Props> = ({ self }) => {
           Header: '',
           accessor: 'excused'
         }, */
-    ], [editStudent, deleteStudent, self.role])
+    ], [editStudent, deleteStudentFromTutorium, self.role])
 
 
     const data = useMemo(() => {
@@ -135,13 +133,6 @@ const Student: React.FC<Props> = ({ self }) => {
           <SimpleGrid>
             <Flex direction="column" alignItems="center" minW="300px" minH="600px" margin={5}>
               <Flex w="full" padding={5}>
-                <InputGroup flexShrink={10}>
-                  <InputLeftElement>
-                    <SearchIcon />
-                  </InputLeftElement>
-                  <Input width="xs" value={sortedTable.filter} onChange={e => sortedTable.setFilter(e.target.value)} />
-                </InputGroup>
-                
                 <IconButton ml={4} variant="outline" aria-label="Daten neu laden" icon={<RepeatIcon />} onClick={() => { studentsQuery.refetch() }}></IconButton>
               </Flex>
               {studentsQuery.loading && (<Spinner />)}
@@ -155,7 +146,7 @@ const Student: React.FC<Props> = ({ self }) => {
             </Flex>
           </SimpleGrid>
           <EditStudentModal isOpen={studentEditModal.isOpen} onClose={studentEditModal.onClose} studentId={rowId} firstName={rowFirstName} lastName={rowLastName} tutoriumId={rowtutoriumId} />
-          <DeleteStudentAlertDialog isOpen={studentDeleteAlertDialog.isOpen} onClose={studentDeleteAlertDialog.onClose} rowId={rowId} firstName={rowFirstName} lastName={rowLastName} />
+          <DeleteStudentFromTutoriumModal isOpen={deleteStudentFromTutoriumModal.isOpen} onClose={deleteStudentFromTutoriumModal.onClose} rowId={rowId} firstName={rowFirstName} lastName={rowLastName} tutoriumName={tutoriumName} />
         </PageScaffold>
       )
 
