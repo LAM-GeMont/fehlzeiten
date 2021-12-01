@@ -37,10 +37,11 @@ export const CreateSemesterModal: React.FC<Props> = ({ isOpen, onClose }) => {
   const [create] = useCreateSemesterMutation({
     onError: errors => toastApolloError(toast, errors)
   })
-  const initialStartDate = formatDateISO(new Date())
-  const endDate = new Date()
-  endDate.setFullYear(endDate.getFullYear() + 1)
-  const initialEndDate = formatDateISO(endDate)
+  const date = new Date()
+  const year = date.getFullYear()
+  const month = date.getMonth()
+  const initialStartDate = formatDateISO(new Date(year, month, 1))
+  const initialEndDate = formatDateISO(new Date(year, month + 6, 0))
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
