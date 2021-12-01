@@ -7,7 +7,7 @@ export enum DeleteStudentFromTutoriumErrorCode {
 }
 
 registerEnumType(DeleteStudentFromTutoriumErrorCode, {
-    name: 'DeleteStudentFromTutoriumErrorCode'
+  name: 'DeleteStudentFromTutoriumErrorCode'
 })
 
 @ObjectType()
@@ -31,35 +31,33 @@ export class DeleteStudentFromTutoriumInput {
     id: string
 }
 
-
 export async function deleteStudentFromTutorium (data: DeleteStudentFromTutoriumInput): Promise<DeleteStudentFromTutoriumResponse> {
-    try {
-        const student = await Student.findOne(data.id)
-        if (student == null) {
-            return {
-                errors: [
-                    {
-                        code: DeleteStudentFromTutoriumErrorCode.NOT_FOUND
-                    }
-                ]
-            }
-        }
-
-        if(student.tutorium != null){
-            student.tutorium.id = "";
-            await student.save()
-        }
-
-        return {
-        }
-    } catch (error) {
-        return {
-            errors: [
-                {
-                    code: DeleteStudentFromTutoriumErrorCode.UNKNOWN_ERROR,
-                    message: error.message
-                }
-            ]
-        }
+  try {
+    const student = await Student.findOne(data.id)
+    if (student == null) {
+      return {
+        errors: [
+          {
+            code: DeleteStudentFromTutoriumErrorCode.NOT_FOUND
+          }
+        ]
+      }
     }
+
+    student.tutorium = null
+
+    await student.save()
+
+    return {
+    }
+  } catch (error) {
+    return {
+      errors: [
+        {
+          code: DeleteStudentFromTutoriumErrorCode.UNKNOWN_ERROR,
+          message: error.message
+        }
+      ]
+    }
+  }
 }

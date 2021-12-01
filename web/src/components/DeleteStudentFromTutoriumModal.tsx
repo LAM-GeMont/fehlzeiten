@@ -1,15 +1,15 @@
 import {
-    AlertDialog,
-    AlertDialogBody,
-    AlertDialogContent,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogOverlay,
-    Button,
-    useToast
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogOverlay,
+  Button,
+  useToast
 } from '@chakra-ui/react'
 import React from 'react'
-import { useDeleteTutoriumMutation } from '../generated/graphql'
+import { useDeleteStudentFromTutoriumMutation } from '../generated/graphql'
 import { toastApolloError } from '../util'
 
 interface Props {
@@ -22,13 +22,13 @@ interface Props {
 }
 
 export const DeleteStudentFromTutoriumModal: React.FC<Props> = ({ isOpen, onClose, rowId, tutoriumName, firstName, lastName }) => {
-    const toast = useToast()
+  const toast = useToast()
 
-    const [remove] = useDeleteTutoriumMutation({
-        onError: errors => toastApolloError(toast, errors)
-    })
+  const [remove] = useDeleteStudentFromTutoriumMutation({
+    onError: errors => toastApolloError(toast, errors)
+  })
 
-    return (
+  return (
         <AlertDialog isOpen={isOpen} onClose={onClose} leastDestructiveRef={undefined} isCentered>
             <AlertDialogOverlay/>
             <AlertDialogContent>
@@ -38,33 +38,33 @@ export const DeleteStudentFromTutoriumModal: React.FC<Props> = ({ isOpen, onClos
                 <AlertDialogFooter>
                     <Button mr={3} variant="ghost" onClick={onClose}>Abbrechen</Button>
                     <Button colorScheme="red" type="submit" onClick={async () => {
-                        const res = await remove({
-                            variables: { deleteTutoriumData: { id: rowId } },
-                            refetchQueries: 'all'
+                      const res = await remove({
+                        variables: { deleteStudentFromTutoriumData: { id: rowId } },
+                        refetchQueries: 'all'
+                      })
+                      const errors = res.data.deleteStudentFromTutorium.errors
+                      if (errors) {
+                        errors.forEach(error => {
+                          toast({
+                            title: 'Fehler beim löschen des Schülers aus dem Tutorium',
+                            description: error.message == null ? error.code : `${error.code}: ${error.message}`,
+                            isClosable: true,
+                            status: 'error'
+                          })
                         })
-                        const errors = res.data.deleteTutorium.errors
-                        if (errors) {
-                            errors.forEach(error => {
-                                toast({
-                                    title: 'Fehler beim löschen des Schülers aus dem Tutorium',
-                                    description: error.message == null ? error.code : `${error.code}: ${error.message}`,
-                                    isClosable: true,
-                                    status: 'error'
-                                })
-                            })
-                        } else {
-                            toast({
-                                title: 'Schüler aus Tutorium gelöscht',
-                                description: 'Der Schüler wurde erfolgreich aus dem Tutorium gelöscht',
-                                isClosable: true,
-                                status: 'success'
-                            })
-                        }
-                        onClose()
+                      } else {
+                        toast({
+                          title: 'Schüler aus Tutorium gelöscht',
+                          description: 'Der Schüler wurde erfolgreich aus dem Tutorium gelöscht',
+                          isClosable: true,
+                          status: 'success'
+                        })
+                      }
+                      onClose()
                     }}
                     >Löschen</Button>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>
-    )
+  )
 }

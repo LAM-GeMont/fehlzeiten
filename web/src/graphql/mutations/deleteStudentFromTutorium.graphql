@@ -4,8 +4,5 @@ mutation DeleteStudentFromTutorium($deleteStudentFromTutoriumData: DeleteStudent
             message
             code
         }
-        student {
-            id
-        }
     }
 }

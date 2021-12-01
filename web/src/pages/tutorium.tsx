@@ -64,7 +64,7 @@ const TutoriumPage: React.FC<Props> = ({ self }) => {
         <Link href={`/tutorium/${row.original.id}`}>
           <Text>{`${row.original.name}`}</Text>
         </Link>
-    )
+      )
     },
     {
       Header: 'Tutorname',
