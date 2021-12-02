@@ -21,18 +21,14 @@ const Student: React.FC<Props> = ({ self }) => {
   const { id } = router.query
 
   const [rowId, setRowId] = React.useState('')
-  const [selectedSemester, setSelectedSemester] = React.useState([])
-  const handleChange = (event) => {
-    const semesterDates = event.target.value.split(',')
-    setSelectedSemester(semesterDates)
-  }
+  const [selectedSemester, setSelectedSemester] = React.useState<string>()
 
   const toast = useToast()
-  console.log(id)
 
   const studentQuery = useAbsencesForStudentQuery({
     variables: {
-      studentId: id.toString()
+      studentId: id.toString(),
+      semesterId: selectedSemester
     },
     onError: errors => toastApolloError(toast, errors)
   })
@@ -44,8 +40,6 @@ const Student: React.FC<Props> = ({ self }) => {
   const absences = studentQuery.data?.student?.absences || []
   const student = studentQuery.data?.student
   const semesters = semestersQuery.data?.semesters || []
-
-  console.log(semesters)
 
   const columns = useMemo(() => [
     {
@@ -60,10 +54,10 @@ const Student: React.FC<Props> = ({ self }) => {
       Header: '',
       accessor: 'exam'
     },
-    /* {
+    {
       Header: '',
       accessor: 'excused'
-    }, */
+    },
     {
       Header: 'Aktionen',
       Cell: ({ row }) => (
@@ -98,18 +92,6 @@ const Student: React.FC<Props> = ({ self }) => {
     <ErrorPage statusCode={404} />
   }
 
-  function inSemesterRange (value) {
-    const date = new Date(value)
-    const semesterStartDate = new Date(selectedSemester[0])
-    const semesterEndDate = new Date(selectedSemester[1])
-    if ((date >= semesterStartDate) && (date <= semesterEndDate)) {
-      console.log(date)
-      console.log(semesterStartDate)
-      console.log(semesterEndDate)
-      return date
-    }
-  }
-
   return (
     <PageScaffold role={self.role}>
       <SimpleGrid>
@@ -136,15 +118,14 @@ const Student: React.FC<Props> = ({ self }) => {
                 <Button ml="auto" leftIcon={<AddIcon />} onClick={() => { excuseModal.onOpen() }}>Entschuldigung hinzufügen</Button>
                 <IconButton ml={4} variant="outline" aria-label="Daten neu laden" icon={<RepeatIcon />} onClick={() => { studentQuery.refetch() }}></IconButton>
               </Flex>
-              <Select variant='outline' placeholder='Semester auswählen' value={selectedSemester} onChange={handleChange}>
+              <Select variant='outline' placeholder='Semester auswählen' value={selectedSemester} onChange={e => setSelectedSemester(e.target.value)}>
                 {semesters.map(semester => {
                   return (
-                    <option value={[semester.startDate, semester.endDate]} key={semester.id}>{semester.name}</option>
+                    <option value={semester.id} key={semester.id}>{semester.name}</option>
                   )
                 })}
               </Select>
-              {console.log(selectedSemester)}
-              {dates.filter(inSemesterRange).map(date => {
+              {dates.map(date => {
                 return (
                   <Box mt={5} key={date} w="full" border="1px" borderColor="gray.300" borderRadius="md" boxShadow="lg" p="6" rounded="md" bg="white" mb={4}>
                     <Text fontSize="22" pl={2}>{new Date(date).toLocaleDateString()}</Text>
