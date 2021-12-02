@@ -12,7 +12,19 @@ nav_order: 1
 
 Nicht alle Abschnitte der Dokumentation sind für alle Benutzer gedacht. Beachten Sie daher die folgenden Kennzeichnungen.
 
-| Kennzeichnung                      | Bedeutung                                                  |
-|------------------------------------|------------------------------------------------------------|
-| Tutor {: .label .label-yellow }    | Nur relevante Informationen für Lehrer mit einem Tutorium. |
-| Koordinator {: .label .label-red } | Nur relevante Informationen für Koordinatoren.             |
+Für alle Benutzer relevant: Keine Kennzeichnung
+{: .mt-1 .mb-1 }
+
+Nur relevante Informationen für Lehrer mit einem Tutorium:
+{: .d-inline-block .mt-1 .mb-1 }
+
+Tutor
+{: .label .label-yellow .mt-1 .mb-1  }
+
+<div></div>
+
+Nur relevante Informationen für Koordinatoren:
+{: .d-inline-block .mt-1 .mb-1 }
+
+Koordinator
+{: .label .label-red .mt-1 .mb-1 }
