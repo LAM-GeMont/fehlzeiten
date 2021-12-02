@@ -22,6 +22,7 @@ query studentOverview($studentId: String!, $semesterId: String) {
       lessonIndex
       date
       exam
+      excused
       submittedBy {
         id
         name
