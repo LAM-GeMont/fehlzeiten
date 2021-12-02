@@ -11,7 +11,7 @@ const TutoriumPage: React.FC<Props> = ({ self }) => {
 
   return (
     <PageScaffold role={self.role}>
-      <ExcuseModal isOpen={true} onClose={excuseModal.onClose} student={{ id: '1', absences: [], createdAt: 1, updatedAt: 1, excuses: [], tutorium: null, firstName: '', lastName: '' }} />
+      <ExcuseModal isOpen={true} onClose={excuseModal.onClose} studentId={'ad07c79e-7d96-46dd-9cdf-8fccae1ba75b'} />
     </PageScaffold>
   )
 }

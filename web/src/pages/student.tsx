@@ -3,6 +3,7 @@ import { AddIcon, DeleteIcon, RepeatIcon, SearchIcon } from '@chakra-ui/icons'
 import { Box, Text, Spinner, Button, Flex, IconButton, SimpleGrid, useToast, Heading, Link, Input, InputGroup, InputLeftElement } from '@chakra-ui/react'
 import React, { useCallback, useMemo, useState } from 'react'
 import { FaEdit } from 'react-icons/fa'
+import NextLink from 'next/link'
 import { CreateStudentModal } from '../components/CreateStudentModal'
 import { DeleteStudentAlertDialog } from '../components/DeleteStudentAlertDialog'
 import { EditStudentModal } from '../components/EditStudentModal'
@@ -58,9 +59,11 @@ const StudentPage: React.FC<Props> = ({ self }) => {
       Header: 'Vorname',
       accessor: 'firstName',
       Cell: ({ row }) => (
-        <Link href={`/student/${row.original.id}`}>
-          <Text>{`${row.original.firstName}`}</Text>
-        </Link>
+        <NextLink href={`student/${row.original.id}`}>
+          <Link>
+            <Text>{`${row.original.firstName}`}</Text>
+          </Link>
+        </NextLink>
       )
     },
     {
