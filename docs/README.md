@@ -1,13 +1,10 @@
-# Docs
+---
+layout: default
+title: Home
+nav_order: 1
+---
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Nunc sed blandit libero volutpat sed cras. Sit amet venenatis urna cursus. Bibendum enim facilisis gravida neque convallis. Sed arcu non odio euismod lacinia at quis risus sed. Pretium viverra suspendisse potenti nullam ac tortor vitae purus. Sit amet tellus cras adipiscing enim eu turpis egestas. Sagittis purus sit amet volutpat consequat. Euismod lacinia at quis risus sed vulputate odio ut. Amet nisl suscipit adipiscing bibendum. Ut tortor pretium viverra suspendisse potenti nullam ac tortor vitae. Sit amet nulla facilisi morbi tempus iaculis urna. Libero volutpat sed cras ornare arcu dui. Vitae aliquet nec ullamcorper sit amet risus nullam.
-
-Consequat ac felis donec et. Purus in massa tempor nec feugiat nisl pretium fusce. Dignissim convallis aenean et tortor. Pulvinar mattis nunc sed blandit libero volutpat sed cras. Facilisis magna etiam tempor orci eu lobortis elementum. At varius vel pharetra vel turpis nunc eget lorem. Elit pellentesque habitant morbi tristique senectus. Eget gravida cum sociis natoque penatibus et magnis. Laoreet sit amet cursus sit amet dictum sit amet. In dictum non consectetur a erat nam. Sit amet luctus venenatis lectus magna fringilla urna porttitor rhoncus. Faucibus in ornare quam viverra orci.
-
-Vitae congue mauris rhoncus aenean vel elit scelerisque. Elit pellentesque habitant morbi tristique senectus et netus et. Velit egestas dui id ornare arcu odio ut sem nulla. Pulvinar proin gravida hendrerit lectus. Gravida neque convallis a cras semper auctor neque. Consectetur libero id faucibus nisl tincidunt eget. Tempus egestas sed sed risus pretium quam vulputate dignissim. Ut tristique et egestas quis ipsum. Mauris pharetra et ultrices neque ornare aenean euismod. Etiam sit amet nisl purus. Aliquam id diam maecenas ultricies mi eget mauris pharetra et. Et netus et malesuada fames ac turpis egestas. Fames ac turpis egestas integer eget. Sapien faucibus et molestie ac feugiat sed lectus vestibulum. Viverra nibh cras pulvinar mattis nunc sed. Scelerisque felis imperdiet proin fermentum leo vel orci porta non. Luctus venenatis lectus magna fringilla urna. Pharetra sit amet aliquam id diam maecenas. Diam vel quam elementum pulvinar. In ante metus dictum at tempor commodo.
-
-In egestas erat imperdiet sed euismod nisi. Vivamus arcu felis bibendum ut tristique. Lacus vestibulum sed arcu non. Dictum at tempor commodo ullamcorper. Dignissim enim sit amet venenatis urna cursus eget nunc. Venenatis a condimentum vitae sapien pellentesque habitant morbi. Risus feugiat in ante metus dictum. In fermentum et sollicitudin ac orci phasellus egestas tellus. Imperdiet dui accumsan sit amet. Mauris in aliquam sem fringilla ut morbi tincidunt augue. Sit amet purus gravida quis blandit turpis cursus. Aenean vel elit scelerisque mauris. Elementum nisi quis eleifend quam adipiscing vitae. Fermentum leo vel orci porta non pulvinar neque laoreet. Quam pellentesque nec nam aliquam. Orci dapibus ultrices in iaculis nunc sed augue lacus. Augue neque gravida in fermentum et sollicitudin ac orci. Dui id ornare arcu odio ut. Morbi tristique senectus et netus et malesuada fames ac. In aliquam sem fringilla ut morbi.
-
-Diam vel quam elementum pulvinar etiam non quam lacus suspendisse. Lorem dolor sed viverra ipsum nunc aliquet bibendum. Id volutpat lacus laoreet non curabitur gravida arcu ac. Massa tempor nec feugiat nisl pretium fusce id velit. Venenatis tellus in metus vulputate eu scelerisque felis. Tempor orci eu lobortis elementum. Pretium lectus quam id leo in vitae. Scelerisque in dictum non consectetur a erat nam at. Augue eget arcu dictum varius duis at consectetur. Sollicitudin nibh sit amet commodo nulla. Aliquet porttitor lacus luctus accumsan. Lobortis feugiat vivamus at augue eget. Vulputate odio ut enim blandit volutpat. Arcu vitae elementum curabitur vitae nunc sed velit dignissim.
+# Benutzerdokumentation
 
 ![GeMont Logo]({{ site.baseurl }}/assets/images/gemont_logo.png)
+
