@@ -1,5 +1,5 @@
-import { AddIcon, ArrowBackIcon, DeleteIcon, RepeatIcon } from '@chakra-ui/icons'
-import { Link, Select, Box, Button, Flex, Heading, IconButton, SimpleGrid, Spinner, Text, useDisclosure, useToast, Center, AlertIcon } from '@chakra-ui/react'
+import { AddIcon, ArrowBackIcon, DeleteIcon, RepeatIcon, WarningTwoIcon } from '@chakra-ui/icons'
+import { Link, Select, Box, Button, Flex, Heading, IconButton, SimpleGrid, Spinner, Text, useDisclosure, useToast, Center } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
 import NextLink from 'next/link'
 import React, { useMemo } from 'react'
@@ -80,8 +80,8 @@ const Student: React.FC<Props> = ({ self }) => {
   if (studentQuery.error != null) {
     return (
       <PageScaffold role={self.role}>
-        <Center h="100vh" color="red">
-          <AlertIcon />
+        <Center h="100vh" color="red.500">
+          <WarningTwoIcon boxSize={7} pt={1} mr={5}/>
           <Heading>Fehler beim Laden der Daten</Heading>
         </Center>
       </PageScaffold>
