@@ -1,7 +1,7 @@
 import Icon from '@chakra-ui/icon'
 import { Box, Flex, Link } from '@chakra-ui/layout'
 import React from 'react'
-import { FaChalkboardTeacher, FaHome, FaSignOutAlt, FaUserGraduate, FaBook, FaCalendarWeek } from 'react-icons/fa'
+import { FaChalkboardTeacher, FaHome, FaSignOutAlt, FaUserGraduate, FaBook, FaCalendarWeek, FaFileImport } from 'react-icons/fa'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import { Role } from '../generated/graphql'
@@ -51,6 +51,12 @@ export const PageScaffold: React.FC<Props> = (props) => {
       icon: FaCalendarWeek,
       url: '/semester',
       title: 'Zeitspannen',
+      roles: [Role.Coordinator]
+    },
+    {
+      icon: FaFileImport,
+      url: '/studentsupload',
+      title: 'Schüler importieren',
       roles: [Role.Coordinator]
     }
   ]
