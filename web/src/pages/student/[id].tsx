@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import NextLink from 'next/link'
 import React, { useMemo } from 'react'
 import { PageScaffold } from '../../components/PageScaffold'
-import SortedTable from './SortedTableAbsences'
+import SortedTable from '../../components/SortedTableAbsences'
 import WithAuth, { WithAuthProps } from '../../components/withAuth'
 import { Role, useAbsencesForStudentQuery, useSemestersQuery } from '../../generated/graphql'
 import { toastApolloError } from '../../util'
@@ -113,10 +113,10 @@ const Student: React.FC<Props> = ({ self }) => {
           }
           {dates.length >= 1 && (
             <>
-              <Flex w="full" pt={5} pb={5}>
+              <Flex w="full" py={5}>
                 <Text pr={4} fontSize="24" fontWeight="bold">Fehlzeiten</Text>
                 <Button ml="auto" leftIcon={<AddIcon />} onClick={() => { excuseModal.onOpen() }}>Entschuldigung hinzufügen</Button>
-                <IconButton ml={4} variant="outline" aria-label="Daten neu laden" icon={<RepeatIcon />} onClick={() => { studentQuery.refetch() }}></IconButton>
+                <IconButton ml={4} variant="outline" aria-label="Daten neu laden" icon={<RepeatIcon />} onClick={() => { studentQuery.refetch() }} />
               </Flex>
               <Select variant='outline' placeholder='Semester auswählen' value={selectedSemester} onChange={e => setSelectedSemester(e.target.value)}>
                 {semesters.map(semester => {
