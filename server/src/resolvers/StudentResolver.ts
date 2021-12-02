@@ -5,7 +5,6 @@ import { editStudent, StudentEditInput, StudentEditResponse } from './student/ed
 import { deleteStudent, StudentDeleteInput, StudentDeleteResponse } from './student/delete'
 import { Context } from '../types'
 import { Absence } from '../entity/Absence'
-import { Excuse } from '../entity/Excuse'
 import { Role } from '../entity/User'
 
 @Resolver(Student)
@@ -46,7 +45,9 @@ export class StudentResolver implements ResolverInterface<Student> {
       return []
     }
 
-    return Excuse.find({ where: { studentId: student.id } })
+    const excuses = await context.loaders.studentExcuses.load(student.id)
+    context.loaders.studentExcuses.clear(student.id)
+    return excuses
   }
 
   @Authorized()

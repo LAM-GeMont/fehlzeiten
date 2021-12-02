@@ -26,6 +26,29 @@ export class AbsenceResolver implements ResolverInterface<Absence> {
   }
 
   @Authorized()
+  @FieldResolver()
+  async excused (@Root() absence: Absence, @Ctx() { loaders }: Context) {
+    const excuses = await loaders.studentExcuses.load(absence.studentId)
+    loaders.studentExcuses.clear(absence.studentId)
+
+    return excuses.some(excuse => {
+      if (excuse.startDate > absence.date || excuse.endDate < absence.date) {
+        return false
+      }
+
+      if (absence.exam && !excuse.validForExam) {
+        return false
+      }
+
+      if (excuse.lessons != null) {
+        return excuse.lessons.includes(absence.lessonIndex)
+      }
+
+      return true
+    })
+  }
+
+  @Authorized()
   @Query(() => Absence, { nullable: true })
   async absence (
     @Arg('id') id: string,
