@@ -107,8 +107,11 @@ const StudentsOfTutoriumPage: React.FC<Props> = ({ self }) => {
   return (
         <PageScaffold role={self.role}>
           <SimpleGrid>
+            <Text fontSize="30" fontWeight="bold">{tutorium.tutor.name}</Text>
+            <Text fontSize="26">{tutorium.name}</Text>
             <Flex direction="column" alignItems="center" minW="300px" minH="600px" margin={5}>
               <Flex w="full" padding={5}>
+                <Text fontSize="24" fontWeight="bold">Schüler</Text>
                 <Button marginLeft="auto" leftIcon={<AddIcon />} onClick={addStudentToTutoriumModal.onOpen}>Schüler zu Tutorium hinzufügen</Button>
                 <IconButton ml={4} variant="outline" aria-label="Daten neu laden" icon={<RepeatIcon />} onClick={() => { tutoriumQuery.refetch() }}></IconButton>
               </Flex>
@@ -116,7 +119,6 @@ const StudentsOfTutoriumPage: React.FC<Props> = ({ self }) => {
                     {tutoriumQuery.error != null && (<Heading>Error!</Heading>)}
                     {tutoriumQuery.data != null && (
                       <Box w="full" border="1px" borderColor="gray.300" borderRadius="md" boxShadow="lg" p="6" rounded="md" bg="white" mb={4}>
-                        <Text fontSize="22" pl={2}>Tutorium: {tutorium.name} | Tutor: {tutorium.tutor.name}</Text>
                         <SortedTable {...sortedTable.tableProps}/>
                       </Box>
                     )}
