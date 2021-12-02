@@ -48,3 +48,18 @@ npm run start
 
 The Application should now be fully functional and can be accessed on port 3000.
 
+## Docs
+
+### Setup
+
+1. install [Jekyll](https://jekyllrb.com/docs/installation/)
+2. download the theme locally with
+  ```bash
+  gem install just-the-docs
+  ```
+
+### Develop
+
+```bash
+jekyll serve --port 4001 --livereload
+```
