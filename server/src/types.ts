@@ -20,6 +20,7 @@ export type Context = {
     user: DataLoader<string, User>
     semester: DataLoader<string, Semester>
     studentExcuses: DataLoader<string, Excuse[]>
+    studentAbsences: DataLoader<string, Absence[]>
   }
 }
 
