@@ -6,7 +6,7 @@ nav_order: 2
 
 # Navigation
 
-Um zwischen den Tätigkeiten zu wechseln, kann die Navigationsleiste entweder auf der linken Seite den Bildschirm oder unten am Bildschirm verwendet werden.
+Um zwischen den Tätigkeiten zu wechseln, kann die Navigationsleiste entweder auf der linken Seite des Bildschirms oder am unteren Bildschirmrand verwendet werden.
 
 <div style="padding: 0.5rem 1rem; background: lightblue; border-radius: 0.5rem">
 <h3>🛈 Tip</h3>
