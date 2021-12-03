@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Schüler
-nav_order: 5
+nav_order: 6
 ---
 
 # Schüler
