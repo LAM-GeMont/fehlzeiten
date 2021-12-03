@@ -88,7 +88,7 @@ const TutoriumPage: React.FC<Props> = ({ self }) => {
   return (
     <PageScaffold role={self.role}>
       <SimpleGrid>
-        <Flex direction="column" alignItems="center" minW="300px" minH="600px" margin={5}>
+        <Flex direction="column" alignItems="center" minW="300px" minH="600px">
           {tutoriumsQuery.error != null && (<Heading>Error!</Heading>)}
           {tutoriumsQuery.data != null && (
             <CardTable data={data} columns={columns}
@@ -113,8 +113,8 @@ const TutoriumPage: React.FC<Props> = ({ self }) => {
 
               rowFn={(row: Row<any>) => (
                 <Flex w="full" transition="all" transitionDuration="200ms" boxShadow="sm" _hover={{ boxShadow: 'md' }} borderRadius="md" alignItems="center" px={4} py={2}>
-                  <NextLink href={`/tutorium/${row.original.id}`}><Link fontWeight="semibold">{row.cells[0].render('Cell')}{' '}</Link></NextLink>
-                  <Text mx={4} flexGrow={10} textAlign="right"><Icon as={FaUser} mr={2} mb={1} />{row.cells[1].render('Cell')}</Text>
+                  <NextLink href={`/tutorium/${row.original.id}`}><Link flexGrow={10} fontWeight="semibold">{row.cells[0].render('Cell')}{' '}</Link></NextLink>
+                  {row.original.tutor != null && <Text mx={4} flexGrow={10} textAlign="right"><Icon as={FaUser} mr={2} mb={1} />{row.cells[1].render('Cell')}</Text>}
                   {row.cells[2].render('Cell')}
                 </Flex>
               )}

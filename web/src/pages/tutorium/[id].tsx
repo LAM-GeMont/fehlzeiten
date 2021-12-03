@@ -1,17 +1,20 @@
-import { AddIcon, DeleteIcon, RepeatIcon } from '@chakra-ui/icons'
-import { Spinner, Button, IconButton, useDisclosure, useToast, Text, Box, Flex, SimpleGrid, Heading, Center, AlertIcon } from '@chakra-ui/react'
+import { AddIcon, DeleteIcon, RepeatIcon, SearchIcon } from '@chakra-ui/icons'
+import { Spinner, Button, IconButton, useDisclosure, useToast, Text, Box, Flex, SimpleGrid, Heading, Center, AlertIcon, chakra, Icon, Input, InputGroup, InputLeftElement, Link } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
 import ErrorPage from 'next/error'
 import React, { useMemo } from 'react'
-import { FaEdit } from 'react-icons/fa'
+import { FaChalkboardTeacher, FaEdit } from 'react-icons/fa'
 import { PageScaffold } from '../../components/PageScaffold'
-import SortedTable, { useSortedTable } from '../../components/SortedTable'
+import { CardTable } from '../../components/BetterTable'
+import NextLink from 'next/link'
 import WithAuth, { WithAuthProps } from '../../components/withAuth'
 import { Role, useTutoriumQuery } from '../../generated/graphql'
 import { toastApolloError } from '../../util'
 import { DeleteStudentFromTutoriumModal } from '../../components/DeleteStudentFromTutoriumModal'
 import { EditStudentModal } from '../../components/EditStudentModal'
 import { AddStudentToTutoriumModal } from '../../components/AddStudentToTutoriumModal'
+import { Row, useAsyncDebounce } from 'react-table'
+import SortedTable from './SortedTableStudentsOfTutorium'
 
 interface Props extends WithAuthProps { }
 
@@ -61,13 +64,12 @@ const StudentsOfTutoriumPage: React.FC<Props> = ({ self }) => {
     },
     {
       Header: 'Aktionen',
-      accessor: 'exam',
       Cell: ({ row }) => (
-                <Flex justifyContent="center">
-                  <IconButton isDisabled={self.role === 'TEACHER'} variant="outline" aria-label="Bearbeiten" icon={<FaEdit />} onClick={ () => editStudent(row)} />
-                  <Box mr={2}></Box>
-                  <IconButton isDisabled={self.role === 'TEACHER'} variant="outline" aria-label="Löschen" icon={<DeleteIcon />} onClick={ () => deleteStudentFromTutorium(row)} />
-                </Flex>
+        <Flex justifyContent="center">
+          <IconButton isDisabled={self.role === 'TEACHER'} variant="outline" aria-label="Bearbeiten" icon={<FaEdit />} onClick={ () => editStudent(row)} />
+          <Box mr={2}></Box>
+          <IconButton isDisabled={self.role === 'TEACHER'} variant="outline" aria-label="Löschen" icon={<DeleteIcon />} onClick={ () => deleteStudentFromTutorium(row)} />
+        </Flex>
       )
     }
   ], [editStudent, deleteStudentFromTutorium, self.role])
@@ -80,10 +82,7 @@ const StudentsOfTutoriumPage: React.FC<Props> = ({ self }) => {
     }
   }, [students])
 
-  const sortedTable = useSortedTable({
-    columns,
-    data
-  })
+  const setFilter = useAsyncDebounce((filter, set) => set(filter), 200)
 
   if (tutoriumQuery.loading) {
     return <Center h="100vh"><Spinner /></Center>
@@ -107,19 +106,43 @@ const StudentsOfTutoriumPage: React.FC<Props> = ({ self }) => {
   return (
         <PageScaffold role={self.role}>
           <SimpleGrid>
-            <Text fontSize="30" fontWeight="bold">{tutorium.tutor.name}</Text>
-            <Text fontSize="26">{tutorium.name}</Text>
-            <Flex direction="column" alignItems="center" minW="300px" minH="600px" margin={5}>
-              <Flex w="full" padding={5}>
-                <Text fontSize="24" fontWeight="bold">Schüler</Text>
-                <Button marginLeft="auto" leftIcon={<AddIcon />} onClick={addStudentToTutoriumModal.onOpen}>Schüler zu Tutorium hinzufügen</Button>
-                <IconButton ml={4} variant="outline" aria-label="Daten neu laden" icon={<RepeatIcon />} onClick={() => { tutoriumQuery.refetch() }}></IconButton>
-              </Flex>
+            <Text fontSize="30" fontWeight="bold">{tutorium.name}</Text>
+            {tutorium.tutor != null && <Text fontSize="26">{tutorium.tutor.name}</Text>}
+            <Flex direction="column" alignItems="center" minW="300px" minH="600px">
               {tutoriumQuery.loading && (<Spinner />)}
                     {tutoriumQuery.error != null && (<Heading>Error!</Heading>)}
                     {tutoriumQuery.data != null && (
-                      <Box w="full" border="1px" borderColor="gray.300" borderRadius="md" boxShadow="lg" p="6" rounded="md" bg="white" mb={4}>
-                        <SortedTable {...sortedTable.tableProps}/>
+                      <Box w="full" border="1px" borderColor="gray.300" borderRadius="md" boxShadow="lg" p="6" rounded="md" bg="white" my={4}>
+                        <Text fontSize="24" fontWeight="bold" mb={4}>Schüler</Text>
+                        <CardTable data={data} columns={columns}
+                          before={ (table) => (
+                              <Flex wrap="wrap" justify="flex-end" maxW="full" mb={4}>
+                                <InputGroup flexShrink={10} w="full" maxW="full"mb={2}>
+                                  <InputLeftElement>
+                                    <SearchIcon />
+                                  </InputLeftElement>
+                                  <Input width="full" value={null} onChange={e => setFilter(e.target.value, table.setGlobalFilter)} />
+                                </InputGroup>
+                                <Flex flexGrow={2}>
+                                  <Button mr={2} flexGrow={2} leftIcon={<AddIcon />} onClick={addStudentToTutoriumModal.onOpen}>Schüler zu Tutorium hinzufügen</Button>
+                                  <IconButton variant="outline" aria-label="Daten neu laden" icon={<RepeatIcon />} onClick={() => { tutoriumQuery.refetch() }}></IconButton>
+                                </Flex>
+                              </Flex>
+                          )}
+
+                          sortableColumns={['firstName', 'lastName']}
+
+                          keyFn={(row) => row.original.id}
+
+                          rowFn={(row: Row<any>) => (
+                            <Flex w="full" transition="all" transitionDuration="200ms" boxShadow="sm" _hover={{ boxShadow: 'md' }} borderRadius="md" alignItems="center" px={4} py={2}>
+                              <NextLink href={`/student/${row.original.id}`}>
+                                <Link flexGrow={10}>{row.cells[0].render('Cell')}{' '}<chakra.span color="black">{row.cells[1].render('Cell')}</chakra.span></Link>
+                              </NextLink>
+                              {row.cells[2].render('Cell')}
+                            </Flex>
+                          )}
+                        />
                       </Box>
                     )}
             </Flex>
