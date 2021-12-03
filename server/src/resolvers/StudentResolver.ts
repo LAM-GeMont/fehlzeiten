@@ -61,6 +61,15 @@ export class StudentResolver implements ResolverInterface<Student> {
 
     const semester = semesterId != null ? await context.loaders.semester.load(semesterId) : null
 
+    if (absences === undefined) {
+      return {
+        unexcusedDays: 0,
+        unexcusedHours: 0,
+        excusedDays: 0,
+        excusedHours: 0
+      }
+    }
+
     const semesterAbsences = absences.filter(absence => {
       if (semesterId === '' || semester == null) {
         return true

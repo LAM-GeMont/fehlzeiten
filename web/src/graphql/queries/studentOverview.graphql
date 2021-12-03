@@ -1,4 +1,4 @@
-query AbsencesForStudent($studentId: String!, $semesterId: String) {
+query studentOverview($studentId: String!, $semesterId: String) {
   student(id: $studentId) {
     id
     firstName
