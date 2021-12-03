@@ -32,22 +32,18 @@ export class AbsenceResolver implements ResolverInterface<Absence> {
     loaders.studentExcuses.clear(absence.studentId)
     console.log('Entschuildigungen:' + excuses)
 
-    if (excuses === undefined) {
-      return false
-    } else {
-      return excuses.some(excuse => {
-        if (excuse.startDate > absence.date || excuse.endDate < absence.date) {
-          return false
-        }
-        if (absence.exam && !excuse.validForExam) {
-          return false
-        }
-        if (excuse.lessons != null) {
-          return excuse.lessons.includes(absence.lessonIndex)
-        }
-        return true
-      })
-    }
+    return excuses.some(excuse => {
+      if (excuse.startDate > absence.date || excuse.endDate < absence.date) {
+        return false
+      }
+      if (absence.exam && !excuse.validForExam) {
+        return false
+      }
+      if (excuse.lessons != null) {
+        return excuse.lessons.includes(absence.lessonIndex)
+      }
+      return true
+    })
   }
 
   @Authorized()
