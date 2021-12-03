@@ -187,7 +187,7 @@ const StudentsOfTutoriumPage: React.FC<Props> = ({ self }) => {
                 <AccordionItem>
                   <AccordionButton>
                     <Box flex="1" textAlign="left" fontSize="24" fontWeight="bold">
-                      Unenetschuldigte Fehlzeiten
+                      Unentschuldigte Fehlzeiten
                     </Box>
                     <Spacer minW={2}/>
                     <AccordionIcon></AccordionIcon>
