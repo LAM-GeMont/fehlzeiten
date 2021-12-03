@@ -99,7 +99,7 @@ const TutoriumPage: React.FC<Props> = ({ self }) => {
                     <InputLeftElement>
                       <SearchIcon />
                     </InputLeftElement>
-                    <Input width="full" value={null} onChange={e => setFilter(e.target.value, table.setGlobalFilter)} />
+                    <Input width="full" value={undefined} onChange={e => setFilter(e.target.value, table.setGlobalFilter)} />
                   </InputGroup>
                   <Flex flexGrow={2}>
                     <Button mr={2} flexGrow={2} leftIcon={<AddIcon />} onClick={tutoriumCreateModal.onOpen}>Tutorium hinzufügen</Button>
@@ -116,7 +116,7 @@ const TutoriumPage: React.FC<Props> = ({ self }) => {
 
               rowFn={(row: Row<any>) => (
                 <Flex w="full" transition="all" transitionDuration="200ms" boxShadow="sm" _hover={{ boxShadow: 'md' }} borderRadius="md" alignItems="center" px={4} py={2}>
-                  <NextLink href={`/tutorium/${row.original.id}`}><Link flexGrow={10} fontWeight="semibold">{row.cells[0].render('Cell')}{' '}</Link></NextLink>
+                  <NextLink href={`/tutorium/${row.original.id}`}><span style={{ flexGrow: 10, fontWeight: 600 }}>{row.cells[0].render('Cell')}{' '}</span></NextLink>
                   {row.original.tutor != null && <Text mx={4} flexGrow={10} textAlign="right"><Icon as={FaUser} mr={2} mb={1} />{row.cells[1].render('Cell')}</Text>}
                   {row.cells[2].render('Cell')}
                 </Flex>

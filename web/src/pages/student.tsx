@@ -72,8 +72,7 @@ const StudentPage: React.FC<Props> = ({ self }) => {
       Header: 'Aktionen',
       Cell: ({ row }) => (
                 <Flex justifyContent="center">
-                    <IconButton isDisabled={self.role === 'TEACHER'} variant="outline" aria-label="Bearbeiten" icon={<FaEdit />} onClick={ () => { editStudent(row) }} />
-                    <Box mr={2}></Box>
+                    <IconButton isDisabled={self.role === 'TEACHER'} variant="outline" aria-label="Bearbeiten" icon={<FaEdit />} onClick={ () => { editStudent(row) }} mr={2}/>
                     <IconButton isDisabled={self.role === 'TEACHER'} variant="outline" aria-label="Löschen" icon={<DeleteIcon />} onClick={ () => { deleteStudent(row) }} />
                 </Flex>
       )
@@ -97,7 +96,7 @@ const StudentPage: React.FC<Props> = ({ self }) => {
                                 <InputLeftElement>
                                   <SearchIcon />
                                 </InputLeftElement>
-                                <Input width="full" value={null} onChange={e => setFilter(e.target.value, table.setGlobalFilter)} />
+                                <Input width="full" value={undefined} onChange={e => setFilter(e.target.value, table.setGlobalFilter)} />
                               </InputGroup>
                               <Flex flexGrow={2}>
                                 <Button mr={2} flexGrow={2} leftIcon={<AddIcon />} onClick={studentCreateModal.onOpen}>Schüler hinzufügen</Button>

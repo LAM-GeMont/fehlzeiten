@@ -87,7 +87,7 @@ const SemesterPage: React.FC<Props> = ({ self }) => {
                     <InputLeftElement>
                       <SearchIcon />
                     </InputLeftElement>
-                    <Input width="full" value={null} onChange={e => setFilter(e.target.value, table.setGlobalFilter)} />
+                    <Input width="full" value={undefined} onChange={e => setFilter(e.target.value, table.setGlobalFilter)} />
                   </InputGroup>
                   <Flex flexGrow={2}>
                     <Button mr={2} flexGrow={2} leftIcon={<AddIcon />} onClick={semesterCreateModal.onOpen}>Zeitspanne hinzufügen</Button>
