@@ -3,12 +3,13 @@ import { Spinner, Button, IconButton, useDisclosure, useToast, Text, Box, Input,
 import React, { useCallback, useMemo, useState } from 'react'
 import { PageScaffold } from '../components/PageScaffold'
 import { Role, useSemestersQuery } from '../generated/graphql'
-import { AddIcon, DeleteIcon, RepeatIcon, SearchIcon } from '@chakra-ui/icons'
-import SortedTable, { useSortedTable } from '../components/SortedTable'
+import { AddIcon, CalendarIcon, DeleteIcon, RepeatIcon, SearchIcon } from '@chakra-ui/icons'
+import { CardTable } from '../components/BetterTable'
 import { toastApolloError } from '../util'
 import WithAuth, { WithAuthProps } from '../components/withAuth'
 import { CreateSemesterModal } from '../components/CreateSemesterModal'
 import { DeleteSemesterAlertDialog } from '../components/DeleteSemesterAlertDialog'
+import { Row, useAsyncDebounce } from 'react-table'
 
 interface TableRow {
   name: string,
@@ -69,30 +70,43 @@ const SemesterPage: React.FC<Props> = ({ self }) => {
     }
   ], [deleteSemester])
 
-  const sortedTable = useSortedTable({
-    columns,
-    data,
-    filterKeys: ['name', 'startDate', 'endDate']
-  })
+  const setFilter = useAsyncDebounce((filter, set) => set(filter), 200)
 
   return (
     <PageScaffold role={self.role}>
       <SimpleGrid>
-        <Flex direction="column" alignItems="center" minW="300px" minH="600px" margin={5}>
-          <Flex w="full" padding={5}>
-            <InputGroup flexShrink={10}>
-              <InputLeftElement>
-                <SearchIcon />
-              </InputLeftElement>
-              <Input width="xs" value={sortedTable.filter} onChange={e => sortedTable.setFilter(e.target.value)} />
-            </InputGroup>
-            <Button marginLeft="auto" leftIcon={<AddIcon />} onClick={semesterCreateModal.onOpen}>Zeitspanne hinzufügen</Button>
-            <IconButton ml={4} variant="outline" aria-label="Daten neu laden" icon={<RepeatIcon />} onClick={() => { semestersQuery.refetch() }}></IconButton>
-          </Flex>
+        <Flex direction="column" alignItems="center" minW="300px" minH="600px">
           {semestersQuery.loading && (<Spinner />)}
           {semestersQuery.error != null && (<Heading>Error!</Heading>)}
           {semestersQuery.data != null && (
-            <SortedTable { ...sortedTable.tableProps }/>
+            <CardTable data={data} columns={columns}
+              before={(table) => (
+                <Flex wrap="wrap" justify="flex-end" maxW="full" mb={4}>
+                  <InputGroup flexShrink={10} w="full" maxW="full" mb={2}>
+                    <InputLeftElement>
+                      <SearchIcon />
+                    </InputLeftElement>
+                    <Input width="full" value={null} onChange={e => setFilter(e.target.value, table.setGlobalFilter)} />
+                  </InputGroup>
+                  <Flex flexGrow={2}>
+                    <Button mr={2} flexGrow={2} leftIcon={<AddIcon />} onClick={semesterCreateModal.onOpen}>Zeitspanne hinzufügen</Button>
+                    <IconButton variant="outline" aria-label="Daten neu laden" icon={<RepeatIcon />} onClick={() => { semestersQuery.refetch() }}></IconButton>
+                  </Flex>
+                </Flex>
+              )}
+
+              sortableColumns={['name', 'startDate', 'endDate']}
+
+              keyFn={(row) => row.original.id}
+
+              rowFn={(row: Row<any>) => (
+                <Flex w="full" transition="all" transitionDuration="200ms" boxShadow="sm" _hover={{ boxShadow: 'md' }} borderRadius="md" alignItems="center" px={4} py={2}>
+                  <Text fontWeight="semibold">{row.cells[0].render('Cell')}{' '}</Text>
+                  <Text mx={4} flexGrow={10} textAlign="right"><CalendarIcon mr={2} mb={1} />{row.cells[1].render('Cell')} - {row.cells[2].render('Cell')}</Text>
+                  {row.cells[3].render('Cell')}
+                </Flex>
+              )}
+            />
           )}
           {(data.length === 0) && (
             <Box mt={5}>

@@ -1,16 +1,18 @@
-import { AddIcon, ArrowBackIcon, DeleteIcon, RepeatIcon, WarningTwoIcon } from '@chakra-ui/icons'
-import { Link, Select, Box, Button, Flex, Heading, IconButton, SimpleGrid, Spinner, Text, useDisclosure, useToast, Center } from '@chakra-ui/react'
+import { AddIcon, ArrowBackIcon, DeleteIcon, RepeatIcon, WarningTwoIcon, Icon } from '@chakra-ui/icons'
+import { Link, Select, Box, Button, Flex, Heading, IconButton, SimpleGrid, Spinner, Text, useDisclosure, useToast, Center, Tag } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
 import NextLink from 'next/link'
 import React, { useMemo } from 'react'
 import { PageScaffold } from '../../components/PageScaffold'
-import SortedTable from '../../components/SortedTableAbsences'
 import WithAuth, { WithAuthProps } from '../../components/withAuth'
 import { Role, useAbsencesForStudentQuery, useSemestersQuery } from '../../generated/graphql'
 import { toastApolloError } from '../../util'
 import { DeleteAbsenceAlertDialog } from '../../components/DeleteAbsenceAlertDialog'
 import ErrorPage from 'next/error'
 import ExcuseModal from '../../components/ExcuseModal'
+import { CardTable } from '../../components/BetterTable'
+import { Row } from 'react-table'
+import { FaUser } from 'react-icons/fa'
 
 interface Props extends WithAuthProps { }
 
@@ -105,7 +107,7 @@ const Student: React.FC<Props> = ({ self }) => {
         </NextLink>
         <Text fontSize="30" fontWeight="bold">{student.firstName + ' ' + student.lastName}</Text>
         <Text fontSize="26">{student.tutorium?.name}</Text>
-        <Flex direction="column" alignItems="center" minW="300px" minH="600px" margin={5}>
+        <Flex direction="column" alignItems="center" minW="300px" minH="600px">
           {dates.length < 1 &&
             <Flex w="full" padding={5}>
               <Text fontSize="24" fontWeight="bold">Es wurden noch keine Fehlzeiten erfasst...</Text>
@@ -113,10 +115,12 @@ const Student: React.FC<Props> = ({ self }) => {
           }
           {dates.length >= 1 && (
             <>
-              <Flex w="full" py={5}>
-                <Text pr={4} fontSize="24" fontWeight="bold">Fehlzeiten</Text>
-                <Button ml="auto" leftIcon={<AddIcon />} onClick={() => { excuseModal.onOpen() }}>Entschuldigung hinzufügen</Button>
-                <IconButton ml={4} variant="outline" aria-label="Daten neu laden" icon={<RepeatIcon />} onClick={() => { studentQuery.refetch() }} />
+              <Flex w="full" flexWrap="wrap" pt={8}>
+                <Text pr={4} mb={5} fontSize="24" fontWeight="bold">Fehlzeiten</Text>
+                <Flex flexGrow={10} mb={5}>
+                  <Button ml="auto" leftIcon={<AddIcon />} onClick={() => { excuseModal.onOpen() }} flexGrow={10}>Entschuldigung hinzufügen</Button>
+                  <IconButton ml={4} variant="outline" aria-label="Daten neu laden" icon={<RepeatIcon />} onClick={() => { studentQuery.refetch() }} />
+                </Flex>
               </Flex>
               <Select variant='outline' placeholder='Semester auswählen' value={selectedSemester} onChange={e => setSelectedSemester(e.target.value)}>
                 {semesters.map(semester => {
@@ -128,8 +132,30 @@ const Student: React.FC<Props> = ({ self }) => {
               {dates.map(date => {
                 return (
                   <Box mt={5} key={date} w="full" border="1px" borderColor="gray.300" borderRadius="md" boxShadow="lg" p="6" rounded="md" bg="white" mb={4}>
-                    <Text fontSize="22" pl={2}>{new Date(date).toLocaleDateString()}</Text>
-                    <SortedTable columns={columns} data={absences.filter(absence => absence.date === date)} />
+                    <Text fontSize="22" pb={5}>{new Date(date).toLocaleDateString()}</Text>
+                    <CardTable data={absences.filter(absence => absence.date === date).sort((a, b) => -a.lessonIndex + b.lessonIndex)} columns={columns}
+                      keyFn={(row) => row.original.id}
+
+                      rowFn={(row: Row<any>) => (
+                        <Box w="full" transition="all" transitionDuration="200ms" boxShadow="sm" _hover={{ boxShadow: 'md' }} borderRadius="md" borderWidth={2} borderColor={row.cells[3].value ? 'green.200' : 'gray.200'}>
+                        <Flex mx={-2} alignItems="center" px={4} py={2} flexWrap="wrap">
+                          <Text fontWeight="semibold" mx={2}>{row.cells[0].render('Cell')}{' '}</Text>
+                          <Flex alignItems="center" flexGrow={5} justifyContent="flex-end" my={2} mx={2} flexBasis={100}>
+                            {row.cells[2].value &&
+                              <Tag ml={2} colorScheme="primary">Klausur</Tag>
+                            }
+                            {row.cells[3].value &&
+                              <Tag ml={2} colorScheme="green">Entschuldigt</Tag>
+                            }
+                          </Flex>
+                          <Flex alignItems="center" justifyContent="space-between" flexGrow={2} mx={2}>
+                            <Text textAlign="right" mr={2}><Icon as={FaUser} mr={2} mb={1} />{row.cells[1].render('Cell')}</Text>
+                            {row.cells[4].render('Cell')}
+                          </Flex>
+                        </Flex>
+                        </Box>
+                      )}
+                    />
                   </Box>)
               })}
             </>
