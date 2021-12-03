@@ -1,5 +1,23 @@
 import { AddIcon, DeleteIcon, RepeatIcon, SearchIcon } from '@chakra-ui/icons'
-import { Spinner, Button, IconButton, useDisclosure, useToast, Text, Box, Flex, SimpleGrid, Heading, Center, AlertIcon, chakra, Input, InputGroup, InputLeftElement, Link } from '@chakra-ui/react'
+import {
+  Spinner,
+  Button,
+  IconButton,
+  useDisclosure,
+  useToast,
+  Text,
+  Box,
+  Flex,
+  SimpleGrid,
+  Heading,
+  Center,
+  AlertIcon,
+  chakra,
+  Input,
+  InputGroup,
+  InputLeftElement,
+  Link
+} from '@chakra-ui/react'
 import { useRouter } from 'next/router'
 import ErrorPage from 'next/error'
 import React, { useMemo } from 'react'
@@ -65,9 +83,8 @@ const StudentsOfTutoriumPage: React.FC<Props> = ({ self }) => {
       Header: 'Aktionen',
       Cell: ({ row }) => (
         <Flex justifyContent="center">
-          <IconButton isDisabled={self.role === 'TEACHER'} variant="outline" aria-label="Bearbeiten" icon={<FaEdit />} onClick={ () => editStudent(row)} />
-          <Box mr={2}></Box>
-          <IconButton isDisabled={self.role === 'TEACHER'} variant="outline" aria-label="Löschen" icon={<DeleteIcon />} onClick={ () => deleteStudentFromTutorium(row)} />
+          <IconButton isDisabled={self.role === 'TEACHER'} variant="outline" aria-label="Bearbeiten" icon={<FaEdit/>} onClick={() => editStudent(row)} mr={2}/>
+          <IconButton isDisabled={self.role === 'TEACHER'} variant="outline" aria-label="Löschen" icon={<DeleteIcon/>} onClick={() => deleteStudentFromTutorium(row)}/>
         </Flex>
       )
     }
@@ -84,72 +101,97 @@ const StudentsOfTutoriumPage: React.FC<Props> = ({ self }) => {
   const setFilter = useAsyncDebounce((filter, set) => set(filter), 200)
 
   if (tutoriumQuery.loading) {
-    return <Center h="100vh"><Spinner /></Center>
+    return <Center h="100vh"><Spinner/></Center>
   }
 
   if (tutoriumQuery.error != null) {
     return (
-        <PageScaffold role={self.role}>
-          <Center h="100vh" color="red">
-            <AlertIcon />
-            <Heading>Fehler beim Laden der Daten</Heading>
-          </Center>
-        </PageScaffold>
+      <PageScaffold role={self.role}>
+        <Center h="100vh" color="red">
+          <AlertIcon/>
+          <Heading>Fehler beim Laden der Daten</Heading>
+        </Center>
+      </PageScaffold>
     )
   }
 
   if (tutorium == null) {
-    <ErrorPage statusCode={404} />
+    <ErrorPage statusCode={404}/>
   }
 
   return (
-        <PageScaffold role={self.role}>
-          <SimpleGrid>
-            <Text fontSize="30" fontWeight="bold">{tutorium.name}</Text>
-            {tutorium.tutor != null && <Text fontSize="26">{tutorium.tutor.name}</Text>}
-            <Flex direction="column" alignItems="center" minW="300px" minH="600px">
-              {tutoriumQuery.loading && (<Spinner />)}
-                    {tutoriumQuery.error != null && (<Heading>Error!</Heading>)}
-                    {tutoriumQuery.data != null && (
-                      <Box w="full" border="1px" borderColor="gray.300" borderRadius="md" boxShadow="lg" p="6" rounded="md" bg="white" my={4}>
-                        <Text fontSize="24" fontWeight="bold" mb={4}>Schüler</Text>
-                        <CardTable data={data} columns={columns}
-                          before={ (table) => (
-                              <Flex wrap="wrap" justify="flex-end" maxW="full" mb={4}>
-                                <InputGroup flexShrink={10} w="full" maxW="full"mb={2}>
-                                  <InputLeftElement>
-                                    <SearchIcon />
-                                  </InputLeftElement>
-                                  <Input width="full" value={null} onChange={e => setFilter(e.target.value, table.setGlobalFilter)} />
-                                </InputGroup>
-                                <Flex flexGrow={2}>
-                                  <Button mr={2} flexGrow={2} leftIcon={<AddIcon />} onClick={addStudentToTutoriumModal.onOpen}>Schüler zu Tutorium hinzufügen</Button>
-                                  <IconButton variant="outline" aria-label="Daten neu laden" icon={<RepeatIcon />} onClick={() => { tutoriumQuery.refetch() }}></IconButton>
-                                </Flex>
-                              </Flex>
-                          )}
+    <PageScaffold role={self.role}>
+      <SimpleGrid>
+        <Heading as="h1" size="xl">{tutorium.name} <span style={{ color: 'grey', fontWeight: 'normal', fontSize: '24px' }}>Tutorium</span></Heading>
+        {tutorium.tutor != null && <Heading as="h1" size="md">{tutorium.tutor.name}</Heading>}
+        <Flex direction="column" alignItems="center" minW="300px" minH="600px">
+          {tutoriumQuery.loading && (<Spinner/>)}
+          {tutoriumQuery.error != null && (<Heading>Error!</Heading>)}
+          {tutoriumQuery.data != null && (
+            <Box w="full" border="1px" borderColor="gray.300" borderRadius="md" boxShadow="lg" p="6" rounded="md" bg="white" my={4}>
+              <Text fontSize="24" fontWeight="bold" mb={4}>Schüler</Text>
+              <CardTable data={data} columns={columns}
+                         before={(table) => (
+                           <Flex wrap="wrap" justify="flex-end" maxW="full" mb={4}>
+                             <InputGroup flexShrink={10} w="full" maxW="full" mb={2}>
+                               <InputLeftElement>
+                                 <SearchIcon/>
+                               </InputLeftElement>
+                               <Input width="full" value={undefined} onChange={e => setFilter(e.target.value, table.setGlobalFilter)}/>
+                             </InputGroup>
+                             <Flex flexGrow={2}>
+                               <Button mr={2} flexGrow={2} leftIcon={<AddIcon/>} onClick={addStudentToTutoriumModal.onOpen}>Schüler zu Tutorium hinzufügen</Button>
+                               <IconButton
+                                 variant="outline"
+                                 aria-label="Daten neu laden"
+                                 icon={<RepeatIcon/>}
+                                 onClick={() => {
+                                   tutoriumQuery.refetch()
+                                 }}
+                               />
+                             </Flex>
+                           </Flex>
+                         )}
 
-                          sortableColumns={['firstName', 'lastName']}
+                         sortableColumns={['firstName', 'lastName']}
 
-                          keyFn={(row) => row.original.id}
+                         keyFn={(row) => row.original.id}
 
-                          rowFn={(row: Row<any>) => (
-                            <Flex w="full" transition="all" transitionDuration="200ms" boxShadow="sm" _hover={{ boxShadow: 'md' }} borderRadius="md" alignItems="center" px={4} py={2}>
-                              <NextLink href={`/student/${row.original.id}`}>
-                                <Link flexGrow={10}>{row.cells[0].render('Cell')}{' '}<chakra.span color="black">{row.cells[1].render('Cell')}</chakra.span></Link>
-                              </NextLink>
-                              {row.cells[2].render('Cell')}
-                            </Flex>
-                          )}
-                        />
-                      </Box>
-                    )}
-            </Flex>
-          </SimpleGrid>
-          <AddStudentToTutoriumModal isOpen={addStudentToTutoriumModal.isOpen} onClose={addStudentToTutoriumModal.onClose} studentId={rowId} firstName={rowFirstName} lastName={rowLastName} tutoriumId={tutorium.id} />
-          <EditStudentModal isOpen={studentEditModal.isOpen} onClose={studentEditModal.onClose} studentId={rowId} firstName={rowFirstName} lastName={rowLastName} tutoriumId={tutorium.id} />
-          <DeleteStudentFromTutoriumModal isOpen={deleteStudentFromTutoriumModal.isOpen} onClose={deleteStudentFromTutoriumModal.onClose} rowId={rowId} firstName={rowFirstName} lastName={rowLastName} tutoriumName={tutorium.name} />
-        </PageScaffold>
+                         rowFn={(row: Row<any>) => (
+                           <Flex w="full" transition="all" transitionDuration="200ms" boxShadow="sm" _hover={{ boxShadow: 'md' }} borderRadius="md" alignItems="center" px={4} py={2}>
+                             <NextLink href={`/student/${row.original.id}`}>
+                               <Link flexGrow={10}>{row.cells[0].render('Cell')}{' '}<chakra.span color="black">{row.cells[1].render('Cell')}</chakra.span></Link>
+                             </NextLink>
+                             {row.cells[2].render('Cell')}
+                           </Flex>
+                         )}
+              />
+            </Box>
+          )}
+        </Flex>
+      </SimpleGrid>
+      <AddStudentToTutoriumModal
+        isOpen={addStudentToTutoriumModal.isOpen}
+        onClose={addStudentToTutoriumModal.onClose}
+        studentId={rowId}
+        firstName={rowFirstName}
+        lastName={rowLastName}
+        tutoriumId={tutorium.id}/>
+      <EditStudentModal
+        isOpen={studentEditModal.isOpen}
+        onClose={studentEditModal.onClose}
+        studentId={rowId}
+        firstName={rowFirstName}
+        lastName={rowLastName}
+        tutoriumId={tutorium.id}/>
+      <DeleteStudentFromTutoriumModal
+        isOpen={deleteStudentFromTutoriumModal.isOpen}
+        onClose={deleteStudentFromTutoriumModal.onClose}
+        rowId={rowId}
+        firstName={rowFirstName}
+        lastName={rowLastName}
+        tutoriumName={tutorium.name}/>
+    </PageScaffold>
   )
 }
 

@@ -74,23 +74,26 @@ const SemesterPage: React.FC<Props> = ({ self }) => {
 
   return (
     <PageScaffold role={self.role}>
+      <Heading as="h1" size="xl" mb={3}>Zeitspannen</Heading>
       <SimpleGrid>
-        <Flex direction="column" alignItems="center" minW="300px" minH="600px">
+        <Flex direction="column" alignItems="center">
           {semestersQuery.loading && (<Spinner />)}
           {semestersQuery.error != null && (<Heading>Error!</Heading>)}
           {semestersQuery.data != null && (
             <CardTable data={data} columns={columns}
               before={(table) => (
-                <Flex wrap="wrap" justify="flex-end" maxW="full" mb={4}>
+                <Flex wrap="wrap" justify="flex-end" w="100%" mb={4}>
                   <InputGroup flexShrink={10} w="full" maxW="full" mb={2}>
                     <InputLeftElement>
                       <SearchIcon />
                     </InputLeftElement>
-                    <Input width="full" value={null} onChange={e => setFilter(e.target.value, table.setGlobalFilter)} />
+                    <Input width="full" value={undefined} onChange={e => setFilter(e.target.value, table.setGlobalFilter)} />
                   </InputGroup>
                   <Flex flexGrow={2}>
                     <Button mr={2} flexGrow={2} leftIcon={<AddIcon />} onClick={semesterCreateModal.onOpen}>Zeitspanne hinzufügen</Button>
-                    <IconButton variant="outline" aria-label="Daten neu laden" icon={<RepeatIcon />} onClick={() => { semestersQuery.refetch() }}></IconButton>
+                    <IconButton variant="outline" aria-label="Daten neu laden" icon={<RepeatIcon/>} onClick={() => {
+                      semestersQuery.refetch()
+                    }}/>
                   </Flex>
                 </Flex>
               )}

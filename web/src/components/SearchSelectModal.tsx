@@ -129,24 +129,21 @@ function SearchSelectModal<T> ({ items = [], textTransformer, valueTransformer, 
             </Box>
           }
         </ModalBody>
-        <ModalFooter bg="gray.100" borderBottomRadius="md">
-          <>
-            <Flex wrap="wrap">
-              <Text w="full" mr={2}>
-                {selectMultiple && (tempSelection.length === 0 ? '' : `Ausgewählt (${tempSelection.length}):`)}
-                {!selectMultiple && (tempSelection.length === 0 ? '' : 'Ausgewählt:')}
-              </Text>
-              {tempSelection.map((t) => (
-                <Tag key={textTransformer(t)} my={1} mr={1} colorScheme="primary">
-                  <TagLabel>{textTransformer(t)}</TagLabel>
-                  <TagCloseButton onClick={() => removeSelection(t)}/>
-                </Tag>
-              ))}
-            </Flex>
-            <Spacer />
-          </>
+        <ModalFooter bg="gray.100" borderBottomRadius="md" flexDirection="column">
+          <Flex wrap="wrap" alignSelf="flex-start" mb={2}>
+            <Text w="full" mr={2}>
+              {selectMultiple && (tempSelection.length === 0 ? '' : `Ausgewählt (${tempSelection.length}):`)}
+              {!selectMultiple && (tempSelection.length === 0 ? '' : 'Ausgewählt:')}
+            </Text>
+            {tempSelection.map((t) => (
+              <Tag key={textTransformer(t)} my={1} mr={1} colorScheme="primary">
+                <TagLabel>{textTransformer(t)}</TagLabel>
+                <TagCloseButton onClick={() => removeSelection(t)}/>
+              </Tag>
+            ))}
+          </Flex>
 
-          <Flex>
+          <Flex alignSelf="flex-end">
             <Button variant="ghost" colorScheme="gray" onClick={() => { revertChanges(); onClose() }}>Abbrechen</Button>
             <Button colorScheme="primary" onClick={() => { saveChanges(); onClose() }}>Auswählen</Button>
           </Flex>

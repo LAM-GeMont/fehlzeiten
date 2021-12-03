@@ -86,8 +86,8 @@ export function SearchSelectInputMultiple<T> (props: SearchSelectInputProps<T> &
     <>
       <FormControl id={name} isInvalid={meta.touched && meta.error != null}>
         <FormLabel>{label}</FormLabel>
-        <InputGroup onFocus={(e) => { activateModal(); e.target.blur() }} onClick={activateModal} >
-          <Input as="div" w="xs" h="auto" minH={20} p={2}>
+        <InputGroup onFocus={(e) => { activateModal(); e.target.blur() }} onClick={activateModal} cursor="pointer">
+          <Input as="div" h="auto" minH={20} p={2}>
             {searchSelectModal.selection.length === 0 &&
               <Text color="gray">{placeholder}</Text>
             }
