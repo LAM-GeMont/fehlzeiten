@@ -1,5 +1,5 @@
 import { AddIcon, DeleteIcon, RepeatIcon, SearchIcon } from '@chakra-ui/icons'
-import { Spinner, Button, IconButton, useDisclosure, useToast, Text, Box, Flex, SimpleGrid, Heading, Center, AlertIcon, chakra, Input, InputGroup, InputLeftElement, Link } from '@chakra-ui/react'
+import { Accordion, AccordionItem, AccordionButton, AccordionPanel, AccordionIcon, Spinner, Button, IconButton, useDisclosure, useToast, Text, Box, Flex, SimpleGrid, Heading, Center, AlertIcon, chakra, Input, InputGroup, InputLeftElement, Link, Spacer, Tag } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
 import ErrorPage from 'next/error'
 import React, { useMemo } from 'react'
@@ -35,6 +35,19 @@ const StudentsOfTutoriumPage: React.FC<Props> = ({ self }) => {
   })
   const tutorium = tutoriumQuery.data?.tutorium
   const students = tutoriumQuery.data?.tutorium.students
+  const absences = []
+
+  tutoriumQuery.data?.tutorium.students.forEach(e => {
+    e.absences.forEach(absence => {
+      if (absence.excused === false) {
+        absences.push(absence)
+      }
+    })
+  })
+
+  const dates = Array.from(new Set(absences.map(absence => absence.date))).sort().reverse()
+
+  console.log(absences)
 
   const openEdit = studentEditModal.onOpen
   const editStudent = React.useCallback((row) => {
@@ -73,6 +86,29 @@ const StudentsOfTutoriumPage: React.FC<Props> = ({ self }) => {
     }
   ], [editStudent, deleteStudentFromTutorium, self.role])
 
+  const columnsAbsences = useMemo(() => [
+    {
+      Header: 'Stunden',
+      accessor: 'lessonIndex'
+    },
+    {
+      Header: 'eingereicht von',
+      accessor: 'submittedBy.name'
+    },
+    {
+      Header: '',
+      accessor: 'exam'
+    },
+    {
+      Header: '',
+      accessor: 'student.firstName'
+    },
+    {
+      Header: '',
+      accessor: 'student.lastName'
+    }
+  ], [])
+
   const data = useMemo(() => {
     if (students != null) {
       return students
@@ -108,42 +144,81 @@ const StudentsOfTutoriumPage: React.FC<Props> = ({ self }) => {
             <Text fontSize="30" fontWeight="bold">{tutorium.name}</Text>
             {tutorium.tutor != null && <Text fontSize="26">{tutorium.tutor.name}</Text>}
             <Flex direction="column" alignItems="center" minW="300px" minH="600px">
-              {tutoriumQuery.loading && (<Spinner />)}
-                    {tutoriumQuery.error != null && (<Heading>Error!</Heading>)}
-                    {tutoriumQuery.data != null && (
-                      <Box w="full" border="1px" borderColor="gray.300" borderRadius="md" boxShadow="lg" p="6" rounded="md" bg="white" my={4}>
-                        <Text fontSize="24" fontWeight="bold" mb={4}>Schüler</Text>
-                        <CardTable data={data} columns={columns}
-                          before={ (table) => (
-                              <Flex wrap="wrap" justify="flex-end" maxW="full" mb={4}>
-                                <InputGroup flexShrink={10} w="full" maxW="full"mb={2}>
-                                  <InputLeftElement>
-                                    <SearchIcon />
-                                  </InputLeftElement>
-                                  <Input width="full" value={null} onChange={e => setFilter(e.target.value, table.setGlobalFilter)} />
-                                </InputGroup>
-                                <Flex flexGrow={2}>
-                                  <Button mr={2} flexGrow={2} leftIcon={<AddIcon />} onClick={addStudentToTutoriumModal.onOpen}>Schüler zu Tutorium hinzufügen</Button>
-                                  <IconButton variant="outline" aria-label="Daten neu laden" icon={<RepeatIcon />} onClick={() => { tutoriumQuery.refetch() }}></IconButton>
-                                </Flex>
-                              </Flex>
-                          )}
+              <Accordion allowToggle mt={5} allowMultiple>
+                <AccordionItem>
+                  <AccordionButton>
+                    <Box flex="1" textAlign="left" fontSize="24" fontWeight="bold">
+                      Schüler
+                    </Box>
+                    <AccordionIcon></AccordionIcon>
+                  </AccordionButton>
+                  <AccordionPanel>
+                    <CardTable data={data} columns={columns}
+                      before={ (table) => (
+                          <Flex wrap="wrap" justify="flex-end" maxW="full" mb={4}>
+                            <InputGroup flexShrink={10} w="full" maxW="full"mb={2}>
+                              <InputLeftElement>
+                                <SearchIcon />
+                              </InputLeftElement>
+                              <Input width="full" value={null} onChange={e => setFilter(e.target.value, table.setGlobalFilter)} />
+                            </InputGroup>
+                            <Flex flexGrow={2}>
+                              <Button flexGrow={2} leftIcon={<AddIcon />} onClick={addStudentToTutoriumModal.onOpen}>Schüler zu Tutorium hinzufügen</Button>
+                              <IconButton variant="outline" aria-label="Daten neu laden" icon={<RepeatIcon />} onClick={() => { tutoriumQuery.refetch() }}></IconButton>
+                            </Flex>
+                          </Flex>
+                      )}
 
-                          sortableColumns={['firstName', 'lastName']}
+                      sortableColumns={['firstName', 'lastName']}
 
+                      keyFn={(row) => row.original.id}
+
+                      rowFn={(row: Row<any>) => (
+                        <Flex w="full" transition="all" transitionDuration="200ms" boxShadow="sm" _hover={{ boxShadow: 'md' }} borderRadius="md" alignItems="center" px={4} py={2}>
+                          <NextLink href={`/student/${row.original.id}`}>
+                            <Link flexGrow={10}>{row.cells[0].render('Cell')}{' '}<chakra.span color="black">{row.cells[1].render('Cell')}</chakra.span></Link>
+                          </NextLink>
+                          {row.cells[2].render('Cell')}
+                        </Flex>
+                      )}
+                    />
+                  </AccordionPanel>
+                </AccordionItem>
+                <AccordionItem>
+                  <AccordionButton>
+                    <Box flex="1" textAlign="left" fontSize="24" fontWeight="bold">
+                      Unenetschuldigte Fehlzeiten
+                    </Box>
+                    <Spacer minW={2}/>
+                    <AccordionIcon></AccordionIcon>
+                  </AccordionButton>
+                  <AccordionPanel>
+                  {dates.map((date: string) => {
+                    return (
+                      <Flex wrap="wrap" maxW="full" mt={5} key={date} w="full" border="1px" borderColor="gray.300" borderRadius="md" boxShadow="lg" p="3" rounded="md" bg="white" mb={4}>
+                        <Text fontSize="22">{new Date(date).toLocaleDateString()}</Text>
+                        <CardTable columns={columnsAbsences} data={absences.filter(absence => absence.date === date).sort((a, b) => -a.lessonIndex + b.lessonIndex)}
                           keyFn={(row) => row.original.id}
-
                           rowFn={(row: Row<any>) => (
-                            <Flex w="full" transition="all" transitionDuration="200ms" boxShadow="sm" _hover={{ boxShadow: 'md' }} borderRadius="md" alignItems="center" px={4} py={2}>
-                              <NextLink href={`/student/${row.original.id}`}>
-                                <Link flexGrow={10}>{row.cells[0].render('Cell')}{' '}<chakra.span color="black">{row.cells[1].render('Cell')}</chakra.span></Link>
-                              </NextLink>
-                              {row.cells[2].render('Cell')}
+                            <Flex w="full" maxW="full" boxShadow="sm" _hover={{ boxShadow: 'md' }} borderRadius="md" alignItems="center" px={4} py={2}>
+                              <Flex flexDirection="column">
+                                <Text fontWeight="bold">{row.cells[0].render('Cell')}. Stunde</Text>
+                                <Text fontWeight="bold">{row.cells[3].render('Cell')} {row.cells[4].render('Cell')}</Text>
+                                <Text>Eingereicht von <span style={{ fontWeight: 'bold' }}>{row.cells[1].render('Cell')}</span></Text>
+                              </Flex>
+                              <Spacer />
+                              <Flex flexDirection="column">
+                                {row.cells[2].value ? (<Tag mb={2} bgColor="blue.400" color="white">Klausur</Tag>) : (<></>)}
+                                <Tag mb={2} colorScheme="red">Unentschuldigt</Tag>
+                              </Flex>
                             </Flex>
                           )}
                         />
-                      </Box>
-                    )}
+                      </Flex>)
+                  })}
+                  </AccordionPanel>
+                </AccordionItem>
+              </Accordion>
             </Flex>
           </SimpleGrid>
           <AddStudentToTutoriumModal isOpen={addStudentToTutoriumModal.isOpen} onClose={addStudentToTutoriumModal.onClose} studentId={rowId} firstName={rowFirstName} lastName={rowLastName} tutoriumId={tutorium.id} />
