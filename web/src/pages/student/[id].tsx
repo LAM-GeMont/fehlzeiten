@@ -1,18 +1,41 @@
 import { AddIcon, ArrowBackIcon, DeleteIcon, RepeatIcon, WarningTwoIcon } from '@chakra-ui/icons'
-import { Link, Select, Box, Button, Flex, Heading, IconButton, SimpleGrid, Spinner, Text, useDisclosure, useToast, Center } from '@chakra-ui/react'
+import {
+  Link,
+  Select,
+  Box,
+  Button,
+  Flex,
+  Heading,
+  IconButton,
+  SimpleGrid,
+  Spinner,
+  Text,
+  useDisclosure,
+  useToast,
+  Center,
+  StatGroup, Stat, StatNumber, StatLabel, Spacer, Tag
+} from '@chakra-ui/react'
 import { useRouter } from 'next/router'
 import NextLink from 'next/link'
 import React, { useMemo } from 'react'
 import { PageScaffold } from '../../components/PageScaffold'
-import SortedTable from '../../components/SortedTableAbsences'
 import WithAuth, { WithAuthProps } from '../../components/withAuth'
-import { Role, useAbsencesForStudentQuery, useSemestersQuery } from '../../generated/graphql'
+import { Role, useStudentOverviewQuery, useSemestersQuery } from '../../generated/graphql'
 import { toastApolloError } from '../../util'
 import { DeleteAbsenceAlertDialog } from '../../components/DeleteAbsenceAlertDialog'
 import ErrorPage from 'next/error'
 import ExcuseModal from '../../components/ExcuseModal'
+import { CardTable } from '../../components/BetterTable'
+import { Row } from 'react-table'
 
 interface Props extends WithAuthProps { }
+
+const emptySummary = {
+  excusedDays: 0,
+  excusedHours: 0,
+  unexcusedDays: 0,
+  unexcusedHours: 0
+}
 
 const Student: React.FC<Props> = ({ self }) => {
   const absenceDeleteAlertDialog = useDisclosure()
@@ -25,7 +48,7 @@ const Student: React.FC<Props> = ({ self }) => {
 
   const toast = useToast()
 
-  const studentQuery = useAbsencesForStudentQuery({
+  const studentQuery = useStudentOverviewQuery({
     variables: {
       studentId: id.toString(),
       semesterId: selectedSemester
@@ -37,9 +60,11 @@ const Student: React.FC<Props> = ({ self }) => {
     onError: errors => toastApolloError(toast, errors)
   })
 
-  const absences = studentQuery.data?.student?.absences || []
   const student = studentQuery.data?.student
+  const summary = studentQuery.data?.student?.absenceSummary || emptySummary
+  const absences = studentQuery.data?.student?.absences || []
   const semesters = semestersQuery.data?.semesters || []
+  console.log(absences)
 
   const columns = useMemo(() => [
     {
@@ -61,12 +86,10 @@ const Student: React.FC<Props> = ({ self }) => {
     {
       Header: 'Aktionen',
       Cell: ({ row }) => (
-        <Flex justifyContent="center">
-          <IconButton isDisabled={self.role !== Role.Coordinator && row.original.submittedBy !== self.id && student.tutorium?.tutor?.id !== self.id} variant="outline" aria-label="Löschen" icon={<DeleteIcon />} onClick={() => {
-            setRowId(row.original.id)
-            absenceDeleteAlertDialog.onOpen()
-          }} />
-        </Flex>
+        <IconButton ml={2} isDisabled={self.role !== Role.Coordinator && row.original.submittedBy !== self.id && student.tutorium?.tutor?.id !== self.id} variant="outline" aria-label="Löschen" icon={<DeleteIcon />} onClick={() => {
+          setRowId(row.original.id)
+          absenceDeleteAlertDialog.onOpen()
+        }} />
       )
     }
   ], [absenceDeleteAlertDialog, self.id, self.role, student])
@@ -96,16 +119,16 @@ const Student: React.FC<Props> = ({ self }) => {
     <PageScaffold role={self.role}>
       <SimpleGrid>
         <NextLink href='/student'>
-          <Link >
+          <Link mb={4}>
             <Flex alignItems="center">
               <ArrowBackIcon/>
               <Text>Zurück zur Übersicht</Text>
             </Flex>
           </Link>
         </NextLink>
-        <Text fontSize="30" fontWeight="bold">{student.firstName + ' ' + student.lastName}</Text>
-        <Text fontSize="26">{student.tutorium?.name}</Text>
-        <Flex direction="column" alignItems="center" minW="300px" minH="600px" margin={5}>
+        <Heading as='h1' size='xl'>{student.firstName + ' ' + student.lastName}</Heading>
+        <Heading as='h2' size='md' fontWeight='normal'>{student.tutorium?.name}</Heading>
+        <Flex direction="column" minW="300px" minH="600px">
           {dates.length < 1 &&
             <Flex w="full" padding={5}>
               <Text fontSize="24" fontWeight="bold">Es wurden noch keine Fehlzeiten erfasst...</Text>
@@ -113,10 +136,13 @@ const Student: React.FC<Props> = ({ self }) => {
           }
           {dates.length >= 1 && (
             <>
-              <Flex w="full" py={5}>
-                <Text pr={4} fontSize="24" fontWeight="bold">Fehlzeiten</Text>
-                <Button ml="auto" leftIcon={<AddIcon />} onClick={() => { excuseModal.onOpen() }}>Entschuldigung hinzufügen</Button>
-                <IconButton ml={4} variant="outline" aria-label="Daten neu laden" icon={<RepeatIcon />} onClick={() => { studentQuery.refetch() }} />
+              <Flex w="full" flexDirection="row" flexWrap="wrap" alignItems="center" py={2}>
+                <Text fontSize="24" fontWeight="bold">Fehlzeiten</Text>
+                <Spacer minW={2}/>
+                <div>
+                  <Button ml="auto" leftIcon={<AddIcon />} onClick={() => { excuseModal.onOpen() }}>Entschuldigung hinzufügen</Button>
+                  <IconButton ml="2" variant="outline" aria-label="Daten neu laden" icon={<RepeatIcon />} onClick={() => { studentQuery.refetch() }} />
+                </div>
               </Flex>
               <Select variant='outline' placeholder='Semester auswählen' value={selectedSemester} onChange={e => setSelectedSemester(e.target.value)}>
                 {semesters.map(semester => {
@@ -125,11 +151,56 @@ const Student: React.FC<Props> = ({ self }) => {
                   )
                 })}
               </Select>
+              <Heading as='h2' size='md' mt={3} mb={3}>Zusammenfassung</Heading>
+              <StatGroup
+                alignItems="end"
+                border="1px solid var(--chakra-colors-gray-200)"
+                borderRadius="md"
+                display={{ base: 'grid', md: 'flex' }}
+                gridTemplateColumns="1fr 1fr"
+                gridRowGap={3}
+                padding={3}
+                w="100%"
+              >
+                <Stat display="flex" flexDir="column" justifyContent="spaceBetween">
+                  <StatLabel>Tage</StatLabel>
+                  <StatNumber>{ summary.excusedDays + summary.unexcusedDays }</StatNumber>
+                </Stat>
+                <Stat>
+                  <StatLabel>davon unentschuldigt</StatLabel>
+                  <StatNumber>{ summary.unexcusedDays }</StatNumber>
+                </Stat>
+                <Stat>
+                  <StatLabel>Einzelstunden</StatLabel>
+                  <StatNumber>{ summary.excusedHours + summary.unexcusedHours }</StatNumber>
+                </Stat>
+                <Stat>
+                  <StatLabel>davon unentschuldigt</StatLabel>
+                  <StatNumber>{ summary.unexcusedHours }</StatNumber>
+                </Stat>
+              </StatGroup>
               {dates.map(date => {
                 return (
-                  <Box mt={5} key={date} w="full" border="1px" borderColor="gray.300" borderRadius="md" boxShadow="lg" p="6" rounded="md" bg="white" mb={4}>
-                    <Text fontSize="22" pl={2}>{new Date(date).toLocaleDateString()}</Text>
-                    <SortedTable columns={columns} data={absences.filter(absence => absence.date === date)} />
+                  <Box mt={5} key={date} w="full" border="1px" borderColor="gray.300" borderRadius="md" boxShadow="lg" p="3" rounded="md" bg="white" mb={4}>
+                    <Text fontSize="22">{new Date(date).toLocaleDateString()}</Text>
+                    <CardTable columns={columns} data={absences.filter(absence => absence.date === date)}
+                      sortableColumns={['lessonIndex']}
+                      keyFn={(row) => row.original.id}
+                      rowFn={(row: Row<any>) => (
+                        <Flex w="full" transition="all" transitionDuration="200ms" boxShadow="sm" _hover={{ boxShadow: 'md' }} borderRadius="md" alignItems="center" px={4} py={2}>
+                          <Flex flexDirection="column">
+                            <Text fontWeight="bold">{row.cells[0].render('Cell')}. Stunde</Text>
+                            <Text>Eingereicht von <span style={{ fontWeight: 'bold' }}>{row.cells[1].render('Cell')}</span></Text>
+                          </Flex>
+                          <Spacer />
+                          <Flex flexDirection="column">
+                            {row.cells[3].value ? (<Tag mb={2} bgColor="blue.400" color="white">Klausur</Tag>) : (<></>)}
+                            {row.cells[3].value ? (<Tag colorScheme="green" variant="solid">Entschuldigt</Tag>) : (<></>)}
+                          </Flex>
+                          {row.cells[4].render('Cell')}
+                        </Flex>
+                      )}
+                    />
                   </Box>)
               })}
             </>
