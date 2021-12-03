@@ -181,8 +181,7 @@ const Student: React.FC<Props> = ({ self }) => {
                 return (
                   <Box mt={5} key={date} w="full" border="1px" borderColor="gray.300" borderRadius="md" boxShadow="lg" p="3" rounded="md" bg="white" mb={4}>
                     <Text fontSize="22">{new Date(date).toLocaleDateString()}</Text>
-                    <CardTable columns={columns} data={absences.filter(absence => absence.date === date)}
-                      sortableColumns={['lessonIndex']}
+                    <CardTable columns={columns} data={absences.filter(absence => absence.date === date).sort((a, b) => -a.lessonIndex + b.lessonIndex)}
                       keyFn={(row) => row.original.id}
                       rowFn={(row: Row<any>) => (
                         <Flex w="full" transition="all" transitionDuration="200ms" boxShadow="sm" _hover={{ boxShadow: 'md' }} borderRadius="md" alignItems="center" px={4} py={2}>
