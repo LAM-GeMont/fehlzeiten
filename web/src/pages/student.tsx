@@ -1,6 +1,6 @@
 import { useDisclosure } from '@chakra-ui/hooks'
 import { AddIcon, DeleteIcon, RepeatIcon, SearchIcon } from '@chakra-ui/icons'
-import { Box, Spinner, Button, Flex, IconButton, SimpleGrid, useToast, Heading, Link, Input, InputGroup, InputLeftElement, chakra, Icon } from '@chakra-ui/react'
+import { Spinner, Button, Flex, IconButton, SimpleGrid, useToast, Heading, Link, Input, InputGroup, InputLeftElement, chakra, Icon } from '@chakra-ui/react'
 import React, { useCallback, useMemo, useState } from 'react'
 import { FaChalkboardTeacher, FaEdit } from 'react-icons/fa'
 import NextLink from 'next/link'
