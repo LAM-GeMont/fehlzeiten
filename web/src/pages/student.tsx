@@ -84,6 +84,7 @@ const StudentPage: React.FC<Props> = ({ self }) => {
 
   return (
         <PageScaffold role={self.role}>
+            <Heading as="h1" size="xl" mb={3}>Schüler</Heading>
             <SimpleGrid>
                 <Flex direction="column" alignItems="center">
                     {studentsQuery.loading && (<Spinner />)}

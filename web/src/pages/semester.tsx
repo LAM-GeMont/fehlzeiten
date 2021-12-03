@@ -74,6 +74,7 @@ const SemesterPage: React.FC<Props> = ({ self }) => {
 
   return (
     <PageScaffold role={self.role}>
+      <Heading as="h1" size="xl" mb={3}>Zeitspannen</Heading>
       <SimpleGrid>
         <Flex direction="column" alignItems="center">
           {semestersQuery.loading && (<Spinner />)}

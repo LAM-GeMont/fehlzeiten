@@ -87,6 +87,7 @@ const TutoriumPage: React.FC<Props> = ({ self }) => {
 
   return (
     <PageScaffold role={self.role}>
+      <Heading as="h1" size="xl" mb={3}>Tutorien</Heading>
       <SimpleGrid>
         <Flex direction="column" alignItems="center">
           {tutoriumsQuery.error != null && (<Heading>Error!</Heading>)}

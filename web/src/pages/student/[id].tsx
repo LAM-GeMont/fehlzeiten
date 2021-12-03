@@ -125,7 +125,7 @@ const Student: React.FC<Props> = ({ self }) => {
             </Flex>
           </Link>
         </NextLink>
-        <Heading as='h1' size='xl'>{student.firstName + ' ' + student.lastName}</Heading>
+        <Heading as='h1' size='xl'>{student.firstName + ' ' + student.lastName} <span style={{ color: 'grey', fontWeight: 'normal', fontSize: '24px' }}>Schüler:in</span></Heading>
         <Heading as='h2' size='md' fontWeight='normal'>{student.tutorium?.name}</Heading>
         <Flex direction="column" minW="300px" minH="600px">
           {dates.length < 1 &&

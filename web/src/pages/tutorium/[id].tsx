@@ -65,8 +65,7 @@ const StudentsOfTutoriumPage: React.FC<Props> = ({ self }) => {
       Header: 'Aktionen',
       Cell: ({ row }) => (
         <Flex justifyContent="center">
-          <IconButton isDisabled={self.role === 'TEACHER'} variant="outline" aria-label="Bearbeiten" icon={<FaEdit />} onClick={ () => editStudent(row)} />
-          <Box mr={2}></Box>
+          <IconButton isDisabled={self.role === 'TEACHER'} variant="outline" aria-label="Bearbeiten" icon={<FaEdit />} onClick={ () => editStudent(row)}  mr={2}/>
           <IconButton isDisabled={self.role === 'TEACHER'} variant="outline" aria-label="Löschen" icon={<DeleteIcon />} onClick={ () => deleteStudentFromTutorium(row)} />
         </Flex>
       )
@@ -105,8 +104,8 @@ const StudentsOfTutoriumPage: React.FC<Props> = ({ self }) => {
   return (
         <PageScaffold role={self.role}>
           <SimpleGrid>
-            <Text fontSize="30" fontWeight="bold">{tutorium.name}</Text>
-            {tutorium.tutor != null && <Text fontSize="26">{tutorium.tutor.name}</Text>}
+            <Heading as="h1" size="xl">{tutorium.name} <span style={{ color: 'grey', fontWeight: 'normal', fontSize: '24px' }}>Tutorium</span></Heading>
+            {tutorium.tutor != null && <Heading as="h1" size="md">{tutorium.tutor.name}</Heading>}
             <Flex direction="column" alignItems="center" minW="300px" minH="600px">
               {tutoriumQuery.loading && (<Spinner />)}
                     {tutoriumQuery.error != null && (<Heading>Error!</Heading>)}
