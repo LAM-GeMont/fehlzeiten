@@ -9,7 +9,7 @@ import {
   Flex,
   FormControl,
   FormErrorMessage,
-  FormLabel,
+  FormLabel, Heading,
   Input,
   Switch, useDisclosure,
   useToast
@@ -40,6 +40,7 @@ const AbsencePage: React.FC<Props> = ({ self }) => {
 
   return (
     <PageScaffold role={self.role}>
+      <Heading as="h1" size="xl" mb={3}>Fehlzeiten eintragen</Heading>
       <Formik
         initialValues={{
           date: initialDate,
@@ -123,7 +124,7 @@ const AbsencePage: React.FC<Props> = ({ self }) => {
             <Field name="date">
               {({ field, form }) => (
                 <FormControl isInvalid={form.errors.date && form.touched.date} mb={6}>
-                  <FormLabel htmlFor="date">Tag der Fehlzeit</FormLabel>
+                  <FormLabel htmlFor="date">Tag</FormLabel>
                   <Input {...field} id="date" type="date" onChange={(event) => {
                     let targetValue = event.target.value
                     if (event.target.value === '') {
@@ -157,19 +158,20 @@ const AbsencePage: React.FC<Props> = ({ self }) => {
                     }`}
                   </style>
                   <CheckboxGroup>
-                    <Flex direction="column">
+                    <Flex direction="column" display={{ base: 'flex', lg: 'grid' }} gridRowGap={2} gridColumnGap={2} gridTemplateColumns="1fr 1fr">
                       {lessonIndexes.map(v =>
                         <Checkbox
                           {...field}
                           key={v}
                           value={v.toString()}
-                          width="100%" mb={1}
+                          width="100%"
                         >
                           <Box
                             as={Button}
                             width="100%"
                             onClick={(e) => (e.currentTarget.closest('.chakra-checkbox__label') as HTMLLabelElement).click() }
-                          >{v}. Stunde</Box></Checkbox>
+                          >{v}. Stunde</Box>
+                        </Checkbox>
                       )}
                     </Flex>
                   </CheckboxGroup>
