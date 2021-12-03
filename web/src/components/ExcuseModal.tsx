@@ -97,7 +97,8 @@ const ExcuseModal: React.FC<Props> = ({ isOpen, onClose, studentId }) => {
                         studentId: studentId,
                         lessons: values.lesson.map(v => parseInt(v))
                       }
-                    }
+                    },
+                    refetchQueries: 'all'
                   })
                   actions.setSubmitting(false)
                   if (res.data) {
@@ -162,7 +163,8 @@ const ExcuseModal: React.FC<Props> = ({ isOpen, onClose, studentId }) => {
                         endDate: values.endDate,
                         studentId: studentId
                       }
-                    }
+                    },
+                    refetchQueries: 'all'
                   })
                   actions.setSubmitting(false)
                   if (res.data) {

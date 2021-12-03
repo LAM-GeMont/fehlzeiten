@@ -1,11 +1,20 @@
 import { TriangleDownIcon, TriangleUpIcon } from '@chakra-ui/icons'
 import { Table, Thead, Th, Tbody, Td, TableProps, TableBodyProps, Tr, Box, Stack, chakra, Flex, BoxProps, StackProps, Select, Text } from '@chakra-ui/react'
 import { AnimatePresence, HTMLMotionProps, motion } from 'framer-motion'
+import fuzzysort from 'fuzzysort'
 import React, { MouseEventHandler, useCallback } from 'react'
 import { HeaderGroup, Row, TableInstance, TableOptions, useGlobalFilter, useSortBy, useTable } from 'react-table'
 
 const MotionTr = motion(Tr)
 const MotionBox = motion(Box)
+
+const filterFunction = function (this, rows: Row[], columnIds: string[], filterValue: string) {
+  if (!filterValue) { return rows }
+  const modifiedRows = rows.map(row => ({ originalRow: row, ...Object.fromEntries(Object.entries(row.values).filter(([, value]) => typeof value === 'string')) }))
+  const res = fuzzysort.go(filterValue, modifiedRows, { keys: this.filterKeys != null ? this.filterKeys : columnIds, allowTypo: false })
+  console.log(rows)
+  return res.map(result => result.obj.originalRow)
+}
 
 export const SortIcon: React.FC<{ sorted: boolean, descending: boolean, onClick?: MouseEventHandler, pl?: number }> = ({ sorted, descending, onClick, pl = 4 }) => {
   return (
@@ -78,6 +87,7 @@ interface BetterTableProps {
   rowAnimationProps?: HTMLMotionProps<'tr'>
   rowFn?: RowFn<object>
   before?: BeforeFn<object>
+  filterKeys: string[]
 }
 
 export function BetterTable (props: React.PropsWithChildren<BetterTableProps & TableOptions<object>>) {
@@ -89,10 +99,16 @@ export function BetterTable (props: React.PropsWithChildren<BetterTableProps & T
     headFn = DefaultHeadFn,
     rowAnimationProps = defaultRowAnimationProps,
     rowFn = DefaultRowFn,
-    before: Before = () => null
+    before: Before = () => null,
+    filterKeys
   } = props
 
-  const table = useTable({ columns, data, autoResetGlobalFilter: false }, useGlobalFilter, useSortBy)
+  const table = useTable({
+    columns,
+    data,
+    autoResetGlobalFilter: false,
+    globalFilter: filterFunction.bind({ filterKeys })
+  }, useGlobalFilter, useSortBy)
 
   return (
     <>
@@ -137,7 +153,8 @@ interface CardTableProps {
   rowFn: RowFn<object>
   before?: BeforeFn<object>
   keyFn?: (row) => string
-  sortableColumns: string[]
+  sortableColumns?: string[]
+  filterKeys?: string[]
 }
 
 export function CardTable (props: React.PropsWithChildren<CardTableProps & TableOptions<object>>) {
@@ -150,10 +167,18 @@ export function CardTable (props: React.PropsWithChildren<CardTableProps & Table
     rowFn = CardRowFn,
     before: Before = () => null,
     keyFn = () => undefined,
-    sortableColumns = []
+    sortableColumns = [],
+    filterKeys
   } = props
 
-  const table = useTable({ columns, data, autoResetGlobalFilter: false, autoResetSortBy: false, initialState: { sortBy: [{ id: sortableColumns.length > 0 ? sortableColumns[0] : '', desc: false }] } }, useGlobalFilter, useSortBy)
+  const table = useTable({
+    columns,
+    data,
+    autoResetGlobalFilter: false,
+    autoResetSortBy: false,
+    initialState: { sortBy: [{ id: sortableColumns.length > 0 ? sortableColumns[0] : '', desc: false }] },
+    globalFilter: filterFunction.bind({ filterKeys })
+  }, useGlobalFilter, useSortBy)
 
   const sortBy = table.state.sortBy[0]
 
@@ -164,7 +189,7 @@ export function CardTable (props: React.PropsWithChildren<CardTableProps & Table
   return (
     <>
       {Before(table)}
-      {sortableColumns.length >= 0 &&
+      {sortableColumns.length > 0 &&
         <Flex w="full" justify="flex-end">
           <Text mr={2} fontWeight="semibold">Sortierung:</Text>
           <Flex onClick={invertSortOrder}>

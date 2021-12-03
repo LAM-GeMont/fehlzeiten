@@ -64,7 +64,6 @@ const Student: React.FC<Props> = ({ self }) => {
   const summary = studentQuery.data?.student?.absenceSummary || emptySummary
   const absences = studentQuery.data?.student?.absences || []
   const semesters = semestersQuery.data?.semesters || []
-  console.log(absences)
 
   const columns = useMemo(() => [
     {
@@ -136,13 +135,12 @@ const Student: React.FC<Props> = ({ self }) => {
           }
           {dates.length >= 1 && (
             <>
-              <Flex w="full" flexDirection="row" flexWrap="wrap" alignItems="center" py={2}>
-                <Text fontSize="24" fontWeight="bold">Fehlzeiten</Text>
-                <Spacer minW={2}/>
-                <div>
-                  <Button ml="auto" leftIcon={<AddIcon />} onClick={() => { excuseModal.onOpen() }}>Entschuldigung hinzufügen</Button>
-                  <IconButton ml="2" variant="outline" aria-label="Daten neu laden" icon={<RepeatIcon />} onClick={() => { studentQuery.refetch() }} />
-                </div>
+              <Flex w="full" flexWrap="wrap" pt={8}>
+                <Text pr={4} mb={5} fontSize="24" fontWeight="bold">Fehlzeiten</Text>
+                <Flex flexGrow={10} mb={5}>
+                  <Button ml="auto" leftIcon={<AddIcon />} onClick={() => { excuseModal.onOpen() }} flexGrow={10}>Entschuldigung hinzufügen</Button>
+                  <IconButton ml={4} variant="outline" aria-label="Daten neu laden" icon={<RepeatIcon />} onClick={() => { studentQuery.refetch() }} />
+                </Flex>
               </Flex>
               <Select variant='outline' placeholder='Semester auswählen' value={selectedSemester} onChange={e => setSelectedSemester(e.target.value)}>
                 {semesters.map(semester => {
@@ -179,12 +177,11 @@ const Student: React.FC<Props> = ({ self }) => {
                   <StatNumber>{ summary.unexcusedHours }</StatNumber>
                 </Stat>
               </StatGroup>
-              {dates.map(date => {
+              {dates.map((date: string) => {
                 return (
                   <Box mt={5} key={date} w="full" border="1px" borderColor="gray.300" borderRadius="md" boxShadow="lg" p="3" rounded="md" bg="white" mb={4}>
                     <Text fontSize="22">{new Date(date).toLocaleDateString()}</Text>
-                    <CardTable columns={columns} data={absences.filter(absence => absence.date === date)}
-                      sortableColumns={['lessonIndex']}
+                    <CardTable columns={columns} data={absences.filter(absence => absence.date === date).sort((a, b) => -a.lessonIndex + b.lessonIndex)}
                       keyFn={(row) => row.original.id}
                       rowFn={(row: Row<any>) => (
                         <Flex w="full" transition="all" transitionDuration="200ms" boxShadow="sm" _hover={{ boxShadow: 'md' }} borderRadius="md" alignItems="center" px={4} py={2}>
