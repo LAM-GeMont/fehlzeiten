@@ -1,9 +1,9 @@
 import { AddIcon, DeleteIcon, RepeatIcon, SearchIcon } from '@chakra-ui/icons'
-import { Spinner, Button, IconButton, useDisclosure, useToast, Text, Box, Flex, SimpleGrid, Heading, Center, AlertIcon, chakra, Icon, Input, InputGroup, InputLeftElement, Link } from '@chakra-ui/react'
+import { Spinner, Button, IconButton, useDisclosure, useToast, Text, Box, Flex, SimpleGrid, Heading, Center, AlertIcon, chakra, Input, InputGroup, InputLeftElement, Link } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
 import ErrorPage from 'next/error'
 import React, { useMemo } from 'react'
-import { FaChalkboardTeacher, FaEdit } from 'react-icons/fa'
+import { FaEdit } from 'react-icons/fa'
 import { PageScaffold } from '../../components/PageScaffold'
 import { CardTable } from '../../components/BetterTable'
 import NextLink from 'next/link'
@@ -14,7 +14,6 @@ import { DeleteStudentFromTutoriumModal } from '../../components/DeleteStudentFr
 import { EditStudentModal } from '../../components/EditStudentModal'
 import { AddStudentToTutoriumModal } from '../../components/AddStudentToTutoriumModal'
 import { Row, useAsyncDebounce } from 'react-table'
-import SortedTable from './SortedTableStudentsOfTutorium'
 
 interface Props extends WithAuthProps { }
 
