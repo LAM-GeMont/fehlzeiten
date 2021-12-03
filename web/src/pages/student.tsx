@@ -114,7 +114,7 @@ const StudentPage: React.FC<Props> = ({ self }) => {
                             <NextLink href={`/student/${row.original.id}`}>
                               <Link flexGrow={10}>{row.cells[0].render('Cell')}{' '}<chakra.span color="black">{row.cells[1].render('Cell')}</chakra.span></Link>
                             </NextLink>
-                            <NextLink href={`/tutorium/${row.original.tutorium.id}`}><Link mx={4} flexGrow={10} textAlign="right"><Icon as={FaChalkboardTeacher} mr={2} />{row.cells[2].render('Cell')}</Link></NextLink>
+                            {row.original.tutorium != null && <NextLink href={`/tutorium/${row.original.tutorium.id}`}><Link mx={4} flexGrow={10} textAlign="right"><Icon as={FaChalkboardTeacher} mr={2} />{row.cells[2].render('Cell')}</Link></NextLink>}
                             {row.cells[3].render('Cell')}
                           </Flex>
                         )}
