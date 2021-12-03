@@ -6,6 +6,7 @@ import {
   ExcuseCreateResponse,
   createExcuse
 } from './excuse/create'
+import { ExcuseDeleteResponse, ExcuseDeleteInput, deleteExcuse } from './excuse/delete'
 
 @Resolver(Excuse)
 export class ExcuseResolver implements ResolverInterface<Excuse> {
@@ -40,5 +41,13 @@ export class ExcuseResolver implements ResolverInterface<Excuse> {
     @Ctx() context: Context
   ) : Promise<ExcuseCreateResponse> {
     return createExcuse(data, context)
+  }
+
+  @Authorized()
+  @Mutation(() => ExcuseDeleteResponse)
+  async deleteExcuse (
+    @Arg('data') data: ExcuseDeleteInput
+  ) : Promise<ExcuseDeleteResponse> {
+    return deleteExcuse(data)
   }
 }

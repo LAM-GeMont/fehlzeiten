@@ -32,9 +32,12 @@ const AbsencePage: React.FC<Props> = ({ self }) => {
   }
   const toast = useToast()
 
-  const studentsQuery = useStudentsQuery()
+  const studentsQuery = useStudentsQuery({
+    pollInterval: 60000
+  })
   const [createAbsences] = useCreateAbsencesMutation({
-    onError: errors => toastApolloError(toast, errors)
+    onError: errors => toastApolloError(toast, errors),
+    refetchQueries: 'all'
   })
   const [overwriteOnDuplicate, setOverwriteOnDuplicate] = useState(false)
 

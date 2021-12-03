@@ -27,7 +27,8 @@ const StudentPage: React.FC<Props> = ({ self }) => {
   const [rowtutoriumId, setRowTutoriumId] = useState('')
 
   const studentsQuery = useStudentsQuery({
-    onError: errors => toastApolloError(toast, errors)
+    onError: errors => toastApolloError(toast, errors),
+    pollInterval: 60000
   })
 
   const data = useMemo(() => {

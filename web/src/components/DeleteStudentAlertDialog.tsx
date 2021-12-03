@@ -15,7 +15,8 @@ export const DeleteStudentAlertDialog: React.FC<Props> = ({ isOpen, onClose, row
   const toast = useToast()
 
   const [remove] = useDeleteStudentMutation({
-    onError: errors => toastApolloError(toast, errors)
+    onError: errors => toastApolloError(toast, errors),
+    refetchQueries: 'all'
   })
 
   return (

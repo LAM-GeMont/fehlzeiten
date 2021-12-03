@@ -35,7 +35,8 @@ const validateName = (value: string) => {
 export const CreateSemesterModal: React.FC<Props> = ({ isOpen, onClose }) => {
   const toast = useToast()
   const [create] = useCreateSemesterMutation({
-    onError: errors => toastApolloError(toast, errors)
+    onError: errors => toastApolloError(toast, errors),
+    refetchQueries: 'all'
   })
   const date = new Date()
   const year = date.getFullYear()

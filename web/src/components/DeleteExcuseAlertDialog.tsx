@@ -9,7 +9,7 @@ import {
   useToast
 } from '@chakra-ui/react'
 import React from 'react'
-import { useDeleteAbsenceMutation } from '../generated/graphql'
+import { useDeleteExcuseMutation } from '../generated/graphql'
 import { toastApolloError } from '../util'
 
 interface Props {
@@ -18,10 +18,10 @@ interface Props {
   rowId: string
 }
 
-export const DeleteAbsenceAlertDialog: React.FC<Props> = ({ isOpen, onClose, rowId }) => {
+export const DeleteExcuseAlertDialog: React.FC<Props> = ({ isOpen, onClose, rowId }) => {
   const toast = useToast()
 
-  const [remove] = useDeleteAbsenceMutation({
+  const [remove] = useDeleteExcuseMutation({
     onError: errors => toastApolloError(toast, errors),
     refetchQueries: 'all'
   })
@@ -31,8 +31,8 @@ export const DeleteAbsenceAlertDialog: React.FC<Props> = ({ isOpen, onClose, row
       {console.log('test' + rowId)}
       <AlertDialogOverlay/>
       <AlertDialogContent>
-        <AlertDialogHeader>Fehlzeit löschen</AlertDialogHeader>
-        <AlertDialogBody>Sind Sie sich sicher, dass sie diese Fehlzeit löschen möchten? Diese Aktion kann nicht
+        <AlertDialogHeader>Entschuldigung löschen</AlertDialogHeader>
+        <AlertDialogBody>Sind Sie sich sicher, dass sie diese Entschuldigung löschen möchten? Diese Aktion kann nicht
           rückgängig gemacht werden.</AlertDialogBody>
         <AlertDialogFooter>
           <Button mr={3} variant="ghost" onClick={onClose}>Abbrechen</Button>
@@ -41,11 +41,11 @@ export const DeleteAbsenceAlertDialog: React.FC<Props> = ({ isOpen, onClose, row
               variables: { data: { id: rowId } },
               refetchQueries: 'all'
             })
-            const errors = res.data.deleteAbsence.errors
+            const errors = res.data.deleteExcuse.errors
             if (errors) {
               errors.forEach(error => {
                 toast({
-                  title: 'Fehler beim löschen der Fehlzeit',
+                  title: 'Fehler beim Löschen der Entschuldigung',
                   description: error.message == null ? error.code : `${error.code}: ${error.message}`,
                   isClosable: true,
                   status: 'error'
@@ -53,8 +53,8 @@ export const DeleteAbsenceAlertDialog: React.FC<Props> = ({ isOpen, onClose, row
               })
             } else {
               toast({
-                title: 'Fehlzeit gelöscht',
-                description: 'Die Fehlzeit wurde erfolgreich gelöscht',
+                title: 'Entschuldigung gelöscht',
+                description: 'Die Entschudligung wurde erfolgreich gelöscht',
                 isClosable: true,
                 status: 'success'
               })

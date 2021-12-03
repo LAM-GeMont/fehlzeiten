@@ -32,7 +32,8 @@ const TutoriumPage: React.FC<Props> = ({ self }) => {
   const [rowtutorId, setRowTutorId] = useState('')
 
   const tutoriumsQuery = useTutoriumsQuery({
-    onError: errors => toastApolloError(toast, errors)
+    onError: errors => toastApolloError(toast, errors),
+    pollInterval: 60000
   })
 
   const openEdit = tutoriumEditAlertDialog.onOpen
