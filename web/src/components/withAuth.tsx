@@ -19,7 +19,9 @@ export interface WithAuthProps {
 const WithAuth = (Component: React.FC<WithAuthProps>, options?: Options) => {
   const returnValue = () => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    const { data, loading } = useSelfQuery()
+    const { data, loading } = useSelfQuery({
+      pollInterval: 60000
+    })
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const router = useRouter()
 

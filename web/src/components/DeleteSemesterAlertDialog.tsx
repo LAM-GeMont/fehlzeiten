@@ -23,7 +23,8 @@ export const DeleteSemesterAlertDialog: React.FC<Props> = ({ isOpen, onClose, se
   const toast = useToast()
 
   const [remove] = useDeleteSemesterMutation({
-    onError: errors => toastApolloError(toast, errors)
+    onError: errors => toastApolloError(toast, errors),
+    refetchQueries: 'all'
   })
 
   return (

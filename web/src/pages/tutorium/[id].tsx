@@ -49,7 +49,8 @@ const StudentsOfTutoriumPage: React.FC<Props> = ({ self }) => {
   const { id } = router.query
   const tutoriumQuery = useTutoriumQuery({
     variables: { tutoriumId: id.toString() },
-    onError: errors => toastApolloError(toast, errors)
+    onError: errors => toastApolloError(toast, errors),
+    pollInterval: 60000
   })
   const tutorium = tutoriumQuery.data?.tutorium
   const students = tutoriumQuery.data?.tutorium.students

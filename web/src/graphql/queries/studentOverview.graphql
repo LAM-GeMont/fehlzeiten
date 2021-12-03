@@ -29,5 +29,17 @@ query studentOverview($studentId: String!, $semesterId: String) {
         role
       }
     }
+    excuses {
+      id
+      startDate
+      endDate
+      lessons
+      validForExam
+      submittedBy {
+        id
+        name
+        role
+      }
+    }
   }
 }

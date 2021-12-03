@@ -27,7 +27,8 @@ const SemesterPage: React.FC<Props> = ({ self }) => {
   const [rowName, setRowName] = useState('')
 
   const semestersQuery = useSemestersQuery({
-    onError: errors => toastApolloError(toast, errors)
+    onError: errors => toastApolloError(toast, errors),
+    pollInterval: 60000
   })
 
   const openDelete = semesterDeleteAlertDialog.onOpen

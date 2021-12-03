@@ -25,11 +25,13 @@ const validateName = (value: string) => {
 export const EditTutoriumModal: React.FC<Props> = ({ isOpen, onClose, tutoriumId, name, teacherId }) => {
   const toast = useToast()
   const [edit] = useEditTutoriumMutation({
-    onError: errors => toastApolloError(toast, errors)
+    onError: errors => toastApolloError(toast, errors),
+    refetchQueries: 'all'
   })
 
   const teachersQuery = useTeachersQuery({
-    onError: errors => toastApolloError(toast, errors)
+    onError: errors => toastApolloError(toast, errors),
+    pollInterval: 60000
   })
 
   const teachersData = useMemo(() => {

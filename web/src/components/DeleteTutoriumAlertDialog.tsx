@@ -23,7 +23,8 @@ export const DeleteTutoriumAlertDialog: React.FC<Props> = ({ isOpen, onClose, ro
   const toast = useToast()
 
   const [remove] = useDeleteTutoriumMutation({
-    onError: errors => toastApolloError(toast, errors)
+    onError: errors => toastApolloError(toast, errors),
+    refetchQueries: 'all'
   })
 
   return (

@@ -25,7 +25,8 @@ export const DeleteStudentFromTutoriumModal: React.FC<Props> = ({ isOpen, onClos
   const toast = useToast()
 
   const [remove] = useEditStudentMutation({
-    onError: errors => toastApolloError(toast, errors)
+    onError: errors => toastApolloError(toast, errors),
+    refetchQueries: 'all'
   })
 
   return (
