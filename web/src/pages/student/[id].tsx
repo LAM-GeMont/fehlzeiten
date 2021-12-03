@@ -210,4 +210,4 @@ const Student: React.FC<Props> = ({ self }) => {
   )
 }
 
-export default WithAuth(Student, { roles: [Role.Coordinator] })
+export default WithAuth(Student)

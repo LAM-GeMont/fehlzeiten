@@ -10,7 +10,7 @@ import { EditStudentModal } from '../components/EditStudentModal'
 import { PageScaffold } from '../components/PageScaffold'
 import { CardTable } from '../components/BetterTable'
 import WithAuth, { WithAuthProps } from '../components/withAuth'
-import { Role, useStudentsQuery } from '../generated/graphql'
+import { useStudentsQuery } from '../generated/graphql'
 import { toastApolloError } from '../util'
 import { Row, useAsyncDebounce } from 'react-table'
 
@@ -131,4 +131,4 @@ const StudentPage: React.FC<Props> = ({ self }) => {
   )
 }
 
-export default WithAuth(StudentPage, { roles: [Role.Coordinator] })
+export default WithAuth(StudentPage)

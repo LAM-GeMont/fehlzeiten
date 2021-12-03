@@ -33,7 +33,7 @@ export const PageScaffold: React.FC<Props> = (props) => {
       icon: FaChalkboardTeacher,
       url: '/tutorium',
       title: 'Tutorien',
-      roles: [Role.Coordinator]
+      roles: [Role.Teacher, Role.Coordinator]
     },
     {
       icon: FaUserGraduate,

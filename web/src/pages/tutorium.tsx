@@ -2,7 +2,7 @@ import { Flex, Heading, SimpleGrid } from '@chakra-ui/layout'
 import { Button, IconButton, useDisclosure, useToast, Text, Box, Input, InputGroup, InputLeftElement, Link } from '@chakra-ui/react'
 import React, { useCallback, useMemo, useState } from 'react'
 import { PageScaffold } from '../components/PageScaffold'
-import { Role, useTutoriumsQuery } from '../generated/graphql'
+import { useTutoriumsQuery } from '../generated/graphql'
 import { AddIcon, Icon, DeleteIcon, RepeatIcon, SearchIcon } from '@chakra-ui/icons'
 import { FaEdit, FaUser } from 'react-icons/fa'
 import { CreateTutoriumModal } from '../components/CreateTutoriumModal'
@@ -142,4 +142,4 @@ const TutoriumPage: React.FC<Props> = ({ self }) => {
   )
 }
 
-export default WithAuth(TutoriumPage, { roles: [Role.Coordinator] })
+export default WithAuth(TutoriumPage)
