@@ -201,7 +201,9 @@ const AbsencePage: React.FC<Props> = ({ self }) => {
               }}
             />
             <Box mb={4} />
-            <Button colorScheme="primary" type="submit" isLoading={props.isSubmitting}>Weiter</Button>
+            <Flex justifyContent="flex-end">
+              <Button colorScheme="primary" type="submit" isLoading={props.isSubmitting}>Eintragen</Button>
+            </Flex>
             <AbsenceUpgradeAlertDialog isOpen={absenceUpgradeAlertDialog.isOpen} onClose={absenceUpgradeAlertDialog.onClose} />
           </Form>
         )}
