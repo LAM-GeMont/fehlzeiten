@@ -82,7 +82,7 @@ export const PageScaffold: React.FC<Props> = (props) => {
           </NextLink>
         </Box>
       </Flex>
-      <Box h="16" boxShadow="4px 0 6px -1px rgba(0, 0, 0, 0.1),2px 0 4px -1px rgba(0, 0, 0, 0.06)" pos="fixed" left={0} bottom={0} width="100vw" bg="white" display={{ base: 'flex', lg: 'none' }} overflowX="scroll" userSelect="none">
+      <Box h="16" boxShadow="4px 0 6px -1px rgba(0, 0, 0, 0.1),2px 0 4px -1px rgba(0, 0, 0, 0.06)" pos="fixed" left={0} bottom={0} width="100vw" bg="white" display={{ base: 'flex', lg: 'none' }} overflowX="scroll" userSelect="none" zIndex={3}>
         <Flex direction="row" alignItems="center" justifyContent="space-evenly" flexShrink={0} minWidth="100%">
           {links.filter(({ roles }) => roles.includes(props.role)).map(({ icon, url, title }, key) => (
             <Box key={key} margin={2} mb={0} w={16} _hover={{ color: 'primary.200' }} color={router.pathname === url ? 'primary.500' : '#000000'} flexShrink={0}>
