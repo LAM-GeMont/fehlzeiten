@@ -13,15 +13,23 @@ if (process.env.CLIENT_ID === undefined || process.env.CLIENT_SECRET === undefin
   throw new Error('CLIENT_ID AND/OR CLIENT_SECRET ARE NOT SET')
 }
 
+if (process.env.OAUTH_AUTHORIZATION_URL === undefined || process.env.OAUTH_TOKEN_URL === undefined) {
+  throw new Error('OAUTH_AUTHORIZATION_URL AND/OR OAUTH_TOKEN_URL ARE NOT SET')
+}
+
+if (process.env.OAUTH_PROFILE_URL === undefined) {
+  throw new Error('OAUTH_PROFILE_URL IS NOT SET')
+}
+
 export const oauthStrategy = new OAuth2Strategy({
-  authorizationURL: 'https://gemont.de/iserv/oauth/v2/auth',
-  tokenURL: 'https://gemont.de/iserv/oauth/v2/token',
+  authorizationURL: process.env.OAUTH_AUTHORIZATION_URL!,
+  tokenURL: process.env.OAUTH_TOKEN_URL!,
   clientID: process.env.CLIENT_ID!,
   clientSecret: process.env.CLIENT_SECRET!,
-  callbackURL: 'https://localhost:4000/api/callback',
-  scope: ['profile', 'email', 'openid', 'roles', 'groups', 'uuid']
+  callbackURL: process.env.OAUTH_CALLBACK_URL,
+  scope: ['profile', 'openid', 'roles', 'uuid']
 }, async (_accessToken: string, _refreshToken: string, params: any, profile: any, done: any) => {
-  await axios.get('https://gemont.de/iserv/public/oauth/userinfo', {
+  await axios.get(process.env.OAUTH_PROFILE_URL!, {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${params.access_token}`
@@ -35,6 +43,8 @@ export const oauthStrategy = new OAuth2Strategy({
 
   const roles = new Set()
 
+  console.log(profile)
+
   for (const i in profile.roles) {
     roles.add(profile.roles[i].id)
   }
@@ -46,16 +56,19 @@ export const oauthStrategy = new OAuth2Strategy({
 export async function serializeUser (user: any, done: any) {
   const u = await User.findOne({
     where: {
-      name: user.preferred_username
+      iservUUID: user.uuid
     }
   })
 
   if (u != null) {
-    if (u.iservUUID === user.uuid) {
-      done(null, u.id)
-    } else {
-      done(null, null)
+    if (user.roles.filter((r: any) => r.id === 'ROLE_KURSVERWALTUNG_WPU_LK').length > 0) {
+      u.role = Role.COORDINATOR
+    } else if (user.roles.filter((r: any) => r.id === 'ROLE_TEACHER').length > 0) {
+      u.role = Role.TEACHER
     }
+    await u.save()
+
+    done(null, user.id)
   } else {
     const newUser = new User()
     newUser.name = user.preferred_username

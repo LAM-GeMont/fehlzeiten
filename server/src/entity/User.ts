@@ -34,7 +34,7 @@ export class User extends BaseEntity {
     name: string
 
     @Column({ nullable: true })
-    password: string
+    password?: string
 
     @Column('int')
     @Field(() => Role)
@@ -54,7 +54,7 @@ export class User extends BaseEntity {
 
     @Column({ nullable: true })
     @Field()
-    iservUUID: string
+    iservUUID?: string
 
     isCoordinator () {
       return this.role === Role.COORDINATOR

@@ -24,8 +24,6 @@ import { ExcuseResolver } from './resolvers/ExcuseResolver'
 import { createAbsenceLoader, createExcuseLoader, createStudentLoader, createTutoriumLoader, createUserLoader } from './loaders'
 import { Context } from './types.js'
 import passport from 'passport'
-import fs from 'fs'
-import https from 'https'
 import { deserializeUser, oauthStrategy, serializeUser } from './oauth'
 
 env.config({ path: path.resolve(process.cwd(), '..', '.env'), example: path.resolve(process.cwd(), '..', '.env.example') });
@@ -57,11 +55,6 @@ env.config({ path: path.resolve(process.cwd(), '..', '.env'), example: path.reso
 
   // OAUTH 2
 
-  const key = fs.readFileSync(path.join(__dirname, '/cert/localhost-key.pem'))
-  const cert = fs.readFileSync(path.join(__dirname, '/cert/localhost.pem'))
-
-  const server = https.createServer({ key: key, cert: cert }, app)
-
   app.use(passport.initialize())
   app.use(passport.session())
 
@@ -74,7 +67,6 @@ env.config({ path: path.resolve(process.cwd(), '..', '.env'), example: path.reso
   app.get('/api/login', passport.authenticate('oauth2'))
 
   app.get('/api/callback', passport.authenticate('oauth2'), (req: express.Request, res: express.Response) => {
-    // @ts-ignore is valid
     req.session.userId = req.session.passport.user
 
     res.redirect('http://localhost:3000')
@@ -115,7 +107,7 @@ env.config({ path: path.resolve(process.cwd(), '..', '.env'), example: path.reso
 
   apollo.applyMiddleware({ app, cors: false })
 
-  server.listen(process.env.PORT, () => {
+  app.listen(process.env.PORT, () => {
     console.log('server started on localhost:' + process.env.PORT)
   })
 })()
