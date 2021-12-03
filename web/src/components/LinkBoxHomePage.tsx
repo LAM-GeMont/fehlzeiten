@@ -12,18 +12,18 @@ interface Props {
 
 export const LinkBoxHomePage: React.FC<Props> = (props) => {
   return (
-    <Box bg='#001955' color='white' width='inherit' height='inherit' textAlign='center' borderRadius='25px'>
-      <Center>
-        <Box m={3}>
-          <NextLink href={props.url}>
+    <NextLink href={props.url}>
+      <Box bg='#001955' color='white' width='inherit' height='inherit' textAlign='center' borderRadius='25px' cursor="pointer">
+        <Center>
+          <Box m={3}>
             <Link title={props.text} _hover={{ textDecoration: 'none' }}>
-              <Icon boxSize={{ base: 10, sm: 20, md: 20, lg: 24 }} as={props.icon}></Icon>
+              <Icon boxSize={{ base: 10, sm: 20, md: 20, lg: 24 }} as={props.icon}/>
               <Divider orientation='horizontal' borderStyle='unset'/>
               <Text mt={1}>{props.text}</Text>
             </Link>
-          </NextLink>
-        </Box>
-      </Center>
-    </Box>
+          </Box>
+        </Center>
+      </Box>
+    </NextLink>
   )
 }
