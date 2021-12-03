@@ -61,7 +61,12 @@ const TutoriumPage: React.FC<Props> = ({ self }) => {
   const columns = useMemo(() => [
     {
       Header: 'Kursname',
-      accessor: 'name' as keyof TableRow
+      accessor: 'name' as keyof TableRow,
+      Cell: ({ row }) => (
+        <Link href={`/tutorium/${row.original.id}`}>
+          <Text>{`${row.original.name}`}</Text>
+        </Link>
+      )
     },
     {
       Header: 'Tutorname',
