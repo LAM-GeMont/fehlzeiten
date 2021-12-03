@@ -1,4 +1,4 @@
-import { ID, Field, ObjectType } from 'type-graphql'
+import { ID, Field, ObjectType, Int } from 'type-graphql'
 import {
   BaseEntity,
   Column,
@@ -13,6 +13,21 @@ import {
 import { Tutorium } from './Tutorium'
 import { Absence } from './Absence'
 import { Excuse } from './Excuse'
+
+@ObjectType()
+export class AbsenceSummary {
+  @Field(() => Int)
+  unexcusedDays: number
+
+  @Field(() => Int)
+  unexcusedHours: number
+
+  @Field(() => Int)
+  excusedDays: number
+
+  @Field(() => Int)
+  excusedHours: number
+}
 
 @Entity()
 @Index(['firstName', 'lastName'], { unique: true })
@@ -52,4 +67,7 @@ export class Student extends BaseEntity {
     @OneToMany(() => Excuse, excuse => excuse.student)
     @Field(() => [Excuse])
     excuses: Excuse[]
+
+    @Field(() => AbsenceSummary, { nullable: true })
+    absenceSummary?: AbsenceSummary
 }

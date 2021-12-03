@@ -12,17 +12,17 @@ const Index: React.FC<WithAuthProps> = ({ self }) => {
       <>
         <LinkBoxHomePage
           icon={FaUserGraduate}
-          href='/student'
+          url='/student'
           text='Schüler Management'
         />
         <LinkBoxHomePage
           icon={FaBook}
-          href='/absence'
+          url='/absence'
           text='Abwesenheit buchen'
         />
         <LinkBoxHomePage
           icon={FaQuestion}
-          href='/'
+          url='/'
           text='Support'
         />
       </>
@@ -33,7 +33,7 @@ const Index: React.FC<WithAuthProps> = ({ self }) => {
     if (userRole === 'COORDINATOR') {
       return (
         <SimpleGrid minChildWidth={{ base: '120px', sm: '175px', md: '175px', lg: '200px' }} height='auto' spacing={{ base: '16px', sm: '20px', md: '20px', lg: '30px' }} wordBreak='break-word'>
-          <LinkBoxHomePage icon={FaChalkboardTeacher} href='/tutorium' text='Tutorium Management'/>
+          <LinkBoxHomePage icon={FaChalkboardTeacher} url='/tutorium' text='Tutorium Management'/>
           {getTeacherLinkBoxes()}
         </SimpleGrid>
       )
@@ -43,7 +43,7 @@ const Index: React.FC<WithAuthProps> = ({ self }) => {
       return (
         // different layout, buttons are smaller --> maybe it is better???
         <Center>
-          <Stack direction={['column', 'row']} spacing={{ base: '16px', sm: '20px', md: '20px', lg: '30px' }}>
+          <Stack direction={['row']} spacing={{ base: '16px', sm: '20px', md: '20px', lg: '30px' }}>
             {getTeacherLinkBoxes()}
           </Stack>
         </Center>
