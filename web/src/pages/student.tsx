@@ -131,4 +131,4 @@ const StudentPage: React.FC<Props> = ({ self }) => {
   )
 }
 
-export default WithAuth(StudentPage, { roles: [Role.Coordinator] })
+export default WithAuth(StudentPage)
