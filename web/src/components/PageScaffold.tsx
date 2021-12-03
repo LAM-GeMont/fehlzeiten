@@ -57,9 +57,11 @@ export const PageScaffold: React.FC<Props> = (props) => {
 
   return (
     <Box w="full" pos="relative">
-      <Flex marginLeft={{ base: '0', lg: '24' }} marginBottom={{ base: '16', lg: '0' }} padding={5} width={{ base: '100vw', lg: 'calc(100vw - 6rem)' }}>
-        {props.children}
-      </Flex>
+      <Box marginLeft={{ base: '0', lg: '24' }} marginRight={{ base: '0', lg: '24' }} marginBottom={{ base: '16', lg: '0' }} padding={5} width={{ base: '100vw', lg: 'calc(100vw - 12rem)' }}>
+        <Box marginLeft="auto" marginRight="auto" maxWidth={996 - (12 * 16)}>
+          {props.children}
+        </Box>
+      </Box>
       <Flex w={24} h="100vh" boxShadow="md" pos="fixed" left={0} top={0} bg="white" direction="column" alignItems="center" display={{ base: 'none', lg: 'flex' }}>
         {links.filter(({ roles }) => roles.includes(props.role)).map(({ icon, url, title }, key) => (
           <Box key={key} margin={4} _hover={{ color: 'primary.200' }} color={router.pathname === url ? 'primary.500' : '#000000'} >

@@ -85,14 +85,14 @@ const StudentPage: React.FC<Props> = ({ self }) => {
   return (
         <PageScaffold role={self.role}>
             <SimpleGrid>
-                <Flex direction="column" alignItems="center" minW="300px" minH="600px">
+                <Flex direction="column" alignItems="center">
                     {studentsQuery.loading && (<Spinner />)}
                     {studentsQuery.error != null && (<Heading>Error!</Heading>)}
                     {studentsQuery.data != null && (
                       <CardTable data={data} columns={columns}
                         before={ (table) => (
-                            <Flex wrap="wrap" justify="flex-end" maxW="full" mb={4}>
-                              <InputGroup flexShrink={10} w="full" maxW="full"mb={2}>
+                            <Flex wrap="wrap" justify="flex-end" w="100%" mb={4}>
+                              <InputGroup flexShrink={10} w="full" maxW="full" mb={2}>
                                 <InputLeftElement>
                                   <SearchIcon />
                                 </InputLeftElement>
@@ -100,7 +100,9 @@ const StudentPage: React.FC<Props> = ({ self }) => {
                               </InputGroup>
                               <Flex flexGrow={2}>
                                 <Button mr={2} flexGrow={2} leftIcon={<AddIcon />} onClick={studentCreateModal.onOpen}>Schüler hinzufügen</Button>
-                                <IconButton variant="outline" aria-label="Daten neu laden" icon={<RepeatIcon />} onClick={() => { studentsQuery.refetch() }}></IconButton>
+                                <IconButton variant="outline" aria-label="Daten neu laden" icon={<RepeatIcon/>} onClick={() => {
+                                  studentsQuery.refetch()
+                                }}/>
                               </Flex>
                             </Flex>
                         )}
