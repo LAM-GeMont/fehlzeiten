@@ -11,17 +11,19 @@ const Index: React.FC<WithAuthProps> = ({ self }) => {
     { icon: FaChalkboardTeacher, url: '/tutorium', text: 'Tutorium Management' },
     { icon: FaUserGraduate, url: '/student', text: 'Schüler Management' },
     { icon: FaBook, url: '/absence', text: 'Abwesenheit buchen' },
-    ( self.role === 'COORDINATOR' ) ? { icon: FaCalendarWeek, url: '/semester', text: 'Zeitspanne erstellen' } : 
-    { icon: undefined, url: undefined, text: undefined},
-    { icon: FaQuestion, url: 'https://lam-gemont.github.io/fehlzeiten/', text: 'Support' },
-  ];
+    (self.role === 'COORDINATOR')
+      ? { icon: FaCalendarWeek, url: '/semester', text: 'Zeitspanne erstellen' }
+      : { icon: undefined, url: undefined, text: undefined },
+    { icon: FaQuestion, url: 'https://lam-gemont.github.io/fehlzeiten/', text: 'Support' }
+  ]
 
   const getLinkBoxes = () => {
     return (
       <>
         {arrayOfLinkBoxes.map(({ icon, url, text }) => (
-          (icon != undefined && url != undefined && text != undefined) ?
-            <LinkBoxHomePage icon={icon} url={url} text={text}/> : null
+          (icon !== undefined && url !== undefined && text !== undefined)
+            ? <LinkBoxHomePage icon={icon} url={url} text={text}/>
+            : null
         ))}
       </>
     )
