@@ -1,5 +1,5 @@
-import { Img, Text, Heading, Box, SimpleGrid, Stack, Center, Flex } from '@chakra-ui/react'
-import { FaBook, FaChalkboardTeacher, FaUserGraduate, FaQuestion } from 'react-icons/fa'
+import { Img, Text, Heading, Box, SimpleGrid, Flex } from '@chakra-ui/react'
+import { FaBook, FaChalkboardTeacher, FaUserGraduate, FaQuestion, FaCalendarWeek } from 'react-icons/fa'
 import { PageScaffold } from '../components/PageScaffold'
 import WithAuth, { WithAuthProps } from '../components/withAuth'
 import { LinkBoxHomePage } from '../components/LinkBoxHomePage'
@@ -7,48 +7,24 @@ import React from 'react'
 import source from '../images/Logo_GeMont.png'
 
 const Index: React.FC<WithAuthProps> = ({ self }) => {
-  const getTeacherLinkBoxes = () => {
+  const arrayOfLinkBoxes = [
+    { icon: FaChalkboardTeacher, url: '/tutorium', text: 'Tutorium Management' },
+    { icon: FaUserGraduate, url: '/student', text: 'Schüler Management' },
+    { icon: FaBook, url: '/absence', text: 'Abwesenheit buchen' },
+    ( self.role === 'COORDINATOR' ) ? { icon: FaCalendarWeek, url: '/semester', text: 'Zeitspanne erstellen' } : 
+    { icon: undefined, url: undefined, text: undefined},
+    { icon: FaQuestion, url: 'https://lam-gemont.github.io/fehlzeiten/', text: 'Support' },
+  ];
+
+  const getLinkBoxes = () => {
     return (
       <>
-        <LinkBoxHomePage
-          icon={FaUserGraduate}
-          url='/student'
-          text='Schüler Management'
-        />
-        <LinkBoxHomePage
-          icon={FaBook}
-          url='/absence'
-          text='Abwesenheit buchen'
-        />
-        <LinkBoxHomePage
-          icon={FaQuestion}
-          url='/'
-          text='Support'
-        />
+        {arrayOfLinkBoxes.map(({ icon, url, text }) => (
+          (icon != undefined && url != undefined && text != undefined) ?
+            <LinkBoxHomePage icon={icon} url={url} text={text}/> : null
+        ))}
       </>
     )
-  }
-
-  const getLinkBoxes = (userRole) => {
-    if (userRole === 'COORDINATOR') {
-      return (
-        <SimpleGrid minChildWidth={{ base: '120px', sm: '175px', md: '175px', lg: '200px' }} height='auto' spacing={{ base: '16px', sm: '20px', md: '20px', lg: '30px' }} wordBreak='break-word'>
-          <LinkBoxHomePage icon={FaChalkboardTeacher} url='/tutorium' text='Tutorium Management'/>
-          {getTeacherLinkBoxes()}
-        </SimpleGrid>
-      )
-    }
-
-    if (userRole === 'TEACHER') {
-      return (
-        // different layout, buttons are smaller --> maybe it is better???
-        <Center>
-          <Stack direction={['row']} spacing={{ base: '16px', sm: '20px', md: '20px', lg: '30px' }}>
-            {getTeacherLinkBoxes()}
-          </Stack>
-        </Center>
-      )
-    }
   }
 
   return (
@@ -89,7 +65,9 @@ const Index: React.FC<WithAuthProps> = ({ self }) => {
           </Text>
         </Box>
         <Box marginTop={{ base: '10', sm: '16', md: '16', lg: '28' }}>
-          {getLinkBoxes(self.role)}
+          <SimpleGrid minChildWidth={{ base: '120px', sm: '175px', md: '175px', lg: '200px' }} height='auto' spacing={{ base: '16px', sm: '20px', md: '20px', lg: '30px' }} wordBreak='break-word'>
+            {getLinkBoxes()}
+          </SimpleGrid>
         </Box>
       </Box>
     </PageScaffold>
