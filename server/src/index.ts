@@ -24,7 +24,7 @@ import { ExcuseResolver } from './resolvers/ExcuseResolver'
 import { createAbsenceLoader, createExcuseLoader, createStudentLoader, createTutoriumLoader, createUserLoader } from './loaders'
 import { Context } from './types.js'
 import passport from 'passport'
-import { deserializeUser, oauthStrategy, serializeUser } from './oauth'
+import { deserializeUser, getOAuthStrategy, serializeUser } from './oauth'
 
 env.config({ path: path.resolve(process.cwd(), '..', '.env'), example: path.resolve(process.cwd(), '..', '.env.example') });
 
@@ -58,7 +58,7 @@ env.config({ path: path.resolve(process.cwd(), '..', '.env'), example: path.reso
   app.use(passport.initialize())
   app.use(passport.session())
 
-  passport.use('oauth2', oauthStrategy)
+  passport.use('oauth2', getOAuthStrategy())
 
   passport.serializeUser(async (user: any, done: any) => serializeUser(user, done))
 
@@ -69,7 +69,7 @@ env.config({ path: path.resolve(process.cwd(), '..', '.env'), example: path.reso
   app.get('/api/callback', passport.authenticate('oauth2'), (req: express.Request, res: express.Response) => {
     req.session.userId = req.session.passport.user
 
-    res.redirect('http://localhost:3000')
+    res.redirect('/')
   })
 
   // END OAUTH 2

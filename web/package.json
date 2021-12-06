@@ -4,7 +4,7 @@
     "dev": "next",
     "build": "next build",
     "start": "next start",
-    "codegen": "set NODE_TLS_REJECT_UNAUTHORIZED=0; graphql-codegen --skipSSLValidation --config codegen.yml",
+    "codegen": "graphql-codegen --config codegen.yml",
     "lint": "next lint",
     "lint:fix": "next lint --fix"
   },
