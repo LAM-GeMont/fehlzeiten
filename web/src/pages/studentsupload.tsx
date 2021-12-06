@@ -53,7 +53,7 @@ const Studentsupload: React.FC<Props> = ({ self }) => {
 
   const handleChange = (event) => {
     const filePath = event.target.files[0]
-    if ((filePath != null) && (filePath.type === 'application/vnd.ms-excel')) {
+    if ((filePath != null) && (filePath.type === 'application/vnd.ms-excel' || filePath.type === 'text/csv')) {
       const reader = new FileReader()
       reader.readAsText(filePath)
       filePath.text().then(text => {
