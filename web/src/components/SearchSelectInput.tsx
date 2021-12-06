@@ -59,7 +59,7 @@ export function SearchSelectInputSingle<T> (props: SearchSelectInputProps<T> & F
 
 export function SearchSelectInputMultiple<T> (props: SearchSelectInputProps<T> & FieldHookConfig<Array<String>>): JSX.Element {
   const { items, textTransformer, valueTransformer, placeholder = 'Keine Objekt gewählt', label, name } = props
-  const [, meta, helpers] = useField(props.name)
+  const [, meta, helpers] = useField(props)
 
   const objectByValue = (v: string) => items.find(item => valueTransformer(item) === v)
 
@@ -69,7 +69,7 @@ export function SearchSelectInputMultiple<T> (props: SearchSelectInputProps<T> &
   }
 
   const searchSelectModal = useSearchSelectModal<T>({
-    value: meta.value != null && Array.isArray(meta.value) ? meta.value : [],
+    value: meta.value != null && Array.isArray(meta.value) ? meta.value as string[] : [],
     items,
     textTransformer,
     valueTransformer,
@@ -86,8 +86,8 @@ export function SearchSelectInputMultiple<T> (props: SearchSelectInputProps<T> &
     <>
       <FormControl id={name} isInvalid={meta.touched && meta.error != null}>
         <FormLabel>{label}</FormLabel>
-        <InputGroup onFocus={(e) => { activateModal(); e.target.blur() }} onClick={activateModal} >
-          <Input as="div" w="xs" h="auto" minH={20} p={2}>
+        <InputGroup onFocus={(e) => { activateModal(); e.target.blur() }} onClick={activateModal} cursor="pointer">
+          <Input as="div" h="auto" minH={20} p={2}>
             {searchSelectModal.selection.length === 0 &&
               <Text color="gray">{placeholder}</Text>
             }

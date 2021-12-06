@@ -1,0 +1,45 @@
+query studentOverview($studentId: String!, $semesterId: String) {
+  student(id: $studentId) {
+    id
+    firstName
+    lastName
+    tutorium {
+      name
+      tutor {
+        id
+      }
+    }
+    absenceSummary (semesterId: $semesterId) {
+      excusedDays
+      excusedHours
+      unexcusedDays
+      unexcusedHours
+    }
+    absences (semesterId: $semesterId) {
+      id
+      createdAt
+      updatedAt
+      lessonIndex
+      date
+      exam
+      excused
+      submittedBy {
+        id
+        name
+        role
+      }
+    }
+    excuses {
+      id
+      startDate
+      endDate
+      lessons
+      validForExam
+      submittedBy {
+        id
+        name
+        role
+      }
+    }
+  }
+}

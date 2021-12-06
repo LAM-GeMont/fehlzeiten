@@ -30,7 +30,7 @@ interface Props {
 const validateName = (value: string) => {
   let error
   if (!value || value.length === 0) {
-    error = 'Ein Name muss festgelegt werden'
+    error = 'Ein Name muss festgelegt werden.'
   }
   return error
 }
@@ -39,12 +39,14 @@ export const CreateTutoriumModal: React.FC<Props> = ({ isOpen, onClose }) => {
   // Creating toast, establishing connections with useCreateTutoriumMutation and gather errors saved in errors
   const toast = useToast()
   const [create] = useCreateTutoriumMutation({
-    onError: errors => toastApolloError(toast, errors)
+    onError: errors => toastApolloError(toast, errors),
+    refetchQueries: 'all'
   })
 
   // Creating teacher query for later gathering of teacher data
   const teachersQuery = useTeachersQuery({
-    onError: errors => toastApolloError(toast, errors)
+    onError: errors => toastApolloError(toast, errors),
+    pollInterval: 60000
   })
 
   // Gather teacherData from memo
@@ -75,7 +77,7 @@ export const CreateTutoriumModal: React.FC<Props> = ({ isOpen, onClose }) => {
             if (errors) {
               errors.forEach(error => {
                 if (error.code === TutoriumCreateErrorCode.DuplicateName) {
-                  actions.setFieldError('name', 'Dieses Tutorium gibt es bereits. Bitte wählen sie einen anderen Namen')
+                  actions.setFieldError('name', 'Dieses Tutorium gibt es bereits. Bitte wählen Sie einen anderen Namen.')
                 } else {
                   toast({
                     title: 'Fehler bei der Erstellung',
@@ -88,7 +90,7 @@ export const CreateTutoriumModal: React.FC<Props> = ({ isOpen, onClose }) => {
             } else if (res.data.createTutorium.tutorium) {
               toast({
                 title: `Tutorium ${res.data.createTutorium.tutorium.name} hinzugefügt`,
-                description: `Das Tutorium ${res.data.createTutorium.tutorium.name} wurde erfolgreich erstellt`,
+                description: `Das Tutorium ${res.data.createTutorium.tutorium.name} wurde erfolgreich erstellt.`,
                 status: 'success',
                 isClosable: true
               })
@@ -105,7 +107,7 @@ export const CreateTutoriumModal: React.FC<Props> = ({ isOpen, onClose }) => {
                   {({ field, form }) => (
                     <FormControl isRequired isInvalid={form.errors.name && form.touched.name}>
                       <FormLabel htmlFor="name">Name des Tutoriums</FormLabel>
-                      <Input {...field} id="name" placeholder="Name"autoFocus={true}/>
+                      <Input {...field} id="name" placeholder="Name" autoFocus={true}/>
                       <FormErrorMessage>{form.errors.name}</FormErrorMessage>
                     </FormControl>
                   )}

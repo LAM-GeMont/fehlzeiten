@@ -35,7 +35,8 @@ const Login: React.FC<LoginProps> = () => {
 
   const [login] = useLoginMutation({
     onError: errors => toastApolloError(toast, errors),
-    onCompleted: () => client.cache.evict({ fieldName: 'self' })
+    onCompleted: () => client.cache.evict({ fieldName: 'self' }),
+    refetchQueries: 'all'
   })
 
   return (

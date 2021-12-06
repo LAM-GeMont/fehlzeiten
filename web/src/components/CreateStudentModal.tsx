@@ -22,11 +22,13 @@ const validateName = (value: string) => {
 export const CreateStudentModal: React.FC<Props> = ({ isOpen, onClose }) => {
   const toast = useToast()
   const [create] = useCreateStudentMutation({
-    onError: errors => toastApolloError(toast, errors)
+    onError: errors => toastApolloError(toast, errors),
+    refetchQueries: 'all'
   })
 
   const tutoriumsQuery = useTutoriumsQuery({
-    onError: errors => toastApolloError(toast, errors)
+    onError: errors => toastApolloError(toast, errors),
+    pollInterval: 60000
   })
 
   const data = useMemo(() => {

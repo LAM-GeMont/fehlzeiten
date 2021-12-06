@@ -26,11 +26,13 @@ const validateName = (value: string) => {
 export const EditStudentModal: React.FC<Props> = ({ isOpen, onClose, studentId, firstName, lastName, tutoriumId }) => {
   const toast = useToast()
   const [edit] = useEditStudentMutation({
-    onError: errors => toastApolloError(toast, errors)
+    onError: errors => toastApolloError(toast, errors),
+    refetchQueries: 'all'
   })
 
   const tutoriumsQuery = useTutoriumsQuery({
-    onError: errors => toastApolloError(toast, errors)
+    onError: errors => toastApolloError(toast, errors),
+    pollInterval: 60000
   })
 
   const data = useMemo(() => {
@@ -84,7 +86,7 @@ export const EditStudentModal: React.FC<Props> = ({ isOpen, onClose, studentId, 
         >
           {(props) => (
             <Form>
-              <ModalHeader>Schüler bearbeitenn</ModalHeader>
+              <ModalHeader>Schüler bearbeiten</ModalHeader>
               <ModalCloseButton />
               <ModalBody>
                 <Field name="firstName" validate={validateName}>

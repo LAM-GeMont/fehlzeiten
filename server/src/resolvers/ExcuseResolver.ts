@@ -1,4 +1,4 @@
-import { Arg, Authorized, Ctx, FieldResolver, Mutation, Resolver, ResolverInterface, Root } from 'type-graphql'
+import { Arg, Authorized, Ctx, FieldResolver, Mutation, Query, Resolver, ResolverInterface, Root } from 'type-graphql'
 import { Excuse } from '../entity/Excuse'
 import { Context } from '../types'
 import {
@@ -6,6 +6,7 @@ import {
   ExcuseCreateResponse,
   createExcuse
 } from './excuse/create'
+import { ExcuseDeleteResponse, ExcuseDeleteInput, deleteExcuse } from './excuse/delete'
 
 @Resolver(Excuse)
 export class ExcuseResolver implements ResolverInterface<Excuse> {
@@ -25,11 +26,28 @@ export class ExcuseResolver implements ResolverInterface<Excuse> {
   }
 
   @Authorized()
+  @Query(() => Excuse, { nullable: true })
+  async excuse (
+    @Arg('id') id: string,
+    @Ctx() { loaders }: Context
+  ) {
+    return loaders.excuse.load(id)
+  }
+
+  @Authorized()
   @Mutation(() => ExcuseCreateResponse)
   async createExcuse (
     @Arg('data') data: ExcuseCreateInput,
     @Ctx() context: Context
   ) : Promise<ExcuseCreateResponse> {
     return createExcuse(data, context)
+  }
+
+  @Authorized()
+  @Mutation(() => ExcuseDeleteResponse)
+  async deleteExcuse (
+    @Arg('data') data: ExcuseDeleteInput
+  ) : Promise<ExcuseDeleteResponse> {
+    return deleteExcuse(data)
   }
 }

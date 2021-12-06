@@ -23,7 +23,8 @@ export const DeleteTutoriumAlertDialog: React.FC<Props> = ({ isOpen, onClose, ro
   const toast = useToast()
 
   const [remove] = useDeleteTutoriumMutation({
-    onError: errors => toastApolloError(toast, errors)
+    onError: errors => toastApolloError(toast, errors),
+    refetchQueries: 'all'
   })
 
   return (
@@ -31,7 +32,7 @@ export const DeleteTutoriumAlertDialog: React.FC<Props> = ({ isOpen, onClose, ro
       <AlertDialogOverlay/>
       <AlertDialogContent>
         <AlertDialogHeader>Tutorium löschen</AlertDialogHeader>
-        <AlertDialogBody>Sind Sie sich sicher, dass sie das Tutorium {name} löschen möchten? Diese Aktion kann nicht
+        <AlertDialogBody>Sind Sie sich sicher, dass Sie das Tutorium {name} löschen möchten? Diese Aktion kann nicht
           rückgängig gemacht werden.</AlertDialogBody>
         <AlertDialogFooter>
           <Button mr={3} variant="ghost" onClick={onClose}>Abbrechen</Button>
