@@ -8,6 +8,9 @@ nav_order: 1
 
 ![GeMont Logo]({{ site.baseurl }}/assets/images/gemont_logo.png)
 
+Willkommen auf der Benutzerdokumentationsseite zu dem Projekt `Fehlzeitenerfassung`.
+Auf den Unterseiten, welche man über die Navigation erreicht, findet man Informationen zum Umgang mit dem Projekt.
+
 ## Markierungen
 
 Nicht alle Abschnitte der Dokumentation sind für alle Benutzer gedacht. Beachten Sie daher die folgenden Kennzeichnungen.
