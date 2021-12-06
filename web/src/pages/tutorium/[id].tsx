@@ -157,7 +157,7 @@ const StudentsOfTutoriumPage: React.FC<Props> = ({ self }) => {
         </Flex>
       )
     }
-  ], [])
+  ], [absenceDeleteAlertDialog, createExcuseLessons, toast])
 
   const data = useMemo(() => {
     if (students != null) {
