@@ -32,3 +32,5 @@ Hier findet man alle selbst angelegten Fehlzeiten und falls man Tutor des Schül
 Der Koordinator kann alle Fehlzeiten einsehen und bearbeiten.
 Neben jeder Fehlzeit gibt es einen Button zu löschen der Fehlzeit.
 Falls man Koordinator oder Tutor des Schülers ist, kann man die Fehlzeit dort auch direkt entschuldigen.
+
+Standardmäßig werden alle Fehlzeiten angezeigt. Falls man nur Fehlzeiten einer Zeitspanne (Schuljahr/Halbjahr) einsehen möchte, kann dies mithilfe des Filters erreicht werden.
