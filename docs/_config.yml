@@ -1,4 +1,4 @@
-title: "GeMont Fehlzeitenerfassung"
+title: "Fehlzeitenerfassung"
 remote_theme: pmarsceill/just-the-docs
 theme: "just-the-docs"
 
@@ -15,3 +15,8 @@ gh_edit_repository: "https://github.com/LAM-GeMont/fehlzeiten" # the github URL 
 gh_edit_branch: "dev" # the branch that your docs is served from
 gh_edit_source: docs # the source that your files originate from
 gh_edit_view_mode: "tree" # "tree" or "edit" if you want the user to jump into the editor immediately
+
+aux_links:
+  "GitHub":
+    - "//github.com/LAM-GeMont/fehlzeiten"
+aux_links_new_tab: true

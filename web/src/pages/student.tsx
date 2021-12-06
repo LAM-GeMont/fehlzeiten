@@ -108,7 +108,7 @@ const StudentPage: React.FC<Props> = ({ self }) => {
                             </Flex>
                         )}
 
-                        sortableColumns={['firstName', 'lastName', 'tutorium.name']}
+                        sortableColumns={['lastName', 'firstName', 'tutorium.name']}
 
                         keyFn={(row) => row.original.id}
 

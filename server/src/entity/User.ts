@@ -33,8 +33,8 @@ export class User extends BaseEntity {
     @Field()
     name: string
 
-    @Column()
-    password: string
+    @Column({ nullable: true })
+    password?: string
 
     @Column('int')
     @Field(() => Role)
@@ -51,6 +51,10 @@ export class User extends BaseEntity {
     @OneToMany(() => Excuse, excuse => excuse.submittedBy)
     @Field(() => [Excuse])
     submittedExcuses: Excuse[]
+
+    @Column({ nullable: true })
+    @Field()
+    iservUUID?: string
 
     isCoordinator () {
       return this.role === Role.COORDINATOR
