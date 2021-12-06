@@ -18,7 +18,7 @@ Auf der folgenden Seite sind, um Fehlzeiten zu erfassen, 4 Angaben zu machen.
 |--------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Tag                | Auswahl des Tages, an dem die Fehlzeit stattgefunden hat. Der Tag ist nicht auf das heutige Datum beschränkt. Die Eingabe erfolgt entweder durch ein Popup-Fenster oder über die Tastatur. |
 | Unterrichtsstunden | Im bestehenden Auswahlfeld muss mindestens eine Unterrichtsstunde ausgewählt werden.                                                                                                       |
-| Klausur            | Wenn es sich bei den Unterrichtsstunden um eine Klausur handelt, dann muss der Schalt umgelegt werden. Das hat zur Auswirkung, dass nur ein Koordinator die Fehlzeit entschuldigen kann.   |
+| Klausur            | Wenn es sich bei den Unterrichtsstunden um eine Klausur handelt, dann muss der Schalter umgelegt werden. Das hat zur Auswirkung, dass nur ein Koordinator die Fehlzeit entschuldigen kann. |
 | Schüler            | Hier können mehrere Schüler ausgewählt werden, um ihnen gleichzeitig eine Fehlzeit einzutragen.                                                                                            |
 
 ## Anschauen und Bearbeiten
