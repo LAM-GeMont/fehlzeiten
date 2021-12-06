@@ -8,43 +8,42 @@ import source from '../images/Logo_GeMont.png'
 import { Role } from '../generated/graphql'
 import { IconType } from 'react-icons'
 
+interface BoxLink {
+  icon: IconType,
+  url: string,
+  text: string,
+  roles: Role[]
+}
+
 const Index: React.FC<WithAuthProps> = ({ self }) => {
-
-  interface BoxLink {
-    icon: IconType,
-    url: string,
-    text: string,
-    roles: Role[]
-  }
-
   const arrayOfLinkBoxes: BoxLink[] = [
-    { 
-      icon: FaChalkboardTeacher, 
-      url: '/tutorium', 
-      text: 'Tutorium Management', 
-      roles: [Role.Teacher, Role.Coordinator] 
+    {
+      icon: FaChalkboardTeacher,
+      url: '/tutorium',
+      text: 'Tutorium Management',
+      roles: [Role.Teacher, Role.Coordinator]
     },
-    { 
-      icon: FaUserGraduate, 
-      url: '/student', 
+    {
+      icon: FaUserGraduate,
+      url: '/student',
       text: 'Schüler Management',
-      roles: [Role.Teacher, Role.Coordinator] 
+      roles: [Role.Teacher, Role.Coordinator]
     },
-    { 
-      icon: FaBook, 
-      url: '/absence', 
+    {
+      icon: FaBook,
+      url: '/absence',
       text: 'Abwesenheit buchen',
       roles: [Role.Teacher, Role.Coordinator]
     },
     {
-      icon: FaCalendarWeek, 
-      url: '/semester', 
+      icon: FaCalendarWeek,
+      url: '/semester',
       text: 'Zeitspanne erstellen',
       roles: [Role.Coordinator]
     },
-    { 
-      icon: FaQuestion, 
-      url: 'https://lam-gemont.github.io/fehlzeiten/', 
+    {
+      icon: FaQuestion,
+      url: 'https://lam-gemont.github.io/fehlzeiten/',
       text: 'Support',
       roles: [Role.Teacher, Role.Coordinator]
     }
@@ -53,8 +52,8 @@ const Index: React.FC<WithAuthProps> = ({ self }) => {
   const getLinkBoxes = () => {
     return (
       <>
-        {arrayOfLinkBoxes.filter(({ roles }) => roles.includes(self.role)).map(({ icon, url, text }) => (
-          <LinkBoxHomePage icon={icon} url={url} text={text}/>
+        {arrayOfLinkBoxes.filter(({ roles }) => roles.includes(self.role)).map(({ icon, url, text }, key) => (
+          <LinkBoxHomePage key={key} icon={icon} url={url} text={text}/>
         ))}
       </>
     )
