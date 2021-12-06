@@ -57,14 +57,14 @@ const Studentsupload: React.FC<Props> = ({ self }) => {
       const reader = new FileReader()
       reader.readAsText(filePath)
       filePath.text().then(text => {
-        const lines: string[] = text.split('\r\n')
+        const lines: string[] = text.split('\n')
         const header: string[] = lines[0].split(';')
         if (header[0].trim() === 'Name' && header[1].trim() === 'Vorname' && header[2].trim() === 'Klasse') {
           lines.shift()
           const entries: CsvEntry[] = []
           lines.forEach((line) => {
             const elements: string[] = line.split(';')
-            if ((elements[0].trim() !== '' || elements[0].trim() != null) || (elements[1].trim() !== '' || elements[1].trim() != null)) {
+            if (elements[0].trim() !== '' && elements[1].trim() !== '') {
               let valid = true
               data.forEach(student => {
                 if (student.lastName === elements[0].trim()) {
@@ -103,7 +103,7 @@ const Studentsupload: React.FC<Props> = ({ self }) => {
       <SimpleGrid>
         <Text mb={2} fontSize="30" fontWeight="bold">Schüler importieren</Text>
         <Text>Zum importieren wird eine .csv Datei in mit den Schülern und der Kopfzeile:</Text>
-        <Text mb={2} mt={2} ml={3} as="i" fontWeight="bold">Name; Nachname; Klasse</Text>
+        <Text mb={2} mt={2} ml={3} as="i" fontWeight="bold">Name; Vorname; Klasse</Text>
         <Text>benötigt. </Text>
         <Input style={{ display: 'none' }} type="file" onChange={handleChange} ref={fileInput}></Input>
         <Button bg='#001955' color='white' mt={2} onClick={ () => fileInput.current.click()}>.CSV Datei hochladen</Button>

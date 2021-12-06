@@ -56,7 +56,7 @@ export const PageScaffold: React.FC<Props> = (props) => {
     {
       icon: FaFileImport,
       url: '/studentsupload',
-      title: 'Schüler importieren',
+      title: 'Importieren',
       roles: [Role.Coordinator]
     }
   ]
