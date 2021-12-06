@@ -1,6 +1,6 @@
 import { useDisclosure } from '@chakra-ui/hooks'
 import { AddIcon, DeleteIcon, RepeatIcon, SearchIcon } from '@chakra-ui/icons'
-import { Box, Spinner, Button, Flex, IconButton, SimpleGrid, useToast, Heading, Link, Input, InputGroup, InputLeftElement, chakra, Icon } from '@chakra-ui/react'
+import { Spinner, Button, Flex, IconButton, SimpleGrid, useToast, Heading, Link, Input, InputGroup, InputLeftElement, chakra, Icon } from '@chakra-ui/react'
 import React, { useCallback, useMemo, useState } from 'react'
 import { FaChalkboardTeacher, FaEdit } from 'react-icons/fa'
 import NextLink from 'next/link'
@@ -10,7 +10,7 @@ import { EditStudentModal } from '../components/EditStudentModal'
 import { PageScaffold } from '../components/PageScaffold'
 import { CardTable } from '../components/BetterTable'
 import WithAuth, { WithAuthProps } from '../components/withAuth'
-import { Role, useStudentsQuery } from '../generated/graphql'
+import { useStudentsQuery } from '../generated/graphql'
 import { toastApolloError } from '../util'
 import { Row, useAsyncDebounce } from 'react-table'
 
@@ -27,7 +27,8 @@ const StudentPage: React.FC<Props> = ({ self }) => {
   const [rowtutoriumId, setRowTutoriumId] = useState('')
 
   const studentsQuery = useStudentsQuery({
-    onError: errors => toastApolloError(toast, errors)
+    onError: errors => toastApolloError(toast, errors),
+    pollInterval: 60000
   })
 
   const data = useMemo(() => {
@@ -72,8 +73,7 @@ const StudentPage: React.FC<Props> = ({ self }) => {
       Header: 'Aktionen',
       Cell: ({ row }) => (
                 <Flex justifyContent="center">
-                    <IconButton isDisabled={self.role === 'TEACHER'} variant="outline" aria-label="Bearbeiten" icon={<FaEdit />} onClick={ () => { editStudent(row) }} />
-                    <Box mr={2}></Box>
+                    <IconButton isDisabled={self.role === 'TEACHER'} variant="outline" aria-label="Bearbeiten" icon={<FaEdit />} onClick={ () => { editStudent(row) }} mr={2}/>
                     <IconButton isDisabled={self.role === 'TEACHER'} variant="outline" aria-label="Löschen" icon={<DeleteIcon />} onClick={ () => { deleteStudent(row) }} />
                 </Flex>
       )
@@ -84,23 +84,26 @@ const StudentPage: React.FC<Props> = ({ self }) => {
 
   return (
         <PageScaffold role={self.role}>
+            <Heading as="h1" size="xl" mb={3}>Schüler</Heading>
             <SimpleGrid>
-                <Flex direction="column" alignItems="center" minW="300px" minH="600px">
+                <Flex direction="column" alignItems="center">
                     {studentsQuery.loading && (<Spinner />)}
                     {studentsQuery.error != null && (<Heading>Error!</Heading>)}
                     {studentsQuery.data != null && (
                       <CardTable data={data} columns={columns}
                         before={ (table) => (
-                            <Flex wrap="wrap" justify="flex-end" maxW="full" mb={4}>
-                              <InputGroup flexShrink={10} w="full" maxW="full"mb={2}>
+                            <Flex wrap="wrap" justify="flex-end" w="100%" mb={4}>
+                              <InputGroup flexShrink={10} w="full" maxW="full" mb={2}>
                                 <InputLeftElement>
                                   <SearchIcon />
                                 </InputLeftElement>
-                                <Input width="full" value={null} onChange={e => setFilter(e.target.value, table.setGlobalFilter)} />
+                                <Input width="full" value={undefined} onChange={e => setFilter(e.target.value, table.setGlobalFilter)} />
                               </InputGroup>
                               <Flex flexGrow={2}>
                                 <Button mr={2} flexGrow={2} leftIcon={<AddIcon />} onClick={studentCreateModal.onOpen}>Schüler hinzufügen</Button>
-                                <IconButton variant="outline" aria-label="Daten neu laden" icon={<RepeatIcon />} onClick={() => { studentsQuery.refetch() }}></IconButton>
+                                <IconButton variant="outline" aria-label="Daten neu laden" icon={<RepeatIcon/>} onClick={() => {
+                                  studentsQuery.refetch()
+                                }}/>
                               </Flex>
                             </Flex>
                         )}
@@ -129,4 +132,4 @@ const StudentPage: React.FC<Props> = ({ self }) => {
   )
 }
 
-export default WithAuth(StudentPage, { roles: [Role.Coordinator] })
+export default WithAuth(StudentPage)

@@ -2,7 +2,7 @@ import { Flex, Heading, SimpleGrid } from '@chakra-ui/layout'
 import { Button, IconButton, useDisclosure, useToast, Text, Box, Input, InputGroup, InputLeftElement, Link } from '@chakra-ui/react'
 import React, { useCallback, useMemo, useState } from 'react'
 import { PageScaffold } from '../components/PageScaffold'
-import { Role, useTutoriumsQuery } from '../generated/graphql'
+import { useTutoriumsQuery } from '../generated/graphql'
 import { AddIcon, Icon, DeleteIcon, RepeatIcon, SearchIcon } from '@chakra-ui/icons'
 import { FaEdit, FaUser } from 'react-icons/fa'
 import { CreateTutoriumModal } from '../components/CreateTutoriumModal'
@@ -32,7 +32,8 @@ const TutoriumPage: React.FC<Props> = ({ self }) => {
   const [rowtutorId, setRowTutorId] = useState('')
 
   const tutoriumsQuery = useTutoriumsQuery({
-    onError: errors => toastApolloError(toast, errors)
+    onError: errors => toastApolloError(toast, errors),
+    pollInterval: 60000
   })
 
   const openEdit = tutoriumEditAlertDialog.onOpen
@@ -87,22 +88,25 @@ const TutoriumPage: React.FC<Props> = ({ self }) => {
 
   return (
     <PageScaffold role={self.role}>
+      <Heading as="h1" size="xl" mb={3}>Tutorien</Heading>
       <SimpleGrid>
-        <Flex direction="column" alignItems="center" minW="300px" minH="600px">
+        <Flex direction="column" alignItems="center">
           {tutoriumsQuery.error != null && (<Heading>Error!</Heading>)}
           {tutoriumsQuery.data != null && (
             <CardTable data={data} columns={columns}
               before={(table) => (
-                <Flex wrap="wrap" justify="flex-end" maxW="full" mb={4}>
+                <Flex wrap="wrap" justify="flex-end" w="100%" mb={4}>
                   <InputGroup flexShrink={10} w="full" maxW="full" mb={2}>
                     <InputLeftElement>
                       <SearchIcon />
                     </InputLeftElement>
-                    <Input width="full" value={null} onChange={e => setFilter(e.target.value, table.setGlobalFilter)} />
+                    <Input width="full" value={undefined} onChange={e => setFilter(e.target.value, table.setGlobalFilter)} />
                   </InputGroup>
                   <Flex flexGrow={2}>
                     <Button mr={2} flexGrow={2} leftIcon={<AddIcon />} onClick={tutoriumCreateModal.onOpen}>Tutorium hinzufügen</Button>
-                    <IconButton variant="outline" aria-label="Daten neu laden" icon={<RepeatIcon />} onClick={() => { tutoriumsQuery.refetch() }}></IconButton>
+                    <IconButton variant="outline" aria-label="Daten neu laden" icon={<RepeatIcon/>} onClick={() => {
+                      tutoriumsQuery.refetch()
+                    }}/>
                   </Flex>
                 </Flex>
               )}
@@ -113,7 +117,7 @@ const TutoriumPage: React.FC<Props> = ({ self }) => {
 
               rowFn={(row: Row<any>) => (
                 <Flex w="full" transition="all" transitionDuration="200ms" boxShadow="sm" _hover={{ boxShadow: 'md' }} borderRadius="md" alignItems="center" px={4} py={2}>
-                  <NextLink href={`/tutorium/${row.original.id}`}><Link flexGrow={10} fontWeight="semibold">{row.cells[0].render('Cell')}{' '}</Link></NextLink>
+                  <NextLink href={`/tutorium/${row.original.id}`}><span style={{ flexGrow: 10, fontWeight: 600 }}>{row.cells[0].render('Cell')}{' '}</span></NextLink>
                   {row.original.tutor != null && <Text mx={4} flexGrow={10} textAlign="right"><Icon as={FaUser} mr={2} mb={1} />{row.cells[1].render('Cell')}</Text>}
                   {row.cells[2].render('Cell')}
                 </Flex>
@@ -139,4 +143,4 @@ const TutoriumPage: React.FC<Props> = ({ self }) => {
   )
 }
 
-export default WithAuth(TutoriumPage, { roles: [Role.Coordinator] })
+export default WithAuth(TutoriumPage)

@@ -11,7 +11,8 @@ const Logout: React.FC<LogoutProps> = () => {
   const router = useRouter()
   const client = useApolloClient()
   const [logout] = useLogoutMutation({
-    onCompleted: () => client.cache.evict({ fieldName: 'self' })
+    onCompleted: () => client.cache.evict({ fieldName: 'self' }),
+    refetchQueries: 'all'
   })
 
   useEffect(() => {

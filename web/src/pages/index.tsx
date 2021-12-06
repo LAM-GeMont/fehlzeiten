@@ -85,7 +85,7 @@ const Index: React.FC<WithAuthProps> = ({ self }) => {
             textAlign='center'
             color='#333333'
           >
-            Willkommen &apos;{self.name}&apos;
+            Willkommen {self.name}
           </Text>
         </Box>
         <Box marginTop={{ base: '10', sm: '16', md: '16', lg: '28' }}>

@@ -39,12 +39,14 @@ export const CreateTutoriumModal: React.FC<Props> = ({ isOpen, onClose }) => {
   // Creating toast, establishing connections with useCreateTutoriumMutation and gather errors saved in errors
   const toast = useToast()
   const [create] = useCreateTutoriumMutation({
-    onError: errors => toastApolloError(toast, errors)
+    onError: errors => toastApolloError(toast, errors),
+    refetchQueries: 'all'
   })
 
   // Creating teacher query for later gathering of teacher data
   const teachersQuery = useTeachersQuery({
-    onError: errors => toastApolloError(toast, errors)
+    onError: errors => toastApolloError(toast, errors),
+    pollInterval: 60000
   })
 
   // Gather teacherData from memo

@@ -22,10 +22,8 @@ function CreateBatchFn<T extends BaseEntity & { id: string }> (findByIds: (ids: 
 const StudentExcusesBatchFn = async (studentIds: readonly string[]) => {
   const excuses = await Excuse.find({ where: studentIds.map(id => ({ studentId: id })) })
   const excusesByStudentIds: Record<string, Excuse[]> = {}
+  studentIds.forEach(id => { excusesByStudentIds[id] = [] })
   excuses.forEach((excuse: Excuse) => {
-    if (excusesByStudentIds[excuse.studentId] == null) {
-      excusesByStudentIds[excuse.studentId] = []
-    }
     excusesByStudentIds[excuse.studentId].push(excuse)
   })
 
@@ -35,10 +33,8 @@ const StudentExcusesBatchFn = async (studentIds: readonly string[]) => {
 const StudentAbsencesBatchFn = async (studentIds: readonly string[]) => {
   const absences = await Absence.find({ where: studentIds.map(id => ({ studentId: id })) })
   const absencesByStudentIds: Record<string, Absence[]> = {}
+  studentIds.forEach(id => { absencesByStudentIds[id] = [] })
   absences.forEach((absence: Absence) => {
-    if (absencesByStudentIds[absence.studentId] == null) {
-      absencesByStudentIds[absence.studentId] = []
-    }
     absencesByStudentIds[absence.studentId].push(absence)
   })
 

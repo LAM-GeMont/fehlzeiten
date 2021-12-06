@@ -62,10 +62,12 @@ const ExcuseModal: React.FC<Props> = ({ isOpen, onClose, studentId }) => {
   const toast = useToast()
 
   const [createExcuseLessons] = useCreateExcuseLessonsMutation({
-    onError: errors => toastApolloError(toast, errors)
+    onError: errors => toastApolloError(toast, errors),
+    refetchQueries: 'all'
   })
   const [createExcuseDays] = useCreateExcuseDaysMutation({
-    onError: errors => toastApolloError(toast, errors)
+    onError: errors => toastApolloError(toast, errors),
+    refetchQueries: 'all'
   })
 
   return (
