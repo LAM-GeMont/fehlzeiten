@@ -263,7 +263,11 @@ const StudentsOfTutoriumPage: React.FC<Props> = ({ self }) => {
                         <Flex w="full" maxW="full" boxShadow="sm" _hover={{ boxShadow: 'md' }} borderRadius="md" alignItems="center" px={4} py={2}>
                           <Flex flexDirection="column">
                             <Text fontSize="sm" fontWeight="bold">{row.cells[0].render('Cell')}. Stunde</Text>
-                            <Text fontSize="sm" fontWeight="bold">{row.cells[3].render('Cell')} {row.cells[4].render('Cell')}</Text>
+                            <NextLink href={`/student/${row.original.student.id}`}>
+                              <Link>
+                                <Text fontSize="sm" fontWeight="bold">{row.cells[3].render('Cell')} {row.cells[4].render('Cell')}</Text>
+                              </Link>
+                            </NextLink>
                             <Text fontSize="sm"> <Icon as={FaUser} mr={2} mb={1} />{row.cells[1].render('Cell')}</Text>
                           </Flex>
                           <Spacer />

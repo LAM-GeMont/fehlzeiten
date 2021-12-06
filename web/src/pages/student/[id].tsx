@@ -75,6 +75,7 @@ const Student: React.FC<Props> = ({ self }) => {
   const absences = studentQuery.data?.student?.absences || []
   const semesters = semestersQuery.data?.semesters || []
   const excuses = studentQuery.data?.student?.excuses || []
+  const tutor = studentQuery.data?.student?.tutorium?.tutor?.id
 
   const columns = useMemo(() => [
     {
@@ -97,11 +98,11 @@ const Student: React.FC<Props> = ({ self }) => {
       Header: 'Aktionen',
       Cell: ({ row }) => (
         <Flex>
-          <IconButton size="sm" ml={2} isDisabled={self.role !== Role.Coordinator && row.original.submittedBy !== self.id && student.tutorium?.tutor?.id !== self.id} variant="outline" aria-label="Löschen" icon={<DeleteIcon />} onClick={() => {
+          <IconButton size="sm" ml={2} isDisabled={self.role !== Role.Coordinator && row.original.submittedBy !== self.id && tutor !== self.id} variant="outline" aria-label="Löschen" icon={<DeleteIcon />} onClick={() => {
             setRowId(row.original.id)
             absenceDeleteAlertDialog.onOpen()
           }} />
-          <IconButton size="sm" ml={2} isDisabled={(self.role !== Role.Coordinator && row.original.submittedBy !== self.id && student.tutorium?.tutor?.id !== self.id) || (row.original.excused === true)} variant="outline" aria-label="Entschuldigen" icon={<FaCalendarCheck />} onClick={async () => {
+          <IconButton size="sm" ml={2} isDisabled={(self.role !== Role.Coordinator && tutor !== self.id) || (row.original.excused === true)} variant="outline" aria-label="Entschuldigen" icon={<FaCalendarCheck />} onClick={async () => {
             setRowId(row.original.id)
             const res = await createExcuseLessons({
               variables: {
@@ -134,7 +135,7 @@ const Student: React.FC<Props> = ({ self }) => {
         </Flex>
       )
     }
-  ], [absenceDeleteAlertDialog, self.id, self.role, student])
+  ], [absenceDeleteAlertDialog, createExcuseLessons, id, self.id, self.role, tutor, toast])
 
   const dates = Array.from(new Set(absences.map(absence => absence.date))).sort().reverse()
 
