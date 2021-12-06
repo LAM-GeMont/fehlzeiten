@@ -15,7 +15,7 @@ Sie können nur von Benutzern mit der Rolle `Koordinator` angelegt werden.
 
 Über den folgenden Button in der Navigationsleiste gelangt man zur Übersicht der erstellten Zeitspannen.
 
-![img.png]({{ site.baseurl }}/assets/icons/timespan.png)
+![Zeitspannen Icon]({{ site.baseurl }}/assets/icons/timespan.png)
 
 Die angelegten Zeitspannen finden sich auf den Übersichtsseiten zu den Schüler wieder.
 Über ein Dropdown-Menü lassen sich dort die Fehlzeiten/Entschuldigungen gruppiert nach Zeitspanne anzeigen.
