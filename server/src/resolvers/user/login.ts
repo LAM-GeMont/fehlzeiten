@@ -4,8 +4,9 @@ import argon2 from 'argon2'
 import { Context } from '../../types'
 
 export enum UserLoginErrorCode {
-    UNKNOWN_ERROR,
-    BAD_AUTHENTICATION
+  UNKNOWN_ERROR,
+  BAD_AUTHENTICATION,
+  USER_IS_ISERV_ONLY
 }
 
 registerEnumType(UserLoginErrorCode, {
@@ -46,6 +47,14 @@ export async function loginUser (args: UserLoginInput, { req }: Context) : Promi
         name: args.name
       }
     })
+
+    if (user?.password == null) {
+      return {
+        errors: [{
+          code: UserLoginErrorCode.USER_IS_ISERV_ONLY
+        }]
+      }
+    }
 
     if (user == null || !(await argon2.verify(user.password, args.password))) {
       return {
