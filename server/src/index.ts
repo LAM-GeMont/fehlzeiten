@@ -23,6 +23,8 @@ import { Excuse } from './entity/Excuse'
 import { ExcuseResolver } from './resolvers/ExcuseResolver'
 import { createAbsenceLoader, createExcuseLoader, createSemesterLoader, createStudentExcuseLoader, createStudentAbsenceLoader, createStudentLoader, createTutoriumLoader, createUserLoader } from './loaders'
 import { Context } from './types.js'
+import passport from 'passport'
+import { deserializeUser, getOAuthStrategy, serializeUser } from './oauth'
 import { SemesterResolver } from './resolvers/SemesterResolver'
 import { Semester } from './entity/Semester'
 
@@ -52,6 +54,27 @@ env.config({ path: path.resolve(process.cwd(), '..', '.env'), example: path.reso
       sameSite: 'none'
     }
   }))
+
+  // OAUTH 2
+
+  app.use(passport.initialize())
+  app.use(passport.session())
+
+  passport.use('oauth2', getOAuthStrategy())
+
+  passport.serializeUser(async (user: any, done: any) => serializeUser(user, done))
+
+  passport.deserializeUser(async (id: string, done: any) => deserializeUser(id, done))
+
+  app.get('/api/login', passport.authenticate('oauth2'))
+
+  app.get('/api/callback', passport.authenticate('oauth2'), (req: express.Request, res: express.Response) => {
+    req.session.userId = req.session.passport.user
+
+    res.redirect('/')
+  })
+
+  // END OAUTH 2
 
   const loaders = {
     absence: createAbsenceLoader(),

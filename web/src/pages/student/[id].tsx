@@ -178,6 +178,19 @@ const Student: React.FC<Props> = ({ self }) => {
             </TabList>
             <TabPanels>
               <TabPanel px={0} py={4}>
+                <Flex w="full" flexWrap="wrap" pt={2}>
+                  <Flex flexGrow={10} mb={5}>
+                    <Button ml="auto" leftIcon={<AddIcon />} onClick={() => { excuseModal.onOpen() }} flexGrow={10}>Entschuldigung hinzufügen</Button>
+                    <IconButton ml={4} variant="outline" aria-label="Daten neu laden" icon={<RepeatIcon />} onClick={() => { studentQuery.refetch() }} />
+                  </Flex>
+                </Flex>
+                <Select variant='outline' placeholder='Semester auswählen' value={selectedSemester} onChange={e => setSelectedSemester(e.target.value)}>
+                  {semesters.map(semester => {
+                    return (
+                      <option value={semester.id} key={semester.id}>{semester.name}</option>
+                    )
+                  })}
+                </Select>
                 {dates.length < 1 &&
                   <Flex w="full" padding={5}>
                     <Text fontSize="24" fontWeight="bold">Es wurden noch keine Fehlzeiten erfasst...</Text>
@@ -185,19 +198,6 @@ const Student: React.FC<Props> = ({ self }) => {
                 }
                 {dates.length >= 1 && (
                   <>
-                    <Flex w="full" flexWrap="wrap" pt={2}>
-                      <Flex flexGrow={10} mb={5}>
-                        <Button ml="auto" leftIcon={<AddIcon />} onClick={() => { excuseModal.onOpen() }} flexGrow={10}>Entschuldigung hinzufügen</Button>
-                        <IconButton ml={4} variant="outline" aria-label="Daten neu laden" icon={<RepeatIcon />} onClick={() => { studentQuery.refetch() }} />
-                      </Flex>
-                    </Flex>
-                    <Select variant='outline' placeholder='Semester auswählen' value={selectedSemester} onChange={e => setSelectedSemester(e.target.value)}>
-                      {semesters.map(semester => {
-                        return (
-                          <option value={semester.id} key={semester.id}>{semester.name}</option>
-                        )
-                      })}
-                    </Select>
                     <Heading as='h2' size='md' mt={3} mb={3}>Zusammenfassung</Heading>
                     <StatGroup
                       alignItems="end"

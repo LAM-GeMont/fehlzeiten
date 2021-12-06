@@ -9,7 +9,7 @@ import { Excuse } from './entity/Excuse'
 import { Semester } from './entity/Semester'
 
 export type Context = {
-  req: Request & { session: Session }
+  req: Request & { session: Session & { passport: { user: User }}}
   res: Response
   caller?: User
   loaders: {

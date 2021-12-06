@@ -54,7 +54,7 @@ const Login: React.FC<LoginProps> = () => {
             })
 
             if (res.data?.loginUser.user != null && res.data?.loginUser.errors == null) {
-              router.push('/')
+              await router.push('/')
             } else {
               actions.setErrors({
                 name: 'Falsches Passwort oder unbekannter Benutzer',
@@ -62,35 +62,40 @@ const Login: React.FC<LoginProps> = () => {
               })
             }
           }}
-        >
-          {(props) => (
-            <Form>
-              <Flex direction="column">
-                <Field name="name" validate={validateName}>
-                  {({ field, form }) => (
-                    <FormControl isInvalid={form.errors.name && form.touched.name}>
-                      <FormLabel htmlFor="name">Benutzername</FormLabel>
-                      <Input {...field} id="name" placeholder="Name" />
-                      <FormErrorMessage>{form.errors.name}</FormErrorMessage>
-                    </FormControl>
-                  )}
-                </Field>
-                <Field name="password" validate={validatePassword}>
-                  {({ field, form }) => (
-                    <FormControl mt={3} isInvalid={form.errors.password && form.touched.password}>
-                      <FormLabel htmlFor="password">Passwort</FormLabel>
-                      <Input {...field} id="password" type="password" placeholder="Passwort" />
-                      <FormErrorMessage>{form.errors.password}</FormErrorMessage>
-                    </FormControl>
-                  )}
-                </Field>
-                <Button colorScheme="primary" mt={4} alignSelf="flex-end" type="submit" isLoading={props.isSubmitting}>Login</Button>
-              </Flex>
-            </Form>
-          )}
-        </Formik>
-      </Flex>
-    </Center>
+                >
+                    {(props) => (
+                        <Form>
+                            <Flex direction="column">
+                                <Field name="name" validate={validateName}>
+                                    {({ field, form }) => (
+                                        <FormControl isInvalid={form.errors.name && form.touched.name}>
+                                            <FormLabel htmlFor="name">Benutzername</FormLabel>
+                                            <Input {...field} id="name" placeholder="Name"/>
+                                            <FormErrorMessage>{form.errors.name}</FormErrorMessage>
+                                        </FormControl>
+                                    )}
+                                </Field>
+                                <Field name="password" validate={validatePassword}>
+                                    {({ field, form }) => (
+                                        <FormControl mt={3} isInvalid={form.errors.password && form.touched.password}>
+                                            <FormLabel htmlFor="password">Passwort</FormLabel>
+                                            <Input {...field} id="password" type="password" placeholder="Passwort"/>
+                                            <FormErrorMessage>{form.errors.password}</FormErrorMessage>
+                                        </FormControl>
+                                    )}
+                                </Field>
+                                <Flex direction="row">
+                                    <Button colorScheme="orange" ml="auto" mt={4} mr={1} alignSelf="flex-end" type="button" onClick={() => { window.location.href = 'https://localhost:4000/api/login' }}>
+                                      Login with iServ</Button>
+                                    <Button colorScheme="primary" mt={4} alignSelf="flex-end" type="submit"
+                                            isLoading={props.isSubmitting}>Login</Button>
+                                </Flex>
+                            </Flex>
+                        </Form>
+                    )}
+                </Formik>
+            </Flex>
+        </Center>
   )
 }
 
