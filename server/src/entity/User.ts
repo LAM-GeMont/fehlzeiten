@@ -53,7 +53,6 @@ export class User extends BaseEntity {
     submittedExcuses: Excuse[]
 
     @Column({ nullable: true })
-    @Field()
     iservUUID?: string
 
     isCoordinator () {
