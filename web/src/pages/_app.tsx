@@ -7,7 +7,12 @@ import { AppProps } from 'next/app'
 const client = new ApolloClient({
   uri: 'http://localhost:4000/graphql',
   cache: new InMemoryCache(),
-  credentials: 'include'
+  credentials: 'include',
+  defaultOptions: {
+    watchQuery: {
+      fetchPolicy: 'cache-and-network'
+    }
+  }
 })
 
 function MyApp ({ Component, pageProps }: AppProps) {
