@@ -9,7 +9,7 @@ import { Excuse } from './entity/Excuse'
 import { Semester } from './entity/Semester'
 
 export type Context = {
-  req: Request & { session: Session & { passport: { user: User }}}
+  req: Request & { session: Session }
   res: Response
   caller?: User
   loaders: {
@@ -27,5 +27,6 @@ export type Context = {
 declare module 'express-session' {
   interface Session {
       userId: string
+      passport: { user: string }
   }
 }
