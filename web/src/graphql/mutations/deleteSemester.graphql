@@ -1,0 +1,8 @@
+mutation DeleteSemester($data: SemesterDeleteInput!) {
+  deleteSemester(data: $data) {
+    errors {
+      message
+      code
+    }
+  }
+}

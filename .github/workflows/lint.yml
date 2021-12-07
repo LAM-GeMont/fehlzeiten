@@ -1,0 +1,27 @@
+name: ESLint
+on: [ pull_request ]
+jobs:
+  server:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./server
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install modules
+        run: npm install
+      - name: Run ESLint
+        run: npm run lint
+  web:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./web
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install modules
+        run: npm install
+      - name: Create env.js
+        run: ./createDefaultEnv.sh
+      - name: Run ESLint
+        run: npm run lint

@@ -1,0 +1,30 @@
+query Tutorium($tutoriumId: String!) {
+    tutorium(id: $tutoriumId) {
+        id
+        name
+        tutor {
+            name
+        }
+        students {
+            id
+            firstName
+            lastName
+            absences {
+                id
+                date
+                exam
+                excused
+                lessonIndex
+                student {
+                    id
+                    firstName
+                    lastName
+                }
+                submittedBy {
+                    id
+                    name
+                }
+            }
+        }
+    }
+}

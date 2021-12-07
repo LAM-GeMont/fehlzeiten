@@ -1,0 +1,10 @@
+query Semesters {
+  semesters {
+    id
+    createdAt
+    updatedAt
+    name
+    startDate
+    endDate
+  }
+}

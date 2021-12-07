@@ -1,0 +1,8 @@
+mutation DeleteExcuse($data: ExcuseDeleteInput!) {
+  deleteExcuse(data: $data) {
+    errors {
+      code
+      message
+    }
+  }
+}

@@ -14,6 +14,19 @@ import { TypeormStore } from 'connect-typeorm/out'
 import env from 'dotenv-safe'
 import path from 'path'
 import { Session } from './entity/Session.js'
+import { Student } from './entity/Student.js'
+import { StudentResolver } from './resolvers/StudentResolver.js'
+import { Absence } from './entity/Absence.js'
+import { AbsenceResolver } from './resolvers/AbsenceResolver.js'
+import { authChecker } from './auth.js'
+import { Excuse } from './entity/Excuse'
+import { ExcuseResolver } from './resolvers/ExcuseResolver'
+import { createAbsenceLoader, createExcuseLoader, createSemesterLoader, createStudentExcuseLoader, createStudentAbsenceLoader, createStudentLoader, createTutoriumLoader, createUserLoader } from './loaders'
+import { Context } from './types.js'
+import passport from 'passport'
+import { deserializeUser, getOAuthStrategy, serializeUser } from './oauth'
+import { SemesterResolver } from './resolvers/SemesterResolver'
+import { Semester } from './entity/Semester'
 
 env.config({ path: path.resolve(process.cwd(), '..', '.env'), example: path.resolve(process.cwd(), '..', '.env.example') });
 
@@ -23,7 +36,7 @@ env.config({ path: path.resolve(process.cwd(), '..', '.env'), example: path.reso
     database: './db.db',
     synchronize: true,
     logging: true,
-    entities: [Tutorium, User, Session]
+    entities: [Absence, Excuse, Semester, Session, Student, Tutorium, User]
   })
 
   const app = express()
@@ -42,15 +55,52 @@ env.config({ path: path.resolve(process.cwd(), '..', '.env'), example: path.reso
     }
   }))
 
+  // OAUTH 2
+
+  app.use(passport.initialize())
+  app.use(passport.session())
+
+  passport.use('oauth2', getOAuthStrategy())
+
+  passport.serializeUser(async (user: any, done: any) => serializeUser(user, done))
+
+  passport.deserializeUser(async (id: string, done: any) => deserializeUser(id, done))
+
+  app.get('/api/login', passport.authenticate('oauth2'))
+
+  app.get('/api/callback', passport.authenticate('oauth2'), (req: express.Request, res: express.Response) => {
+    req.session.userId = req.session.passport.user
+
+    res.redirect('/')
+  })
+
+  // END OAUTH 2
+
+  const loaders = {
+    absence: createAbsenceLoader(),
+    excuse: createExcuseLoader(),
+    student: createStudentLoader(),
+    tutorium: createTutoriumLoader(),
+    user: createUserLoader(),
+    semester: createSemesterLoader(),
+    studentExcuses: createStudentExcuseLoader(),
+    studentAbsences: createStudentAbsenceLoader()
+  }
+
   const apollo = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [TutoriumResolver, UserResolver],
-      validate: false
+      resolvers: [AbsenceResolver, ExcuseResolver, SemesterResolver, StudentResolver, TutoriumResolver, UserResolver],
+      validate: false,
+      authChecker: authChecker
     }),
-    context: ({ req, res }) => ({
-      req,
-      res
-    })
+    context: async ({ req, res }): Promise<Context> => {
+      return {
+        req,
+        res,
+        caller: req.session.userId != null ? await loaders.user.load(req.session.userId) : undefined,
+        loaders
+      }
+    }
   })
 
   await apollo.start()

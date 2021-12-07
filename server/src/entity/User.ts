@@ -1,7 +1,8 @@
-import { Context } from '../types'
 import { ID, ObjectType, Field, registerEnumType } from 'type-graphql'
 import { BaseEntity, Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
 import { Tutorium } from './Tutorium'
+import { Absence } from './Absence'
+import { Excuse } from './Excuse'
 
 export enum Role {
     TEACHER,
@@ -32,8 +33,8 @@ export class User extends BaseEntity {
     @Field()
     name: string
 
-    @Column()
-    password: string
+    @Column({ nullable: true })
+    password?: string
 
     @Column('int')
     @Field(() => Role)
@@ -43,12 +44,16 @@ export class User extends BaseEntity {
     @Field(() => [Tutorium])
     tutoriums: Tutorium[]
 
-    static fromContext (context: Context) {
-      if (context.req.session.userId == null) {
-        return undefined
-      }
-      return User.findOne(context.req.session.userId)
-    }
+    @OneToMany(() => Absence, absence => absence.submittedBy)
+    @Field(() => [Absence])
+    submittedAbsences: Absence[]
+
+    @OneToMany(() => Excuse, excuse => excuse.submittedBy)
+    @Field(() => [Excuse])
+    submittedExcuses: Excuse[]
+
+    @Column({ nullable: true })
+    iservUUID?: string
 
     isCoordinator () {
       return this.role === Role.COORDINATOR

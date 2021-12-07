@@ -2,3 +2,4 @@ node_modules
 .next
 src/generated
 graphql.schema.json
+env.js

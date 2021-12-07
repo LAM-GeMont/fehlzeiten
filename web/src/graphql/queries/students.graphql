@@ -1,0 +1,17 @@
+query Students {
+  students {
+    id
+    createdAt
+    updatedAt
+    firstName
+    lastName
+    tutorium {
+      id
+      name
+      tutor {
+        id
+        name
+      }
+    }
+  }
+}
