@@ -11,8 +11,7 @@ Node.js >14.0 and a package manager, eg. npm or yarn, is required.
 The Backend is located in the `server/` folder and serves the API for the data layer.
 Initially you will need to install the required packages using your package manager (`npm install` for npm).
 
-You should also create a `.env` file matching the example given. Provide values for all variables, as otherwise the application won't work.
-For local development you should provide just any value for the oauth variables.
+For local development you should also create a `.env` file in the `server/` folder and copy the contents of the `server/.env.example` into it.
 
 Run it for development by opening two terminals and running
 
@@ -51,7 +50,7 @@ If you change anything related to the graphql files (`web/src/graphql/`), you wi
 
 ## Deployment
 
-To run the project in production, first start the backend server located in `server/`. To do so, create a copy of the `.env.example` as `.env` and adjust the values, then run
+To run the project in production, first start the backend server located in `server/`. To do so, create a copy of the `server/.env.example` as `server/.env` and adjust the values, then run
 
 ```bash
 npm run build
