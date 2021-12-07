@@ -241,8 +241,8 @@ const Student: React.FC<Props> = ({ self }) => {
                                 </Flex>
                                 <Spacer />
                                 <Flex flexDirection="column">
-                                  {row.cells[2].value ? (<Tag fontSize="sm" mb={2} bgColor="blue.400" color="white">Klausur</Tag>) : (<></>)}
-                                  {row.cells[3].value ? (<Tag fontSize="sm" colorScheme="green" variant="solid">Entschuldigt</Tag>) : (<Tag fontSize="sm" mb={2} colorScheme="red">Unentschuldigt</Tag>)}
+                                  {row.cells[2].value ? (<Tag size="sm" mb={2} bgColor="blue.400" color="white">Klausur</Tag>) : (<></>)}
+                                  {row.cells[3].value ? (<Tag size="sm" colorScheme="green" variant="solid">Entschuldigt</Tag>) : (<Tag size="sm" mb={2} colorScheme="red">Unentschuldigt</Tag>)}
                                 </Flex>
                                 {row.cells[4].render('Cell')}
                               </Flex>

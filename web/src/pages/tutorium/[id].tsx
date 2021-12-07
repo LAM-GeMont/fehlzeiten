@@ -57,8 +57,6 @@ const StudentsOfTutoriumPage: React.FC<Props> = ({ self }) => {
 
   const dates = Array.from(new Set(absences.map(absence => absence.date))).sort().reverse()
 
-  console.log(absences)
-
   const openEdit = studentEditModal.onOpen
   const editStudent = React.useCallback((row) => {
     setRowId(row.original.id)
@@ -272,8 +270,8 @@ const StudentsOfTutoriumPage: React.FC<Props> = ({ self }) => {
                           </Flex>
                           <Spacer />
                           <Flex flexDirection="column">
-                            {row.cells[2].value ? (<Tag fontSize="sm" mb={2} bgColor="blue.400" color="white">Klausur</Tag>) : (<></>)}
-                            <Tag fontSize="sm" mb={2} colorScheme="red">Unentschuldigt</Tag>
+                            {row.cells[2].value ? (<Tag size="sm" mb={2} bgColor="blue.400" color="white">Klausur</Tag>) : (<></>)}
+                            <Tag size="sm" mb={2} colorScheme="red">Unentschuldigt</Tag>
                           </Flex>
                           {row.cells[5].render('Cell')}
                         </Flex>
