@@ -1,6 +1,6 @@
 import { CheckIcon, SearchIcon } from '@chakra-ui/icons'
 import { Text, Box, Modal, ModalContent, ModalHeader, ModalOverlay, ModalCloseButton, ModalBody, ModalFooter, Button, Input, InputGroup, InputLeftElement, Flex, Spacer, Tag, TagCloseButton, TagLabel, InputRightElement, useDisclosure } from '@chakra-ui/react'
-import React, { useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import fuzzysort from 'fuzzysort'
 import { AnimatePresence, motion } from 'framer-motion'
 
@@ -24,6 +24,11 @@ export function useSearchSelectModal<T> (options: Pick<SearchSelectModalProps<T>
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [selection, setSelection] = useState<string[]>(options.value)
 
+  useEffect(() => {
+    console.log('hey', options.value)
+    setSelection(options.value)
+  }, [options.value])
+
   const { handleChange = () => {} } = options
 
   return {
@@ -40,9 +45,13 @@ function SearchSelectModal<T> ({ items = [], textTransformer, valueTransformer, 
   const [search, setSearch] = useState('')
   const [tempSelection, setTempSelection] = useState<T[]>([])
 
-  const handleSearchChange = event => setSearch(event.target.value)
+  const objectByValue = useCallback((v: string) => items.find(item => valueTransformer(item) === v), [items, valueTransformer])
 
-  const objectByValue = (v: string) => items.find(item => valueTransformer(item) === v)
+  useEffect(() => {
+    setTempSelection(() => selection.map(value => objectByValue(value)))
+  }, [selection])
+
+  const handleSearchChange = event => setSearch(event.target.value)
 
   const saveChanges = () => {
     setSelection(() => tempSelection.map((v) => valueTransformer(v)))
