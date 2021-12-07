@@ -28,7 +28,6 @@ export const DeleteExcuseAlertDialog: React.FC<Props> = ({ isOpen, onClose, rowI
 
   return (
     <AlertDialog isOpen={isOpen} onClose={onClose} leastDestructiveRef={undefined} isCentered>
-      {console.log('test' + rowId)}
       <AlertDialogOverlay/>
       <AlertDialogContent>
         <AlertDialogHeader>Entschuldigung löschen</AlertDialogHeader>

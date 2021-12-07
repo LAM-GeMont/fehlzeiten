@@ -30,7 +30,6 @@ export class AbsenceResolver implements ResolverInterface<Absence> {
   async excused (@Root() absence: Absence, @Ctx() { loaders }: Context) {
     const excuses = await loaders.studentExcuses.load(absence.studentId)
     loaders.studentExcuses.clear(absence.studentId)
-    console.log('Entschuildigungen:' + excuses)
 
     return excuses.some(excuse => {
       if (excuse.startDate > absence.date || excuse.endDate < absence.date) {

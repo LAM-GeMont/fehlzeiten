@@ -4,8 +4,6 @@ import WithAuth, { WithAuthProps } from '../components/withAuth'
 import {
   Box,
   Button,
-  Checkbox,
-  CheckboxGroup,
   Flex,
   FormControl,
   FormErrorMessage,
@@ -14,11 +12,48 @@ import {
   Switch, useDisclosure,
   useToast
 } from '@chakra-ui/react'
-import { Field, Form, Formik } from 'formik'
+import { Field, FieldProps, Form, Formik, useField } from 'formik'
 import { formatDateISO, toastApolloError } from '../util'
 import { AbsenceCreateErrorCode, useCreateAbsencesMutation, useStudentsQuery } from '../generated/graphql'
 import { SearchSelectInputMultiple } from '../components/SearchSelectInput'
 import { AbsenceUpgradeAlertDialog } from '../components/AbsenceUpgradeAlertDialog'
+
+interface LessonButtonProps {
+  name: string
+  items: string[]
+  labels: string[]
+  label: string
+  validate: (value: string[]) => string
+}
+
+const ToggleButtonGroup: React.FC<LessonButtonProps> = ({ items, labels, label, ...props }) => {
+  const [field, meta, helpers] = useField<string[]>({ name: props.name, validate: props.validate })
+
+  const handleChange = (item: string) => {
+    const newValue = meta.value.slice() || []
+    const index = newValue.indexOf(item)
+    if (index !== -1) {
+      newValue.splice(index, 1)
+    } else {
+      newValue.push(item)
+    }
+    helpers.setValue(newValue)
+  }
+
+  return (
+    <FormControl mb={6} {...props} isInvalid={meta.touched && meta.error != null}>
+      <FormLabel>{label}</FormLabel>
+      <Flex direction="column" display={{ base: 'flex', lg: 'grid' }} gridRowGap={2} gridColumnGap={2} gridTemplateColumns="1fr 1fr">
+        {items.map((v, i) =>
+          <>
+            <Button width="full" onClick={() => handleChange(v)} name={props.name} onBlur={field.onBlur} colorScheme={meta.value.includes(v) ? 'blue' : undefined}>{labels[i]}</Button>
+          </>
+        )}
+      </Flex>
+      <FormErrorMessage>{meta.error}</FormErrorMessage>
+    </FormControl>
+  )
+}
 
 interface Props extends WithAuthProps {
 }
@@ -35,10 +70,12 @@ const AbsencePage: React.FC<Props> = ({ self }) => {
   const studentsQuery = useStudentsQuery({
     pollInterval: 60000
   })
+
   const [createAbsences] = useCreateAbsencesMutation({
     onError: errors => toastApolloError(toast, errors),
     refetchQueries: 'all'
   })
+
   const [overwriteOnDuplicate, setOverwriteOnDuplicate] = useState(false)
 
   return (
@@ -47,7 +84,7 @@ const AbsencePage: React.FC<Props> = ({ self }) => {
       <Formik
         initialValues={{
           date: initialDate,
-          lesson: [],
+          lessons: [],
           students: [],
           exam: false
         }}
@@ -56,7 +93,7 @@ const AbsencePage: React.FC<Props> = ({ self }) => {
           console.log({
             date: values.date,
             studentIds: values.students,
-            lessonIndexes: values.lesson.map(v => parseInt(v)),
+            lessonIndexes: values.lessons.map(v => parseInt(v)),
             exam: values.exam,
             overwriteOnDuplicate
           })
@@ -65,7 +102,7 @@ const AbsencePage: React.FC<Props> = ({ self }) => {
               data: {
                 date: values.date,
                 studentIds: values.students,
-                lessonIndexes: values.lesson.map(v => parseInt(v)),
+                lessonIndexes: values.lessons.map(v => parseInt(v)),
                 exam: values.exam,
                 overwriteOnDuplicate
               }
@@ -123,7 +160,7 @@ const AbsencePage: React.FC<Props> = ({ self }) => {
         }}
       >
         {(props) => (
-          <Form id="absence-creation">
+          <Form>
             <Field name="date">
               {({ field, form }) => (
                 <FormControl isInvalid={form.errors.date && form.touched.date} mb={6}>
@@ -139,53 +176,15 @@ const AbsencePage: React.FC<Props> = ({ self }) => {
                 </FormControl>
               )}
             </Field>
-            <Field name="lesson" validate={values => {
+            <ToggleButtonGroup name="lessons" items={lessonIndexes} labels={lessonIndexes.map(i => `${i}. Stunde`)} label="Unterrichtsstunden" validate={values => {
               if (values.length < 1) {
                 return 'Bitte mindestens eine Unterrichtsstunde auswählen.'
               }
-            }}>
-              {({ field, form }) => (
-                <FormControl isInvalid={form.errors.lesson && form.touched.lesson} mb={6}>
-                  <FormLabel>Unterrichtsstunden</FormLabel>
-                  <style>
-                    {`#absence-creation .chakra-checkbox__control {
-                      display: none;
-                    }
-                    #absence-creation .chakra-checkbox__label {
-                      margin-left: 0;
-                      width: 100%;
-                    }
-                    #absence-creation .chakra-checkbox__input:checked ~ .chakra-checkbox__label .chakra-button {
-                      background: var(--chakra-colors-blue-500);
-                      color: #ffffff;
-                    }`}
-                  </style>
-                  <CheckboxGroup>
-                    <Flex direction="column" display={{ base: 'flex', lg: 'grid' }} gridRowGap={2} gridColumnGap={2} gridTemplateColumns="1fr 1fr">
-                      {lessonIndexes.map(v =>
-                        <Checkbox
-                          {...field}
-                          key={v}
-                          value={v.toString()}
-                          width="100%"
-                        >
-                          <Box
-                            as={Button}
-                            width="100%"
-                            onClick={(e) => (e.currentTarget.closest('.chakra-checkbox__label') as HTMLLabelElement).click() }
-                          >{v}. Stunde</Box>
-                        </Checkbox>
-                      )}
-                    </Flex>
-                  </CheckboxGroup>
-                  <FormErrorMessage>{form.errors.lesson}</FormErrorMessage>
-                </FormControl>
-              )}
-            </Field>
-            <Field name="exam">
-              {({ field, form }) => (
-                <FormControl isInvalid={form.errors.exam && form.touched.exam} mb={6} display="flex" alignItems="center">
-                  <Switch id="exam" {...field} />
+            }} />
+            <Field name="exam" type="checkbox">
+              {({ field }: FieldProps) => (
+                <FormControl mb={6} display="flex" alignItems="center">
+                  <Switch id="exam" {...field} isChecked={field.checked}/>
                   <FormLabel htmlFor="exam" mb="0" marginInlineEnd={0} marginInlineStart={3}>Klausur</FormLabel>
                 </FormControl>
               )}

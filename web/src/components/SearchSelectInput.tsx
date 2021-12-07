@@ -1,8 +1,9 @@
 import { FormControl, Input, FormLabel, FormErrorMessage, InputGroup, InputRightElement, Tag, Text } from '@chakra-ui/react'
-import React from 'react'
+import React, { useMemo } from 'react'
 import SearchSelectModal, { useSearchSelectModal } from './SearchSelectModal'
 import { FieldHookConfig, useField } from 'formik'
 import { ExternalLinkIcon } from '@chakra-ui/icons'
+import useConstant from 'use-constant'
 
 interface SearchSelectInputProps<T> {
   placeholder?: string
@@ -16,18 +17,23 @@ interface SearchSelectInputProps<T> {
 }
 
 export function SearchSelectInputSingle<T> (props: SearchSelectInputProps<T> & FieldHookConfig<string>): JSX.Element {
-  const { items, textTransformer, placeholder = 'Kein Objekt gewählt', valueTransformer, label, name } = props
+  const { items, placeholder = 'Kein Objekt gewählt', label, name } = props
   const [, meta, helpers] = useField(props)
+
+  const textTransformer = useConstant(() => props.textTransformer)
+  const valueTransformer = useConstant(() => props.valueTransformer)
 
   const objectByValue = (v: string) => items.find(item => valueTransformer(item) === v)
 
   const handleChange = (v: string[]) => {
-    console.log(v)
     helpers.setValue(v.length === 0 ? '' : v[0])
   }
 
+  const fallbackValue = useConstant(() => [])
+  const valueAsArray = useMemo(() => [meta.value], [meta.value])
+
   const searchSelectModal = useSearchSelectModal<T>({
-    value: meta.value != null && meta.value !== '' ? [meta.value] : [],
+    value: meta.value != null && meta.value !== '' ? valueAsArray : fallbackValue,
     items,
     textTransformer,
     valueTransformer,
@@ -58,13 +64,15 @@ export function SearchSelectInputSingle<T> (props: SearchSelectInputProps<T> & F
 }
 
 export function SearchSelectInputMultiple<T> (props: SearchSelectInputProps<T> & FieldHookConfig<Array<String>>): JSX.Element {
-  const { items, textTransformer, valueTransformer, placeholder = 'Keine Objekt gewählt', label, name } = props
+  const { items, placeholder = 'Keine Objekt gewählt', label, name } = props
   const [, meta, helpers] = useField(props)
+
+  const textTransformer = useConstant(() => props.textTransformer)
+  const valueTransformer = useConstant(() => props.valueTransformer)
 
   const objectByValue = (v: string) => items.find(item => valueTransformer(item) === v)
 
   const handleChange = (v: string[]) => {
-    console.log(v)
     helpers.setValue(v)
   }
 

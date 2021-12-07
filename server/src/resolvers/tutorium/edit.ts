@@ -70,7 +70,6 @@ export async function editTutorium (data: TutoriumEditInput): Promise<TutoriumEd
     }
 
     const existingTutoriums = await Tutorium.find({ where: { name: tutorium.name, id: Not(tutorium.id) } })
-    console.log(existingTutoriums)
     if (existingTutoriums.length > 0) {
       return {
         errors: [{

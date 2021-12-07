@@ -22,7 +22,6 @@ export class TutoriumResolver implements ResolverInterface<Tutorium> {
   @FieldResolver()
   async students (@Root() tutorium: Tutorium) {
     const students = await Student.find({ where: { tutoriumId: tutorium.id } })
-    console.log(students.filter(student => student == null))
     return students
   }
 
