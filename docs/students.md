@@ -23,7 +23,7 @@ Dafür gibt man den Vor- und Nachnamen eines Schülers ein. Optional kann der Sc
 
 ## Bearbeiten
 
-In der Schülerlist hat jeder Eintrag die Aktion zum Bearbeiten des Schülers. Dort können alle Angaben, welche auch beim Erstellen gesetzt werden können, angepasst werden.
+In der Schülerliste hat jeder Eintrag die Aktion zum Bearbeiten des Schülers. Dort können alle Angaben, welche auch beim Erstellen gesetzt werden können, angepasst werden.
 Zusätzlich gibt es die Aktion löschen, welche den Schüler, sowie alle mit ihm zusammenhängende Fehlzeiten und Entschuldigungen löscht.
 
 ## Details

@@ -1,4 +1,4 @@
-import { AddIcon, ArrowBackIcon, CalendarIcon, DeleteIcon, RepeatIcon, TimeIcon, WarningTwoIcon } from '@chakra-ui/icons'
+import { AddIcon, Icon, ArrowBackIcon, CalendarIcon, DeleteIcon, RepeatIcon, TimeIcon, WarningTwoIcon } from '@chakra-ui/icons'
 import {
   Link,
   Select,
@@ -20,7 +20,7 @@ import NextLink from 'next/link'
 import React, { useMemo } from 'react'
 import { PageScaffold } from '../../components/PageScaffold'
 import WithAuth, { WithAuthProps } from '../../components/withAuth'
-import { Role, useStudentOverviewQuery, useSemestersQuery } from '../../generated/graphql'
+import { Role, useStudentOverviewQuery, useSemestersQuery, useCreateExcuseLessonsMutation } from '../../generated/graphql'
 import { toastApolloError } from '../../util'
 import { DeleteAbsenceAlertDialog } from '../../components/DeleteAbsenceAlertDialog'
 import ErrorPage from 'next/error'
@@ -28,6 +28,7 @@ import ExcuseModal from '../../components/ExcuseModal'
 import { CardTable } from '../../components/BetterTable'
 import { Row } from 'react-table'
 import { DeleteExcuseAlertDialog } from '../../components/DeleteExcuseAlertDialog'
+import { FaUser, FaCalendarCheck } from 'react-icons/fa'
 
 interface Props extends WithAuthProps { }
 
@@ -64,11 +65,17 @@ const Student: React.FC<Props> = ({ self }) => {
     pollInterval: 60000
   })
 
+  const [createExcuseLessons] = useCreateExcuseLessonsMutation({
+    onError: errors => toastApolloError(toast, errors),
+    refetchQueries: 'all'
+  })
+
   const student = studentQuery.data?.student
   const summary = studentQuery.data?.student?.absenceSummary || emptySummary
   const absences = studentQuery.data?.student?.absences || []
   const semesters = semestersQuery.data?.semesters || []
   const excuses = studentQuery.data?.student?.excuses || []
+  const tutor = studentQuery.data?.student?.tutorium?.tutor?.id
 
   const columns = useMemo(() => [
     {
@@ -90,13 +97,45 @@ const Student: React.FC<Props> = ({ self }) => {
     {
       Header: 'Aktionen',
       Cell: ({ row }) => (
-        <IconButton ml={2} isDisabled={self.role !== Role.Coordinator && row.original.submittedBy !== self.id && student.tutorium?.tutor?.id !== self.id} variant="outline" aria-label="Löschen" icon={<DeleteIcon />} onClick={() => {
-          setRowId(row.original.id)
-          absenceDeleteAlertDialog.onOpen()
-        }} />
+        <Flex>
+          <IconButton size="sm" ml={2} isDisabled={self.role !== Role.Coordinator && row.original.submittedBy !== self.id && tutor !== self.id} variant="outline" aria-label="Löschen" icon={<DeleteIcon />} onClick={() => {
+            setRowId(row.original.id)
+            absenceDeleteAlertDialog.onOpen()
+          }} />
+          <IconButton size="sm" ml={2} isDisabled={(self.role !== Role.Coordinator && tutor !== self.id) || (row.original.excused === true)} variant="outline" aria-label="Entschuldigen" icon={<FaCalendarCheck />} onClick={async () => {
+            setRowId(row.original.id)
+            const res = await createExcuseLessons({
+              variables: {
+                data: {
+                  startDate: row.original.date,
+                  endDate: row.original.date,
+                  studentId: id.toString(),
+                  lessons: row.original.lessonIndex
+                }
+              },
+              refetchQueries: 'all'
+            })
+            if (res.errors) {
+              res.errors.forEach(error => {
+                toast({
+                  title: 'Fehler beim Erstellen der Entschuldigung',
+                  description: error.message == null ? 'Unbekannter Fehler' : error.message,
+                  status: 'error',
+                  isClosable: true
+                })
+              })
+            } else {
+              toast({
+                title: 'Entschuldigung erfolgreich eingetragen',
+                status: 'success',
+                isClosable: true
+              })
+            }
+          }} />
+        </Flex>
       )
     }
-  ], [absenceDeleteAlertDialog, self.id, self.role, student])
+  ], [absenceDeleteAlertDialog, createExcuseLessons, id, self.id, self.role, tutor, toast])
 
   const dates = Array.from(new Set(absences.map(absence => absence.date))).sort().reverse()
 
@@ -133,7 +172,7 @@ const Student: React.FC<Props> = ({ self }) => {
         <Heading as='h1' size='xl'>{student.firstName + ' ' + student.lastName} <span style={{ color: 'grey', fontWeight: 'normal', fontSize: '24px' }}>Schüler:in</span></Heading>
         <Heading as='h2' size='md' fontWeight='normal'>{student.tutorium?.name}</Heading>
         <Flex direction="column" minW="300px" minH="600px" mt={5}>
-          <Tabs isFitted variant="soft-rounded" width="100%" p={4}>
+          <Tabs isFitted variant="soft-rounded" width="100%" pt={4}>
             <TabList>
               <Tab>Fehlzeiten</Tab>
               <Tab>Entschuldigungen</Tab>
@@ -190,20 +229,20 @@ const Student: React.FC<Props> = ({ self }) => {
                     </StatGroup>
                     {dates.map((date: string) => {
                       return (
-                        <Box mt={5} key={date} w="full" border="1px" borderColor="gray.300" borderRadius="md" boxShadow="lg" p="3" rounded="md" bg="white" mb={4}>
-                          <Text fontSize="22">{new Date(date).toLocaleDateString()}</Text>
+                        <Box mt={5} key={date} w="full" border="1px" borderColor="gray.300" borderRadius="md" boxShadow="lg" pt="3" pb="3" rounded="md" bg="white" mb={4}>
+                          <Text fontSize="22" pl="3">{new Date(date).toLocaleDateString()}</Text>
                           <CardTable columns={columns} data={absences.filter(absence => absence.date === date).sort((a, b) => -a.lessonIndex + b.lessonIndex)}
                             keyFn={(row) => row.original.id}
                             rowFn={(row: Row<any>) => (
                               <Flex w="full" transition="all" transitionDuration="200ms" boxShadow="sm" _hover={{ boxShadow: 'md' }} borderRadius="md" alignItems="center" px={4} py={2}>
                                 <Flex flexDirection="column">
-                                  <Text fontWeight="bold">{row.cells[0].render('Cell')}. Stunde</Text>
-                                  <Text>Eingereicht von <span style={{ fontWeight: 'bold' }}>{row.cells[1].render('Cell')}</span></Text>
+                                  <Text fontSize="sm"fontWeight="bold">{row.cells[0].render('Cell')}. Stunde</Text>
+                                  <Text fontSize="sm"><Icon as={FaUser} mr={2} mb={1} />{row.cells[1].render('Cell')}</Text>
                                 </Flex>
                                 <Spacer />
                                 <Flex flexDirection="column">
-                                  {row.cells[3].value ? (<Tag mb={2} bgColor="blue.400" color="white">Klausur</Tag>) : (<></>)}
-                                  {row.cells[3].value ? (<Tag colorScheme="green" variant="solid">Entschuldigt</Tag>) : (<></>)}
+                                  {row.cells[2].value ? (<Tag size="sm" mb={2} bgColor="blue.400" color="white">Klausur</Tag>) : (<></>)}
+                                  {row.cells[3].value ? (<Tag size="sm" colorScheme="green" variant="solid">Entschuldigt</Tag>) : (<Tag size="sm" mb={2} colorScheme="red">Unentschuldigt</Tag>)}
                                 </Flex>
                                 {row.cells[4].render('Cell')}
                               </Flex>

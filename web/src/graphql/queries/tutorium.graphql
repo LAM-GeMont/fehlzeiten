@@ -9,6 +9,22 @@ query Tutorium($tutoriumId: String!) {
             id
             firstName
             lastName
+            absences {
+                id
+                date
+                exam
+                excused
+                lessonIndex
+                student {
+                    id
+                    firstName
+                    lastName
+                }
+                submittedBy {
+                    id
+                    name
+                }
+            }
         }
     }
 }

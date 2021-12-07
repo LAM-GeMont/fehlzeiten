@@ -1,11 +1,22 @@
 import { useApolloClient } from '@apollo/client'
-import { Button, Center, Flex, FormControl, FormErrorMessage, FormLabel, Heading, Input, useToast } from '@chakra-ui/react'
+import {
+  Button,
+  Center,
+  Flex,
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
+  Heading,
+  Input,
+  useToast
+} from '@chakra-ui/react'
 import { Field, Form, Formik } from 'formik'
 import { useRouter } from 'next/router'
 import React from 'react'
 import WithAuth from '../components/withAuth'
 import { useLoginMutation } from '../generated/graphql'
 import { toastApolloError } from '../util'
+import { Divider } from '@chakra-ui/layout'
 
 interface LoginProps {
 
@@ -43,6 +54,13 @@ const Login: React.FC<LoginProps> = () => {
     <Center w="100vw" h="100vh">
       <Flex w="sm" boxShadow="base" borderRadius="md" padding={8} direction="column">
         <Heading textAlign="center" mb={5}>Login</Heading>
+        <Button colorScheme="orange" mb={4} type="button" onClick={() => { window.location.href = '/api/login' }}>
+          Mit IServ einloggen</Button>
+        <Divider mb={4} />
+        <span style={{ color: 'lightgray', cursor: 'pointer', fontSize: 14, textAlign: 'center' }} onClick={event => {
+          event.currentTarget.style.display = 'none';
+          (event.currentTarget.nextElementSibling as HTMLFormElement).style.display = 'block'
+        }}>Entwicklerlogin anzeigen</span>
         <Formik
           initialValues={{
             name: '',
@@ -64,7 +82,7 @@ const Login: React.FC<LoginProps> = () => {
           }}
                 >
                     {(props) => (
-                        <Form>
+                        <Form style={{ display: 'none' }}>
                             <Flex direction="column">
                                 <Field name="name" validate={validateName}>
                                     {({ field, form }) => (
@@ -84,10 +102,8 @@ const Login: React.FC<LoginProps> = () => {
                                         </FormControl>
                                     )}
                                 </Field>
-                                <Flex direction="row">
-                                    <Button colorScheme="orange" ml="auto" mt={4} mr={1} alignSelf="flex-end" type="button" onClick={() => { window.location.href = 'https://localhost:4000/api/login' }}>
-                                      Login with iServ</Button>
-                                    <Button colorScheme="primary" mt={4} alignSelf="flex-end" type="submit"
+                                <Flex justifyContent="end">
+                                    <Button colorScheme="primary" mt={4} ml="auto" type="submit"
                                             isLoading={props.isSubmitting}>Login</Button>
                                 </Flex>
                             </Flex>
