@@ -227,8 +227,8 @@ const Student: React.FC<Props> = ({ self }) => {
                     </StatGroup>
                     {dates.map((date: string) => {
                       return (
-                        <Box mt={5} key={date} w="full" border="1px" borderColor="gray.300" borderRadius="md" boxShadow="lg" pt="3" pb="3" rounded="md" bg="white" mb={4}>
-                          <Text fontSize="22" pl="3">{new Date(date).toLocaleDateString()}</Text>
+                        <Box mt={5} key={date} w="full" pt="3" pb="3" rounded="md" bg="white" mb={4}>
+                          <Heading as='h3' size='sm' mb={1}>{new Date(date).toLocaleDateString()}</Heading>
                           <CardTable columns={columns} data={absences.filter(absence => absence.date === date).sort((a, b) => -a.lessonIndex + b.lessonIndex)}
                             keyFn={(row) => row.original.id}
                             rowFn={(row: Row<any>) => (
