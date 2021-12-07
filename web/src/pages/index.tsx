@@ -12,6 +12,7 @@ interface BoxLink {
   icon: IconType,
   url: string,
   text: string,
+  isExternalLink: boolean
   roles: Role[]
 }
 
@@ -21,30 +22,35 @@ const Index: React.FC<WithAuthProps> = ({ self }) => {
       icon: FaChalkboardTeacher,
       url: '/tutorium',
       text: 'Tutorium Management',
+      isExternalLink: false,
       roles: [Role.Teacher, Role.Coordinator]
     },
     {
       icon: FaUserGraduate,
       url: '/student',
       text: 'Schüler Management',
+      isExternalLink: false,
       roles: [Role.Teacher, Role.Coordinator]
     },
     {
       icon: FaBook,
       url: '/absence',
       text: 'Abwesenheit buchen',
+      isExternalLink: false,
       roles: [Role.Teacher, Role.Coordinator]
     },
     {
       icon: FaCalendarWeek,
       url: '/semester',
       text: 'Zeitspanne erstellen',
+      isExternalLink: false,
       roles: [Role.Coordinator]
     },
     {
       icon: FaQuestion,
       url: 'https://lam-gemont.github.io/fehlzeiten/',
       text: 'Support',
+      isExternalLink: true,
       roles: [Role.Teacher, Role.Coordinator]
     }
   ]
@@ -52,8 +58,8 @@ const Index: React.FC<WithAuthProps> = ({ self }) => {
   const getLinkBoxes = () => {
     return (
       <>
-        {arrayOfLinkBoxes.filter(({ roles }) => roles.includes(self.role)).map(({ icon, url, text }, key) => (
-          <LinkBoxHomePage key={key} icon={icon} url={url} text={text}/>
+        {arrayOfLinkBoxes.filter(({ roles }) => roles.includes(self.role)).map(({ icon, url, text, isExternalLink }, key) => (
+          <LinkBoxHomePage key={key} icon={icon} url={url} text={text} isExternalLink={isExternalLink}/>
         ))}
       </>
     )
