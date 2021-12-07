@@ -9,7 +9,7 @@ This is the repository for the `fehlzeiten` project (absence-tracking). It is im
 For development, you should first clone this Github repository.
 Node.js >14.0 and a package manager, eg. npm or yarn, is required.
 The Backend is located in the `server/` folder and serves the API for the data layer.
-Initially you will need to install the required packages using your package manager (`npm install` for npm).
+Initially you will need to install the required packages using your package manager. For that, navigate to the `server/` folder and use your package manager to install all dependencies (`npm install` for npm).
 
 For local development you should also create a `.env` file in the `server/` folder and copy the contents of the `server/.env.example` into it.
 
@@ -29,7 +29,8 @@ This will ensure that your code is continually transpile from Typescript to Java
 
 ### Frontend
 
-To develop on the frontend, navigate into the `web/` folder. Install the packages here (`npm install`), then run
+To develop on the frontend, navigate into the `web/` folder. Install the packages here (`npm install`) and create a copy of the `env.example.js` as `env.js`.
+Then run
 
 ```bash
 # backend server must be running while executing the following command
@@ -57,9 +58,11 @@ npm run build
 npm run start
 ```
 
-The API of the application will now be running on port `4000`.
+The API of the application will now be running on port configured in the `.env` file (default: 4000).
 
-Next, you should start the Next.js Server powering the web application. For this, go into the `web/` folder and run
+Next, you should start the Next.js Server powering the web application. For this, go into the `web/` folder.
+Here you need to configure the enviroment variables by creating a copy of the `env.example.js` file as `env.js` and changing the values as required.
+Then run
 
 ```bash
 npm run codegen
