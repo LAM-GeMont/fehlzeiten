@@ -58,7 +58,7 @@ npm run build
 npm run start
 ```
 
-The API of the application will now be running on port configured in the `.env` file (default: 4000).
+The API of the application will now be running on the port configured in the `.env` file (default: 4000).
 
 Next, you should start the Next.js Server powering the web application. For this, go into the `web/` folder.
 Here you need to configure the enviroment variables by creating a copy of the `env.example.js` file as `env.js` and changing the values as required.
