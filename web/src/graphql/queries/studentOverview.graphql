@@ -29,7 +29,7 @@ query studentOverview($studentId: String!, $semesterId: String) {
         role
       }
     }
-    excuses {
+    excuses (semesterId: $semesterId) {
       id
       startDate
       endDate

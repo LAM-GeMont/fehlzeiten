@@ -93,7 +93,7 @@ export class StudentResolver implements ResolverInterface<Student> {
 
   @Authorized()
   @FieldResolver()
-  async excuses (@Root() student: Student, @Ctx() context: Context) {
+  async excuses (@Root() student: Student, @Ctx() context: Context, @Arg('semesterId', { nullable: true }) semesterId?: string) {
     if (context.caller == null) { return [] }
 
     const caller = context.caller
@@ -105,7 +105,23 @@ export class StudentResolver implements ResolverInterface<Student> {
 
     const excuses = await context.loaders.studentExcuses.load(student.id)
     context.loaders.studentExcuses.clear(student.id)
-    return excuses
+    const semester = semesterId != null ? await context.loaders.semester.load(semesterId) : null
+
+    const semesterExcuses = excuses.filter(excuse => {
+      if (semesterId === '' || semester == null) {
+        return true
+      }
+
+      const startDateInSemester = excuse.startDate > semester.startDate && excuse.startDate < semester.endDate
+      const endDateInSemester = excuse.endDate > semester.startDate && excuse.endDate < semester.endDate
+      return startDateInSemester || endDateInSemester
+    })
+
+    if (context.caller.role === Role.COORDINATOR || context.caller.id === studentTutorium?.tutorId) {
+      return semesterExcuses
+    }
+
+    return semesterExcuses.filter(excuse => context.caller != null && excuse.submittedById === context.caller.id)
   }
 
   @Authorized()

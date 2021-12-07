@@ -171,30 +171,28 @@ const Student: React.FC<Props> = ({ self }) => {
         </NextLink>
         <Heading as='h1' size='xl'>{student.firstName + ' ' + student.lastName} <span style={{ color: 'grey', fontWeight: 'normal', fontSize: '24px' }}>Schüler:in</span></Heading>
         <Heading as='h2' size='md' fontWeight='normal'>{student.tutorium?.name}</Heading>
+        <Flex flexGrow={10} mt={5}>
+          <Button ml="auto" leftIcon={<AddIcon />} onClick={() => { excuseModal.onOpen() }} flexGrow={10}>Entschuldigung hinzufügen</Button>
+          <IconButton ml={4} variant="outline" aria-label="Daten neu laden" icon={<RepeatIcon />} onClick={() => { studentQuery.refetch() }} />
+        </Flex>
         <Flex direction="column" minW="300px" minH="600px" mt={5}>
-          <Tabs isFitted variant="soft-rounded" width="100%" pt={4}>
+          <Select variant='outline' placeholder='Semester auswählen' value={selectedSemester} onChange={e => setSelectedSemester(e.target.value)}>
+            {semesters.map(semester => {
+              return (
+                <option value={semester.id} key={semester.id}>{semester.name}</option>
+              )
+            })}
+          </Select>
+          <Tabs isFitted variant="soft-rounded" width="100%" mt={4}>
             <TabList>
               <Tab>Fehlzeiten</Tab>
               <Tab>Entschuldigungen</Tab>
             </TabList>
             <TabPanels>
               <TabPanel px={0} py={4}>
-                <Flex w="full" flexWrap="wrap" pt={2}>
-                  <Flex flexGrow={10} mb={5}>
-                    <Button ml="auto" leftIcon={<AddIcon />} onClick={() => { excuseModal.onOpen() }} flexGrow={10}>Entschuldigung hinzufügen</Button>
-                    <IconButton ml={4} variant="outline" aria-label="Daten neu laden" icon={<RepeatIcon />} onClick={() => { studentQuery.refetch() }} />
-                  </Flex>
-                </Flex>
-                <Select variant='outline' placeholder='Semester auswählen' value={selectedSemester} onChange={e => setSelectedSemester(e.target.value)}>
-                  {semesters.map(semester => {
-                    return (
-                      <option value={semester.id} key={semester.id}>{semester.name}</option>
-                    )
-                  })}
-                </Select>
                 {dates.length < 1 &&
-                  <Flex w="full" padding={5}>
-                    <Text fontSize="24" fontWeight="bold">Es wurden noch keine Fehlzeiten erfasst...</Text>
+                  <Flex w="full" pt={5} pb={5}>
+                    <Text>Es wurden noch keine Fehlzeiten erfasst...</Text>
                   </Flex>
                 }
                 {dates.length >= 1 && (
@@ -229,8 +227,8 @@ const Student: React.FC<Props> = ({ self }) => {
                     </StatGroup>
                     {dates.map((date: string) => {
                       return (
-                        <Box mt={5} key={date} w="full" border="1px" borderColor="gray.300" borderRadius="md" boxShadow="lg" pt="3" pb="3" rounded="md" bg="white" mb={4}>
-                          <Text fontSize="22" pl="3">{new Date(date).toLocaleDateString()}</Text>
+                        <Box mt={5} key={date} w="full" pt="3" pb="3" rounded="md" bg="white" mb={4}>
+                          <Heading as='h3' size='sm' mb={1}>{new Date(date).toLocaleDateString()}</Heading>
                           <CardTable columns={columns} data={absences.filter(absence => absence.date === date).sort((a, b) => -a.lessonIndex + b.lessonIndex)}
                             keyFn={(row) => row.original.id}
                             rowFn={(row: Row<any>) => (
@@ -256,15 +254,9 @@ const Student: React.FC<Props> = ({ self }) => {
               </TabPanel>
               <TabPanel px={0} py={4}>
                 <>
-                  <Flex w="full" flexWrap="wrap" pt={2}>
-                    <Flex flexGrow={10} mb={5}>
-                      <Button ml="auto" leftIcon={<AddIcon />} onClick={() => { excuseModal.onOpen() }} flexGrow={10}>Entschuldigung hinzufügen</Button>
-                      <IconButton ml={4} variant="outline" aria-label="Daten neu laden" icon={<RepeatIcon />} onClick={() => { studentQuery.refetch() }} />
-                    </Flex>
-                  </Flex>
                   {excuses.length < 1 &&
-                    <Flex w="full" padding={5}>
-                      <Text fontSize="24" fontWeight="bold">Es wurden noch keine Entschuldigungen erfasst...</Text>
+                    <Flex w="full" pt={5} pb={5}>
+                      <Text>Es wurden noch keine Entschuldigungen erfasst...</Text>
                     </Flex>
                   }
                   {excuses.length >= 1 && (
