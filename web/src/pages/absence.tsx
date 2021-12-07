@@ -161,7 +161,6 @@ const AbsencePage: React.FC<Props> = ({ self }) => {
       >
         {(props) => (
           <Form>
-          {console.log('form', props)}
             <Field name="date">
               {({ field, form }) => (
                 <FormControl isInvalid={form.errors.date && form.touched.date} mb={6}>

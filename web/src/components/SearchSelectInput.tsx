@@ -26,7 +26,6 @@ export function SearchSelectInputSingle<T> (props: SearchSelectInputProps<T> & F
   const objectByValue = (v: string) => items.find(item => valueTransformer(item) === v)
 
   const handleChange = (v: string[]) => {
-    console.log(v)
     helpers.setValue(v.length === 0 ? '' : v[0])
   }
 
@@ -74,7 +73,6 @@ export function SearchSelectInputMultiple<T> (props: SearchSelectInputProps<T> &
   const objectByValue = (v: string) => items.find(item => valueTransformer(item) === v)
 
   const handleChange = (v: string[]) => {
-    console.log(v)
     helpers.setValue(v)
   }
 

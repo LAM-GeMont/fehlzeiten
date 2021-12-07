@@ -120,7 +120,6 @@ export async function createAbsences (args: AbsencesCreateInput, { caller }: Con
       }
     }
     if (potentialExamUpgrade.length > 0) {
-      console.log(potentialExamUpgrade)
       const absences = await Absence.find({
         where: potentialExamUpgrade.map(v => { return { studentId: v.studentId, date: v.date, lessonIndex: v.lessonIndex } })
       })

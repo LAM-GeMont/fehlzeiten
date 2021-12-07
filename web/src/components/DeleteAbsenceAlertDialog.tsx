@@ -28,7 +28,6 @@ export const DeleteAbsenceAlertDialog: React.FC<Props> = ({ isOpen, onClose, row
 
   return (
     <AlertDialog isOpen={isOpen} onClose={onClose} leastDestructiveRef={undefined} isCentered>
-      {console.log('test' + rowId)}
       <AlertDialogOverlay/>
       <AlertDialogContent>
         <AlertDialogHeader>Fehlzeit löschen</AlertDialogHeader>

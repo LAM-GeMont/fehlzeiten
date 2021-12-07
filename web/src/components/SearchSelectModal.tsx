@@ -25,7 +25,6 @@ export function useSearchSelectModal<T> (options: Pick<SearchSelectModalProps<T>
   const [selection, setSelection] = useState<string[]>(options.value)
 
   useEffect(() => {
-    console.log('hey', options.value)
     setSelection(options.value)
   }, [options.value])
 

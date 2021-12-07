@@ -12,7 +12,6 @@ const filterFunction = function (this, rows: Row[], columnIds: string[], filterV
   if (!filterValue) { return rows }
   const modifiedRows = rows.map(row => ({ originalRow: row, ...Object.fromEntries(Object.entries(row.values).filter(([, value]) => typeof value === 'string')) }))
   const res = fuzzysort.go(filterValue, modifiedRows, { keys: this.filterKeys != null ? this.filterKeys : columnIds, allowTypo: false })
-  console.log(rows)
   return res.map(result => result.obj.originalRow)
 }
 
