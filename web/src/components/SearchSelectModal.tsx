@@ -48,7 +48,7 @@ function SearchSelectModal<T> ({ items = [], textTransformer, valueTransformer, 
 
   useEffect(() => {
     setTempSelection(() => selection.map(value => objectByValue(value)))
-  }, [selection])
+  }, [selection, objectByValue])
 
   const handleSearchChange = event => setSearch(event.target.value)
 
